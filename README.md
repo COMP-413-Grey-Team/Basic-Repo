@@ -31,4 +31,4 @@ To keep things simple, we will have a simple model for our Git workflow:
 	- **Add at least one reviewer on the PR.** We want to make sure that code is reviewed before it is merged into `master`.
 		- Make sure that if another team is affected by your changes, a member of that team is added to the review so that each team knows about the changes.
 	- **The review should be approved by a member of the same team, and only then can changes be merged into master.**
--**Note:** Because of this simplified Git workflow, there will be times that `master` does not compile or does not work properly. Given the timeline of this project, there isn't really a good way around this. However, once the project is in a working state, we should avoid merging code into master that breaks the codebase whenever possible.
+- **Note:** Because of this simplified Git workflow, there will be times that `master` does not compile or does not work properly. Given the timeline of this project, there isn't really a good way around this. However, once the project is in a working state, we should avoid merging code into master that breaks the codebase whenever possible.
