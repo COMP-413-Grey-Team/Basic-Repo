@@ -1,5 +1,7 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
+import edu.rice.comp413fall2020grey.Common.GameObject;
+
 import java.util.UUID;
 
 /**
