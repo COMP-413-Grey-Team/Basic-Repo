@@ -1,10 +1,18 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
+/**
+ * Represents an object in a game with an interest function.
+ */
 public interface GameObject {
 
   /**
-   * Returns the underlying type of this game object so the client can use it more easily.
+   * Metadata for this object that will be stored on the registrar and used by object location.
    */
-  Class<?> type();
+  GameObjectMetadata getMetadata();
+
+  /**
+   * Returns if a given object is interesting to the caller, and should be loaded on its superpeer.
+   */
+  boolean isInterestedIn(GameObjectMetadata metadata);
 
 }

@@ -3,7 +3,7 @@ package edu.rice.comp413fall2020grey.ObjStorage;
 import java.util.UUID;
 
 /**
- * This will the the interface exposed to the Game Server to interact with the distributed system (specifically, with Object Storage).
+ * The interface exposed to the Game Server to interact with the distributed system (specifically, with Object Storage).
  */
 public interface DistributedManager {
 
