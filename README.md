@@ -20,8 +20,9 @@ To keep things simple, we will have a simple model for our Git workflow:
 	- `git checkout --track origin/some-branch-name`
 		- **Note:** `origin/` will always be the prefix to the branch name; this exists to indicate that the branch is coming from the project origin, which is defined as the Github clone URL.
 - As you are working and want to commit changes to your branch (not `master`!):
-	- `git pull`
 	- `git commit -a -m "My commit message here"`
+	- `git pull`
+		- If someone else has made conflicting changes, this will result in a merge conflict that you need to resolve. If you need help doing so, reach out to someone on the team.
 	- `git push`
 		- **Note:** if Git suggests you run a modified version of this with `--set-origin`, do it.
 - Once you think the branch is ready to go into `master`:
