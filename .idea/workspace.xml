@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="Added pom.xml">
-      <change beforePath="$PROJECT_DIR$/.idea/comp413.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/comp413.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/core/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/comp413/edu/rice/comp413fall2020grey/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/comp413/edu/rice/comp413fall2020grey/ObjStorage/DistributedManager.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/comp413/edu/rice/comp413fall2020grey/ObjStorage/GameObject.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/comp413/edu/rice/comp413fall2020grey/ObjStorage/GameObjectMetadata.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-    </list>
+    <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -121,17 +110,29 @@
       <option name="presentableId" value="Default" />
       <updated>1601068750041</updated>
     </task>
+    <task id="LOCAL-00001" summary="Added pom.xml with a dependency">
+      <created>1601602054767</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1601602054767</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added pom.xml with a dependency" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added pom.xml with a dependency" />
   </component>
   <component name="WindowStateProjectService">
     <state x="384" y="126" key="#Project_Structure" timestamp="1601507476999">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="384" y="126" key="#Project_Structure/0.23.1792.1044@0.23.1792.1044" timestamp="1601507476999" />
-    <state x="473" y="120" key="CommitChangelistDialog2" timestamp="1601602027183">
+    <state x="473" y="120" key="CommitChangelistDialog2" timestamp="1601602054576">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
-    <state x="473" y="120" key="CommitChangelistDialog2/0.23.1792.1044@0.23.1792.1044" timestamp="1601602027183" />
+    <state x="473" y="120" key="CommitChangelistDialog2/0.23.1792.1044@0.23.1792.1044" timestamp="1601602054576" />
     <state width="1750" height="286" key="GridCell.Tab.0.bottom" timestamp="1601601636832">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
