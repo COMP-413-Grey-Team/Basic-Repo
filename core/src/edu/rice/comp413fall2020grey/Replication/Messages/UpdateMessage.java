@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Message for object updates. May be sent from either a replica or
+ * a primary object. The target object is the target for the changes.
+ */
 public class UpdateMessage extends ReplicaMessage {
 
   private final UUID authorObject;
