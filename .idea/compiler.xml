@@ -10,8 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="basic-repo" target="1.5" />
-      <module name="comp413" target="1.5" />
+      <module name="comp413" target="15" />
     </bytecodeTargetLevel>
   </component>
 </project>

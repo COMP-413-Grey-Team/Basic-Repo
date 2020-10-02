@@ -4,8 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="">
+    <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="Added pom.xml">
+      <change beforePath="$PROJECT_DIR$/.idea/comp413.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/comp413.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/core/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/comp413/edu/rice/comp413fall2020grey/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/comp413/edu/rice/comp413fall2020grey/ObjStorage/DistributedManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/comp413/edu/rice/comp413fall2020grey/ObjStorage/GameObject.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/comp413/edu/rice/comp413fall2020grey/ObjStorage/GameObjectMetadata.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +43,13 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="hiddenUrls">
+      <set>
+        <option value="https://github.com/COMP-413-Grey-Team/Basic-Repo" />
+      </set>
+    </option>
+  </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -61,7 +77,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.annotationProcessors" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -112,26 +128,30 @@
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="384" y="126" key="#Project_Structure/0.23.1792.1044@0.23.1792.1044" timestamp="1601507476999" />
-    <state width="1750" height="286" key="GridCell.Tab.0.bottom" timestamp="1601506757881">
+    <state x="473" y="120" key="CommitChangelistDialog2" timestamp="1601602027183">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
-    <state width="1750" height="286" key="GridCell.Tab.0.bottom/0.23.1792.1044@0.23.1792.1044" timestamp="1601506757881" />
-    <state width="1750" height="286" key="GridCell.Tab.0.center" timestamp="1601506757879">
+    <state x="473" y="120" key="CommitChangelistDialog2/0.23.1792.1044@0.23.1792.1044" timestamp="1601602027183" />
+    <state width="1750" height="286" key="GridCell.Tab.0.bottom" timestamp="1601601636832">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
-    <state width="1750" height="286" key="GridCell.Tab.0.center/0.23.1792.1044@0.23.1792.1044" timestamp="1601506757879" />
-    <state width="1750" height="286" key="GridCell.Tab.0.left" timestamp="1601506757879">
+    <state width="1750" height="286" key="GridCell.Tab.0.bottom/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636832" />
+    <state width="1750" height="286" key="GridCell.Tab.0.center" timestamp="1601601636831">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
-    <state width="1750" height="286" key="GridCell.Tab.0.left/0.23.1792.1044@0.23.1792.1044" timestamp="1601506757879" />
-    <state width="1750" height="286" key="GridCell.Tab.0.right" timestamp="1601506757880">
+    <state width="1750" height="286" key="GridCell.Tab.0.center/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
+    <state width="1750" height="286" key="GridCell.Tab.0.left" timestamp="1601601636831">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
-    <state width="1750" height="286" key="GridCell.Tab.0.right/0.23.1792.1044@0.23.1792.1044" timestamp="1601506757880" />
-    <state x="384" y="126" key="SettingsEditor" timestamp="1601507287104">
+    <state width="1750" height="286" key="GridCell.Tab.0.left/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
+    <state width="1750" height="286" key="GridCell.Tab.0.right" timestamp="1601601636831">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
-    <state x="384" y="126" key="SettingsEditor/0.23.1792.1044@0.23.1792.1044" timestamp="1601507287104" />
+    <state width="1750" height="286" key="GridCell.Tab.0.right/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
+    <state x="450" y="41" key="SettingsEditor" timestamp="1601508817826">
+      <screen x="0" y="23" width="1792" height="1044" />
+    </state>
+    <state x="450" y="41" key="SettingsEditor/0.23.1792.1044@0.23.1792.1044" timestamp="1601508817826" />
     <state x="593" y="444" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1601507272007">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
@@ -140,9 +160,9 @@
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="264" y="167" key="new project wizard/0.23.1792.1044@0.23.1792.1044" timestamp="1601507379153" />
-    <state x="561" y="255" width="670" height="676" key="search.everywhere.popup" timestamp="1601507214404">
+    <state x="561" y="255" width="670" height="676" key="search.everywhere.popup" timestamp="1601508295136">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
-    <state x="561" y="255" width="670" height="676" key="search.everywhere.popup/0.23.1792.1044@0.23.1792.1044" timestamp="1601507214404" />
+    <state x="561" y="255" width="670" height="676" key="search.everywhere.popup/0.23.1792.1044@0.23.1792.1044" timestamp="1601508295136" />
   </component>
 </project>
