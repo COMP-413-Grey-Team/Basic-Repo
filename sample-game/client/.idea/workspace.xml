@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="995efd59-061d-4409-8f27-431120c785a4" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectId" id="1iCFEGjuzSpQ2TvReDxF1iBGNBa" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="UI_DESIGNER_EDITOR_MODE.PaletteManager.WIDTH" value="655" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="settings.editor.selected.configurable" value="project.propGUI" />
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.Main" />
+      <module name="client" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="995efd59-061d-4409-8f27-431120c785a4" name="Default Changelist" comment="" />
+      <created>1601403555853</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1601403555853</updated>
+      <workItem from="1601403557320" duration="1139000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="2518" height="416" key="GridCell.Tab.0.bottom" timestamp="1601404699950">
+      <screen x="2560" y="0" width="2560" height="1440" />
+    </state>
+    <state width="2518" height="416" key="GridCell.Tab.0.bottom/2560.0.2560.1440/0.0.2560.1440@2560.0.2560.1440" timestamp="1601404154785" />
+    <state width="2518" height="416" key="GridCell.Tab.0.bottom/2560.0.2560.1440/0.23.2560.1417@2560.0.2560.1440" timestamp="1601404699950" />
+    <state width="2518" height="416" key="GridCell.Tab.0.center" timestamp="1601404699948">
+      <screen x="2560" y="0" width="2560" height="1440" />
+    </state>
+    <state width="2518" height="416" key="GridCell.Tab.0.center/2560.0.2560.1440/0.0.2560.1440@2560.0.2560.1440" timestamp="1601404154783" />
+    <state width="2518" height="416" key="GridCell.Tab.0.center/2560.0.2560.1440/0.23.2560.1417@2560.0.2560.1440" timestamp="1601404699948" />
+    <state width="2518" height="416" key="GridCell.Tab.0.left" timestamp="1601404699948">
+      <screen x="2560" y="0" width="2560" height="1440" />
+    </state>
+    <state width="2518" height="416" key="GridCell.Tab.0.left/2560.0.2560.1440/0.0.2560.1440@2560.0.2560.1440" timestamp="1601404154782" />
+    <state width="2518" height="416" key="GridCell.Tab.0.left/2560.0.2560.1440/0.23.2560.1417@2560.0.2560.1440" timestamp="1601404699948" />
+    <state width="2518" height="416" key="GridCell.Tab.0.right" timestamp="1601404699949">
+      <screen x="2560" y="0" width="2560" height="1440" />
+    </state>
+    <state width="2518" height="416" key="GridCell.Tab.0.right/2560.0.2560.1440/0.0.2560.1440@2560.0.2560.1440" timestamp="1601404154784" />
+    <state width="2518" height="416" key="GridCell.Tab.0.right/2560.0.2560.1440/0.23.2560.1417@2560.0.2560.1440" timestamp="1601404699949" />
+    <state x="3349" y="359" key="SettingsEditor" timestamp="1601403623632">
+      <screen x="2560" y="0" width="2560" height="1440" />
+    </state>
+    <state x="3349" y="359" key="SettingsEditor/2560.0.2560.1440/0.0.2560.1440@2560.0.2560.1440" timestamp="1601403623632" />
+  </component>
+</project>
