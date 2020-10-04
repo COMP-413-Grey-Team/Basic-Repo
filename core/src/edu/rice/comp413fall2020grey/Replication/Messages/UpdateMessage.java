@@ -34,7 +34,7 @@ public class UpdateMessage extends ReplicaMessage {
    * @return UUID of the object authorizing this change.
    */
   public UUID getAuthorObject() {
-    return authorObject;
+    return this.authorObject;
   }
 
   /**
@@ -44,6 +44,6 @@ public class UpdateMessage extends ReplicaMessage {
    * Value is the new value associated with that field.
    */
   public Set<String> getChanges() {
-    return changes;
+    return this.changes;
   }
 }
