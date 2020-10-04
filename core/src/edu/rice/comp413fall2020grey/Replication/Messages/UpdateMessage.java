@@ -10,7 +10,14 @@ import java.util.UUID;
  */
 public class UpdateMessage extends ReplicaMessage {
 
+  /**
+   * Authorizing object for update.
+   */
   private final UUID authorObject;
+
+  /**
+   * A set of strings representing object updates.
+   */
   private final Set<String> changes;
 
   protected UpdateMessage(Date timestamp,

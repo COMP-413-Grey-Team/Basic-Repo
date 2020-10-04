@@ -15,6 +15,9 @@ import java.util.UUID;
  */
 public abstract class ReplicaMessage extends Message {
 
+  /**
+   * ID for the GameObject subject of this message
+   */
   private final UUID targetObject;
 
   protected ReplicaMessage(Date timestamp, UUID originSuperpeer, UUID targetObject) {

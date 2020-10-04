@@ -7,12 +7,17 @@ import java.util.UUID;
 
 /**
  * Message for subscriptions. The target object is the primary
- * this superpeer would like to subscribe to and recieve updates about.
+ * this superpeer would like to subscribe to and receive updates about.
  */
 public class SubscribeMessage extends ReplicaMessage {
 
-  protected SubscribeMessage(Date timestamp, UUID originSuperpeer, UUID targetObject) {
+  private final GameObject newReplica;
+
+  protected SubscribeMessage(Date timestamp, UUID originSuperpeer, UUID targetObject, GameObject newReplica) {
     super(timestamp, originSuperpeer, targetObject);
+    this.newReplica = newReplica;
   }
+
+  public GameObject getNewReplica() { return this.newReplica; }
 
 }
