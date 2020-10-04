@@ -2,16 +2,16 @@ package edu.rice.comp413fall2020grey.Location.Message;
 
 import edu.rice.comp413fall2020grey.Common.GameObjectMetadata;
 import edu.rice.comp413fall2020grey.Common.Message;
+import edu.rice.comp413fall2020grey.Common.ServerUUID;
 
 import java.util.Date;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 /**
  * Message for querying the registrar for objects
  * of interest.
  */
-public class QueryRegistrar extends Message {
+public class QueryRegistrarMessage extends Message {
 
     /**
      * Interest criteria of the object querying the registrar.
@@ -24,7 +24,7 @@ public class QueryRegistrar extends Message {
      * @param originSuperpeer Unique ID of the message sender.
      * @param interestCriteria Interest criteria for object querying registrar.
      */
-    protected QueryRegistrar(Date timestamp, UUID originSuperpeer, Predicate<GameObjectMetadata> interestCriteria) {
+    protected QueryRegistrarMessage(Date timestamp, ServerUUID originSuperpeer, Predicate<GameObjectMetadata> interestCriteria) {
         super(timestamp, originSuperpeer);
         this.interestCriteria = interestCriteria;
     }

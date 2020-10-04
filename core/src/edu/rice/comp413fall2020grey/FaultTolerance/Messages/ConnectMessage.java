@@ -1,15 +1,15 @@
 package edu.rice.comp413fall2020grey.FaultTolerance.Messages;
 
 import edu.rice.comp413fall2020grey.Common.Message;
+import edu.rice.comp413fall2020grey.Common.ServerUUID;
 
 import java.net.InetAddress;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Message ordering the superpeer to connect to the associated client.
  */
-public class Connect extends Message {
+public class ConnectMessage extends Message {
 
     /**
      * The address of the client requiring a new connection.
@@ -22,7 +22,7 @@ public class Connect extends Message {
      * @param originSuperpeer Unique ID for the sender of this message.
      * @param clientAddress IP Address of the client requiring connection.
      */
-    protected Connect(Date timestamp, UUID originSuperpeer, InetAddress clientAddress) {
+    protected ConnectMessage(Date timestamp, ServerUUID originSuperpeer, InetAddress clientAddress) {
         super(timestamp, originSuperpeer);
         this.clientAddress = clientAddress;
     }

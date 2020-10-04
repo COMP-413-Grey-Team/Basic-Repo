@@ -1,9 +1,10 @@
 package edu.rice.comp413fall2020grey.Replication.Messages;
 
+import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 import edu.rice.comp413fall2020grey.Common.Message;
+import edu.rice.comp413fall2020grey.Common.ServerUUID;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Abstract class that defines the behaviour for
@@ -18,9 +19,9 @@ public abstract class ReplicaMessage extends Message {
   /**
    * ID for the GameObject subject of this message
    */
-  private final UUID targetObject;
+  private final GameObjectUUID targetObject;
 
-  protected ReplicaMessage(Date timestamp, UUID originSuperpeer, UUID targetObject) {
+  protected ReplicaMessage(Date timestamp, ServerUUID originSuperpeer, GameObjectUUID targetObject) {
     super(timestamp, originSuperpeer);
     this.targetObject = targetObject;
   }
@@ -28,7 +29,7 @@ public abstract class ReplicaMessage extends Message {
   /**
    * @return UUID of GameObject that is the subject of this message
    */
-  public UUID getTargetObject() {
+  public GameObjectUUID getTargetObject() {
     return targetObject;
   }
 

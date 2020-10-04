@@ -1,9 +1,10 @@
 package edu.rice.comp413fall2020grey.Replication.Messages;
 
 import edu.rice.comp413fall2020grey.Common.GameObject;
+import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
+import edu.rice.comp413fall2020grey.Common.ServerUUID;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Message for subscription confirmations. The target object is
@@ -14,8 +15,8 @@ public class ConfirmSubscriptionMessage extends ReplicaMessage {
   private final GameObject newReplica;
 
   protected ConfirmSubscriptionMessage(Date timestamp,
-                                       UUID originSuperpeer,
-                                       UUID targetObject,
+                                       ServerUUID originSuperpeer,
+                                       GameObjectUUID targetObject,
                                        GameObject newReplica) {
     super(timestamp, originSuperpeer, targetObject);
     this.newReplica = newReplica;

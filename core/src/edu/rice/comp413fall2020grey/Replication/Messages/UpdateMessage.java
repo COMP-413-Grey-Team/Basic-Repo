@@ -1,5 +1,9 @@
 package edu.rice.comp413fall2020grey.Replication.Messages;
 
+import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
+import edu.rice.comp413fall2020grey.Common.ServerUUID;
+
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -13,7 +17,7 @@ public class UpdateMessage extends ReplicaMessage {
   /**
    * Authorizing object for update.
    */
-  private final UUID authorObject;
+  private final GameObjectUUID authorObject;
 
   /**
    * A set of strings representing object updates.
@@ -21,9 +25,9 @@ public class UpdateMessage extends ReplicaMessage {
   private final Set<String> changes;
 
   protected UpdateMessage(Date timestamp,
-                          UUID originSuperpeer,
-                          UUID targetObject,
-                          UUID authorObject,
+                          ServerUUID originSuperpeer,
+                          GameObjectUUID targetObject,
+                          GameObjectUUID authorObject,
                           Set<String> changes) {
     super(timestamp, originSuperpeer, targetObject);
     this.authorObject = authorObject;
@@ -33,7 +37,7 @@ public class UpdateMessage extends ReplicaMessage {
   /**
    * @return UUID of the object authorizing this change.
    */
-  public UUID getAuthorObject() {
+  public GameObjectUUID getAuthorObject() {
     return this.authorObject;
   }
 

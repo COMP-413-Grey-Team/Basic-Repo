@@ -1,17 +1,17 @@
 package edu.rice.comp413fall2020grey.Common;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Abstract class that defines abstract message behaviour.
  */
-public abstract class Message {
+public abstract class Message implements Serializable {
 
   private final Date timestamp;
-  private final UUID originSuperpeer;
+  private final ServerUUID originSuperpeer;
 
-  protected Message(final Date timestamp, final UUID originSuperpeer) {
+  protected Message(final Date timestamp, final ServerUUID originSuperpeer) {
     this.timestamp = timestamp;
     this.originSuperpeer = originSuperpeer;
   }
@@ -26,7 +26,7 @@ public abstract class Message {
   /**
    * @return UUID of superpeer sender of this message
    */
-  public UUID getOriginSuperpeer() {
+  public ServerUUID getOriginSuperpeer() {
     return originSuperpeer;
   }
 
