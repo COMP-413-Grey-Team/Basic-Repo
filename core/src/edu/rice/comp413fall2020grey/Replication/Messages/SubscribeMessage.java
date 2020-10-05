@@ -12,13 +12,8 @@ import java.util.Date;
  */
 public class SubscribeMessage extends ReplicaMessage {
 
-  private final GameObject newReplica;
-
-  protected SubscribeMessage(Date timestamp, ServerUUID originSuperpeer, GameObjectUUID targetObject, GameObject newReplica) {
+  protected SubscribeMessage(Date timestamp, ServerUUID originSuperpeer, GameObjectUUID targetObject) {
     super(timestamp, originSuperpeer, targetObject);
-    this.newReplica = newReplica;
   }
-
-  public GameObject getNewReplica() { return this.newReplica; }
 
 }
