@@ -28,7 +28,7 @@ public class UpdateMessage extends ReplicaMessage {
    * Constructor for update message.
    * @param timestamp The time this message was sent.
    * @param originSuperpeer Unique ID of message sender.
-   * @param targetObject The target of the update changes.
+   * @param targetObject Unique ID for target of the update changes.
    * @param field The field of targetObject being changed.
    */
   protected UpdateMessage(Date timestamp,

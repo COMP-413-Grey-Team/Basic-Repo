@@ -12,8 +12,18 @@ import java.util.Date;
  */
 public class ConfirmSubscriptionMessage extends ReplicaMessage {
 
+  /**
+   * New replica to add to storage.
+   */
   private final GameObject newReplica;
 
+  /**
+   * Constructor for subscription confirmation message.
+   * @param timestamp The time this message was sent.
+   * @param originSuperpeer Unique ID for the sender of this message.
+   * @param targetObject Unique ID for object this superpeer successfully subscribed to.
+   * @param newReplica The new replica of targetObject for this superpeer to store.
+   */
   protected ConfirmSubscriptionMessage(Date timestamp,
                                        ServerUUID originSuperpeer,
                                        GameObjectUUID targetObject,

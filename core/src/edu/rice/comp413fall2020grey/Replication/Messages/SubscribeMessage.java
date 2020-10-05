@@ -12,6 +12,12 @@ import java.util.Date;
  */
 public class SubscribeMessage extends ReplicaMessage {
 
+  /**
+   * Constructor for update message.
+   * @param timestamp The time this message was sent.
+   * @param originSuperpeer Unique ID for message sender.
+   * @param targetObject Unique ID for object originSuperpeer would like to subscribe to.
+   */
   protected SubscribeMessage(Date timestamp, ServerUUID originSuperpeer, GameObjectUUID targetObject) {
     super(timestamp, originSuperpeer, targetObject);
   }

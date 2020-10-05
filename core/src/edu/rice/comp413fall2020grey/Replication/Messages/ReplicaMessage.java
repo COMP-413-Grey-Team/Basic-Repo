@@ -21,6 +21,12 @@ public abstract class ReplicaMessage extends Message {
    */
   private final GameObjectUUID targetObject;
 
+  /**
+   * Constructor for replica messages.
+   * @param timestamp The time this message was sent.
+   * @param originSuperpeer Unique ID for sender of message.
+   * @param targetObject Unique ID for object that is the subject of the message.
+   */
   protected ReplicaMessage(Date timestamp, ServerUUID originSuperpeer, GameObjectUUID targetObject) {
     super(timestamp, originSuperpeer);
     this.targetObject = targetObject;
