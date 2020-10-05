@@ -15,39 +15,43 @@ import java.util.UUID;
 public class UpdateMessage extends ReplicaMessage {
 
   /**
-   * Authorizing object for update.
+   * A string representing the field being changed.
    */
-  private final GameObjectUUID authorObject;
+  private final String field;
 
   /**
-   * A set of strings representing object updates.
+   * A new value for the field being changed.
    */
-  private final Set<String> changes;
+  private final Serializable value;
 
+  /**
+   * Constructor for update message.
+   * @param timestamp The time this message was sent.
+   * @param originSuperpeer Unique ID of message sender.
+   * @param targetObject The target of the update changes.
+   * @param field The field of targetObject being changed.
+   */
   protected UpdateMessage(Date timestamp,
                           ServerUUID originSuperpeer,
                           GameObjectUUID targetObject,
-                          GameObjectUUID authorObject,
-                          Set<String> changes) {
+                          String field,
+                          Serializable value) {
     super(timestamp, originSuperpeer, targetObject);
-    this.authorObject = authorObject;
-    this.changes = changes;
+    this.field = field;
+    this.value = value;
   }
 
   /**
-   * @return UUID of the object authorizing this change.
+   * @return A string representing this object's changed field.
    */
-  public GameObjectUUID getAuthorObject() {
-    return this.authorObject;
+  public String getField() {
+    return this.field;
   }
 
   /**
-   * @return A set of changes for this object.
-   * Changes are in the format of Field: Value, where
-   * Field is a GameObject's changed field and
-   * Value is the new value associated with that field.
+   * @return The value for the changed field.
    */
-  public Set<String> getChanges() {
-    return this.changes;
+  public Serializable getValue() {
+    return value;
   }
 }
