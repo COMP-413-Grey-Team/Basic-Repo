@@ -1,8 +1,10 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
 import edu.rice.comp413fall2020grey.Common.GameObject;
+import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 import edu.rice.comp413fall2020grey.Common.Message;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -20,5 +22,6 @@ public interface ObjectStorageReplicationInterface {
    * If gameObj is a primary, then this function sends msg to every replica of gameObj on other superpeers.
    * If gameObj is a replica, then this function sends msg to its primary.
    */
-  void sendUpdate(GameObject gameObj, Message msg);
+  void updatePrimary(GameObjectUUID id, String field, Serializable value);
+  void broadcastUpdate(GameObjectUUID id, String field, Serializable value);
 }

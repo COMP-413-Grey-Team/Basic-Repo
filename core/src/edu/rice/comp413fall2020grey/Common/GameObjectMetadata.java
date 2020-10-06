@@ -13,6 +13,11 @@ public interface GameObjectMetadata {
   UUID getUUID();
 
   /**
+   *  returns if the game object is primary, replica, or secondary
+   */
+  Mode getMode();
+
+  /**
    * Returns the type of the game object this metadata is for. This will help determine if this object is interesting to other objects.
    */
   Class<?> getUnderlyingType();

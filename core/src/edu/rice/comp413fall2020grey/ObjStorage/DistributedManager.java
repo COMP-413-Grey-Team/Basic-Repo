@@ -3,6 +3,8 @@ package edu.rice.comp413fall2020grey.ObjStorage;
 import edu.rice.comp413fall2020grey.Common.GameObject;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
+import java.io.Serializable;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -13,7 +15,7 @@ public interface DistributedManager {
   /**
    * Updates all objects in storage according to most recent cache and lag compensation technique
    */
-  void synchronize();
+  Set<Change> synchronize();
 
   /**
    * Advances the buffer for all objects in the store
@@ -26,11 +28,11 @@ public interface DistributedManager {
    * Returns object from storage using some provided object information (relevant keys to be decided)
    * This method can be used at game server/game startup to obtain all the necessary objects to begin rendering the game on the client
    */
-  GameObject read(final GameObjectUUID gameObjectID, final int bufferIndex);
+  Serializable read(final GameObjectUUID gameObjectID, final String field, final int bufferIndex);
 
   /**
    * Sends request from authorObject to change the state of targetObject – state changes reflected in local non-canonical cache.
    * @return if the write was accepted
    */
-  boolean write(GameObject target, int bufferIndex, GameObject author, String updateMsg);
+  boolean write(Change change, GameObjectUUID author);
 }
