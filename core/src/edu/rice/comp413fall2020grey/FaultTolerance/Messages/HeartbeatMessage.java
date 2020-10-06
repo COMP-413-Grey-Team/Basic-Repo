@@ -16,6 +16,6 @@ public class HeartbeatMessage extends Message {
      * @param originSuperpeer Unique ID for message sender.
      */
     protected HeartbeatMessage(Date timestamp, ServerUUID originSuperpeer) {
-        super(timestamp, originSuperpeer);
+        super(timestamp, originSuperpeer, "heartbeat");
     }
 }

@@ -23,7 +23,7 @@ public class ConnectMessage extends Message {
      * @param clientAddress IP Address of the client requiring connection.
      */
     protected ConnectMessage(Date timestamp, ServerUUID originSuperpeer, InetAddress clientAddress) {
-        super(timestamp, originSuperpeer);
+        super(timestamp, originSuperpeer, "connect");
         this.clientAddress = clientAddress;
     }
 

@@ -29,7 +29,7 @@ public class QueryResponseMessage extends Message {
      * @param objectsOfInterest Set of objects of interest for the superpeer to obtain.
      */
     protected QueryResponseMessage(Date timestamp, ServerUUID originSuperpeer, Set<Map<GameObjectUUID, ServerUUID>> objectsOfInterest) {
-        super(timestamp, originSuperpeer);
+        super(timestamp, originSuperpeer, "query-response");
         this.objectsOfInterest = objectsOfInterest;
     }
 

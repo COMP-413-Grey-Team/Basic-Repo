@@ -29,7 +29,7 @@ public class PromoteSecondaryMessage extends Message {
      * @param replacement Unique ID for the replacement
      */
     protected PromoteSecondaryMessage(Date timestamp, ServerUUID originSuperpeer, ServerUUID oldPrimary, ServerUUID replacement) {
-        super(timestamp, originSuperpeer);
+        super(timestamp, originSuperpeer, "promote-secondary");
         this.oldPrimary = oldPrimary;
         this.replacement = replacement;
     }

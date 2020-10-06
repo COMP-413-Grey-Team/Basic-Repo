@@ -18,6 +18,6 @@ public class UnsubscribeMessage extends ReplicaMessage {
      * @param targetObject Unique ID for primary this superpeer no longer requires updates about.
      */
     protected UnsubscribeMessage(Date timestamp, ServerUUID originSuperpeer, GameObjectUUID targetObject) {
-        super(timestamp, originSuperpeer, targetObject);
+        super(timestamp, originSuperpeer, targetObject, "unsubscribe");
     }
 }

@@ -24,7 +24,7 @@ public class NewRegistrarMessage extends Message {
      * @param registrarIP IP of the new registrar.
      */
     protected NewRegistrarMessage(Date timestamp, ServerUUID originSuperpeer, InetAddress registrarIP) {
-        super(timestamp, originSuperpeer);
+        super(timestamp, originSuperpeer, "new-registrar");
         this.registrarIP = registrarIP;
     }
 

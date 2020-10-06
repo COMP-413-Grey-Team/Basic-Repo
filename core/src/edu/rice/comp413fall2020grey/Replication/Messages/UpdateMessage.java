@@ -36,7 +36,7 @@ public class UpdateMessage extends ReplicaMessage {
                           GameObjectUUID targetObject,
                           String field,
                           Serializable value) {
-    super(timestamp, originSuperpeer, targetObject);
+    super(timestamp, originSuperpeer, targetObject, "update");
     this.field = field;
     this.value = value;
   }

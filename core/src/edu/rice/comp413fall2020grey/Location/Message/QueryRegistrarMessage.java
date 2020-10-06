@@ -25,7 +25,7 @@ public class QueryRegistrarMessage extends Message {
      * @param interestCriteria Interest criteria for object querying registrar.
      */
     protected QueryRegistrarMessage(Date timestamp, ServerUUID originSuperpeer, Predicate<GameObjectMetadata> interestCriteria) {
-        super(timestamp, originSuperpeer);
+        super(timestamp, originSuperpeer, "query-registrar");
         this.interestCriteria = interestCriteria;
     }
 

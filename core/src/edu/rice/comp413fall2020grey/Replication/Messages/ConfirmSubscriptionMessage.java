@@ -28,7 +28,7 @@ public class ConfirmSubscriptionMessage extends ReplicaMessage {
                                        ServerUUID originSuperpeer,
                                        GameObjectUUID targetObject,
                                        GameObject newReplica) {
-    super(timestamp, originSuperpeer, targetObject);
+    super(timestamp, originSuperpeer, targetObject, "confirm-sub");
     this.newReplica = newReplica;
   }
 

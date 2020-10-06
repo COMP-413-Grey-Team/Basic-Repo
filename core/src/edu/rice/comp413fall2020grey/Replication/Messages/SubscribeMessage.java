@@ -19,7 +19,7 @@ public class SubscribeMessage extends ReplicaMessage {
    * @param targetObject Unique ID for object originSuperpeer would like to subscribe to.
    */
   protected SubscribeMessage(Date timestamp, ServerUUID originSuperpeer, GameObjectUUID targetObject) {
-    super(timestamp, originSuperpeer, targetObject);
+    super(timestamp, originSuperpeer, targetObject, "subscribe");
   }
 
 }
