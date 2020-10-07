@@ -1,11 +1,11 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
-import edu.rice.comp413fall2020grey.Common.GameObject;
+import edu.rice.comp413fall2020grey.Common.Change.Change;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
+import edu.rice.comp413fall2020grey.Common.Change.LocalChange;
 import java.io.Serializable;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * The interface exposed to the Game Server to interact with the distributed system (specifically, with Object Storage).
@@ -34,5 +34,5 @@ public interface DistributedManager {
    * Sends request from authorObject to change the state of targetObject – state changes reflected in local non-canonical cache.
    * @return if the write was accepted
    */
-  boolean write(Change change, GameObjectUUID author);
+  boolean write(LocalChange change, GameObjectUUID author);
 }

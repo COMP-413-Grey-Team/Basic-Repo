@@ -1,8 +1,10 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
+import edu.rice.comp413fall2020grey.Common.Change.Change;
 import edu.rice.comp413fall2020grey.Common.GameObjectMetadata;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
+import edu.rice.comp413fall2020grey.Common.Change.LocalChange;
 import edu.rice.comp413fall2020grey.Common.Mode;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,26 +37,26 @@ public class ObjectStore implements DistributedManager{
     }
 
     @Override
-    public boolean write(Change change, GameObjectUUID author) {
+    public boolean write(LocalChange change, GameObjectUUID author) {
         switch (metadata.get(author).getMode()) {
 
             // TODO: Handle case where target does not yet exist. (Create new primary)
             case PRIMARY:
-                // Case where target exists in store.
-                store.get(change.bufferIndex).get(change.target).put(change.field, change.value);
+                // Record change in local store.
+                store.get(change.getBufferIndex()).get(change.getTarget()).put(change.getField(), change.getValue());
                 // Propagate update.
-                if (metadata.get(change.target).getMode() == Mode.PRIMARY) {
-                    replicaManager.broadcastUpdate(change.target, change.field, change.value);
+                if (metadata.get(change.getTarget()).getMode() == Mode.PRIMARY) {
+                    replicaManager.broadcastUpdate(change.getTarget(), change.getField(), change.getValue());
                 } else {
-                    replicaManager.updatePrimary(change.target, change.field, change.value);
+                    replicaManager.updatePrimary(change.getTarget(), change.getField(), change.getValue());
                 }
                 return true;
             case REPLICA:
             case SECONDARY:
-                if (metadata.get(change.target).getMode() == Mode.PRIMARY) {
+                if (metadata.get(change.getTarget()).getMode() == Mode.PRIMARY) {
                     return false;   // Reject update.
-                } else {    // Update accepted but not propagated.
-                    store.get(change.bufferIndex).get(change.target).put(change.field, change.value);
+                } else {    // Record change locally, but do not propagate.
+                    store.get(change.getBufferIndex()).get(change.getTarget()).put(change.getField(), change.getValue());
                     return true;
                 }
             default:    // Defaults to false.
