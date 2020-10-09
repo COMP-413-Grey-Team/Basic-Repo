@@ -1,6 +1,7 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
 import edu.rice.comp413fall2020grey.Common.Change.Change;
+import edu.rice.comp413fall2020grey.Common.Change.RemoteChange;
 import edu.rice.comp413fall2020grey.Common.GameObjectMetadata;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
@@ -16,24 +17,27 @@ public class ObjectStore implements DistributedManager{
     ObjectStorageReplicationInterface replicaManager;
     ArrayList<HashMap<GameObjectUUID, HashMap<String, Serializable>>> store;
     HashMap<GameObjectUUID, GameObjectMetadata> metadata;
+    int bufferStart = 0; // to be replaced by a circular buffer
 
     public ObjectStore(ObjectStorageReplicationInterface replicaManager) {
         this.replicaManager = replicaManager;
     }
 
     @Override
-    public Set<Change> synchronize() {
+    public Set<LocalChange> synchronize() {
+        //Set<RemoteChange> changes_to_be_merged = replicaManager.flushCache();
         return null;
     }
 
     @Override
     public void advanceBuffer() {
-
+        bufferStart = (bufferStart + 1) % store.size();
+        store.set(0, store.get(1));
     }
 
     @Override
     public Serializable read(GameObjectUUID gameObjectID, String field, int bufferIndex) {
-        return store.get(bufferIndex).get(gameObjectID).get(field);
+        return store.get((bufferIndex + bufferStart) % store.size()).get(gameObjectID).get(field);
     }
 
     @Override
@@ -43,7 +47,7 @@ public class ObjectStore implements DistributedManager{
             // TODO: Handle case where target does not yet exist. (Create new primary)
             case PRIMARY:
                 // Record change in local store.
-                store.get(change.getBufferIndex()).get(change.getTarget()).put(change.getField(), change.getValue());
+                store.get((change.getBufferIndex() + bufferStart) % store.size()).get(change.getTarget()).put(change.getField(), change.getValue());
                 // Propagate update.
                 if (metadata.get(change.getTarget()).getMode() == Mode.PRIMARY) {
                     replicaManager.broadcastUpdate(change.getTarget(), change.getField(), change.getValue());
@@ -56,11 +60,36 @@ public class ObjectStore implements DistributedManager{
                 if (metadata.get(change.getTarget()).getMode() == Mode.PRIMARY) {
                     return false;   // Reject update.
                 } else {    // Record change locally, but do not propagate.
-                    store.get(change.getBufferIndex()).get(change.getTarget()).put(change.getField(), change.getValue());
+                    store.get((change.getBufferIndex() + bufferStart) % store.size()).get(change.getTarget()).put(change.getField(), change.getValue());
                     return true;
                 }
             default:    // Defaults to false.
                 return false;
+        }
+    }
+
+    @Override
+    public GameObjectUUID create(HashMap<String, Serializable> fields, GameObjectUUID author, int bufferIndex){
+        if (metadata.get(author).getMode() == Mode.PRIMARY) {
+            GameObjectUUID uuid = GameObjectUUID.randomUUID();
+            store.get((bufferIndex + bufferStart) % store.size()).put(uuid, fields);
+            //TODO
+            //inform replica management about new primary
+            return uuid;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean delete(GameObjectUUID uuid, GameObjectUUID author, int bufferIndex){
+        if (metadata.get(author).getMode() == Mode.PRIMARY) {
+            store.get((bufferStart + bufferIndex) % store.size()).remove(uuid);
+            //TODO
+            //inform replica management that primary is removed
+            return true;
+        } else {
+            return false;
         }
     }
 }

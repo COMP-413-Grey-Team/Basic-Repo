@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -29,7 +26,11 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="" />
+    <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/DistributedManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/DistributedManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,6 +47,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Concept" />
+        <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -91,6 +94,7 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1601165687201" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -137,7 +141,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1601068750041</updated>
-      <workItem from="1602017828037" duration="259000" />
+      <workItem from="1602017828037" duration="4364000" />
+      <workItem from="1602102780928" duration="37000" />
+      <workItem from="1602104682065" duration="1363000" />
+      <workItem from="1602273409086" duration="189000" />
+      <workItem from="1602273694676" duration="35000" />
+      <workItem from="1602278121338" duration="2798000" />
     </task>
     <task id="LOCAL-00001" summary="Added pom.xml with a dependency">
       <created>1601602054767</created>
@@ -174,6 +183,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added pom.xml with a dependency" />
@@ -184,6 +194,14 @@
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="384" y="126" key="#Project_Structure/0.23.1792.1044@0.23.1792.1044" timestamp="1601507476999" />
+    <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser" timestamp="1602018982248">
+      <screen x="0" y="0" width="1920" height="1200" />
+    </state>
+    <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1200@0.0.1920.1200" timestamp="1602018982248" />
+    <state x="648" y="344" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1602273427090">
+      <screen x="0" y="0" width="1920" height="1200" />
+    </state>
+    <state x="648" y="344" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1200@0.0.1920.1200" timestamp="1602273427090" />
     <state x="473" y="120" key="CommitChangelistDialog2" timestamp="1601602054576">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
@@ -212,6 +230,10 @@
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="593" y="444" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/0.23.1792.1044@0.23.1792.1044" timestamp="1601507272007" />
+    <state x="609" y="397" key="git4idea.merge.GitPullDialog" timestamp="1602102813497">
+      <screen x="0" y="0" width="1920" height="1200" />
+    </state>
+    <state x="609" y="397" key="git4idea.merge.GitPullDialog/0.0.1920.1200@0.0.1920.1200" timestamp="1602102813497" />
     <state x="264" y="167" key="new project wizard" timestamp="1601507379153">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>

@@ -5,6 +5,7 @@ import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
 import edu.rice.comp413fall2020grey.Common.Change.LocalChange;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -15,7 +16,7 @@ public interface DistributedManager {
   /**
    * Updates all objects in storage according to most recent cache and lag compensation technique
    */
-  Set<Change> synchronize();
+  Set<LocalChange> synchronize();
 
   /**
    * Advances the buffer for all objects in the store
@@ -32,7 +33,15 @@ public interface DistributedManager {
 
   /**
    * Sends request from authorObject to change the state of targetObject – state changes reflected in local non-canonical cache.
+   *
    * @return if the write was accepted
    */
   boolean write(LocalChange change, GameObjectUUID author);
+
+  /**
+   * Initializes a new GameObject in the store
+   */
+  GameObjectUUID create(HashMap<String, Serializable> fields, GameObjectUUID author, int bufferIndex);
+
+  boolean delete(GameObjectUUID uuid, GameObjectUUID author, int bufferIndex);
 }
