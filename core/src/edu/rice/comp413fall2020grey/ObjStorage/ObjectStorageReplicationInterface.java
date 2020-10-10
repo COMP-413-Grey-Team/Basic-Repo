@@ -1,5 +1,6 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
+import edu.rice.comp413fall2020grey.Common.Change.RemoteChange;
 import edu.rice.comp413fall2020grey.Common.GameObject;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 import edu.rice.comp413fall2020grey.Common.Message;
@@ -16,7 +17,7 @@ public interface ObjectStorageReplicationInterface {
   /**
    * Returns every message that Replication has received since this function was last called.
    */
-  Set<Message> flushCache();
+  Set<RemoteChange> flushCache();
 
   /**
    * If gameObj is a primary, then this function sends msg to every replica of gameObj on other superpeers.
