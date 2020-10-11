@@ -7,6 +7,7 @@ import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
 import edu.rice.comp413fall2020grey.Common.Change.LocalChange;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -40,13 +41,7 @@ public interface DistributedManager {
    */
   boolean write(LocalChange change, GameObjectUUID author);
 
-  /**
-   * Sends request form author to change the state of target at the time indicated
-   * Should only be used by game server when a client action is being applied to a non-client object
-   *
-   * @return if the write was accepted
-   */
-  boolean lagWrite(RemoteChange change, GameObjectUUID author);
+  int getBufferIndex(Date now);
 
   /**
    * Initializes a new GameObject in the store

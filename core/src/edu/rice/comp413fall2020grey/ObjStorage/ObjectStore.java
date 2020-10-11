@@ -2,6 +2,7 @@ package edu.rice.comp413fall2020grey.ObjStorage;
 
 import edu.rice.comp413fall2020grey.Common.Change.Change;
 import edu.rice.comp413fall2020grey.Common.Change.RemoteChange;
+import edu.rice.comp413fall2020grey.Common.GameObject;
 import edu.rice.comp413fall2020grey.Common.GameObjectMetadata;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
@@ -22,7 +23,8 @@ public class ObjectStore implements DistributedManager{
     private int circ(int index) {
         return (bufferStart + index) % store.size();
     }
-    private int getBufferIndex(Date now){
+
+    public int getBufferIndex(Date now){
         for (int i = 0; i < bufferLag.size(); i++) {
             if (bufferLag.get(circ(i)).after(now)) {
                 return i;
