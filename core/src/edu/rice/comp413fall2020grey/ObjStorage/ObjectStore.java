@@ -18,8 +18,17 @@ public class ObjectStore implements DistributedManager{
     HashMap<GameObjectUUID, GameObjectMetadata> metadata;
     int bufferStart = 0; // to be replaced by a circular buffer
     ArrayList<Date> bufferLag;
+
     private int circ(int index) {
         return (bufferStart + index) % store.size();
+    }
+    private int getBufferIndex(Date now){
+        for (int i = 0; i < bufferLag.size(); i++) {
+            if (bufferLag.get(circ(i)).after(now)) {
+                return i;
+            }
+        }
+        return bufferLag.size() - 1;
     }
 
     public ObjectStore(ObjectStorageReplicationInterface replicaManager) {
@@ -31,13 +40,9 @@ public class ObjectStore implements DistributedManager{
         Set<RemoteChange> remoteChanges = replicaManager.flushCache();
         Set<LocalChange> localChanges = new HashSet<>();
         for (RemoteChange remoteChange: remoteChanges) {
-            for (int i = 0; i < bufferLag.size(); i++) {
-                if (bufferLag.get(circ(i)).after(remoteChange.getTimestamp())) {
-                    store.get(i).get(remoteChange.getTarget()).put(remoteChange.getField(), remoteChange.getValue());
-                    localChanges.add(new LocalChange(remoteChange.getTarget(), remoteChange.getField(), remoteChange.getValue(), i));
-                    break;
-                }
-            }
+            int i = getBufferIndex(remoteChange.getTimestamp());
+            store.get(i).get(remoteChange.getTarget()).put(remoteChange.getField(), remoteChange.getValue());
+            localChanges.add(new LocalChange(remoteChange.getTarget(), remoteChange.getField(), remoteChange.getValue(), i));
         }
         return localChanges;
     }
@@ -80,6 +85,11 @@ public class ObjectStore implements DistributedManager{
             default:    // Defaults to false.
                 return false;
         }
+    }
+
+    @Override
+    public boolean lagWrite(RemoteChange change, GameObjectUUID author) {
+        return write(new LocalChange(change.getTarget(), change.getField(), change.getValue(), getBufferIndex(change.getTimestamp())), author);
     }
 
     @Override

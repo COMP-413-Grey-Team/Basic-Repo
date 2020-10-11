@@ -1,6 +1,8 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
 import edu.rice.comp413fall2020grey.Common.Change.Change;
+import edu.rice.comp413fall2020grey.Common.Change.RemoteChange;
+import edu.rice.comp413fall2020grey.Common.GameObject;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
 import edu.rice.comp413fall2020grey.Common.Change.LocalChange;
@@ -37,6 +39,14 @@ public interface DistributedManager {
    * @return if the write was accepted
    */
   boolean write(LocalChange change, GameObjectUUID author);
+
+  /**
+   * Sends request form author to change the state of target at the time indicated
+   * Should only be used by game server when a client action is being applied to a non-client object
+   *
+   * @return if the write was accepted
+   */
+  boolean lagWrite(RemoteChange change, GameObjectUUID author);
 
   /**
    * Initializes a new GameObject in the store
