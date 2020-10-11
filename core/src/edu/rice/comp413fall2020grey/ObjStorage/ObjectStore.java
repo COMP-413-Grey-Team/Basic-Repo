@@ -30,7 +30,7 @@ public class ObjectStore implements DistributedManager{
                 return i;
             }
         }
-        return bufferLag.size() - 1;
+        return -1;
     }
 
     public ObjectStore(ObjectStorageReplicationInterface replicaManager) {
@@ -63,35 +63,25 @@ public class ObjectStore implements DistributedManager{
 
     @Override
     public boolean write(LocalChange change, GameObjectUUID author) {
-        switch (metadata.get(author).getMode()) {
-
+        if(metadata.get(author).getMode() == Mode.PRIMARY) {
             // TODO: Handle case where target does not yet exist. (Create new primary)
-            case PRIMARY:
-                // Record change in local store.
-                store.get(circ(change.getBufferIndex())).get(change.getTarget()).put(change.getField(), change.getValue());
-                // Propagate update.
-                if (metadata.get(change.getTarget()).getMode() == Mode.PRIMARY) {
-                    replicaManager.broadcastUpdate(change.getTarget(), change.getField(), change.getValue());
-                } else {
-                    replicaManager.updatePrimary(change.getTarget(), change.getField(), change.getValue());
-                }
+            // Record change in local store.
+            store.get(circ(change.getBufferIndex())).get(change.getTarget()).put(change.getField(), change.getValue());
+            // Propagate update
+            if (metadata.get(change.getTarget()).getMode() == Mode.PRIMARY) {
+                replicaManager.broadcastUpdate(change.getTarget(), change.getField(), change.getValue());
+            } else {
+                replicaManager.updatePrimary(change.getTarget(), change.getField(), change.getValue());
+            }
+            return true;
+        } else {
+            if (metadata.get(change.getTarget()).getMode() == Mode.PRIMARY) {
+                return false;   // Reject update.
+            } else {    // Record change locally, but do not propagate.
+                store.get(circ(change.getBufferIndex() + bufferStart)).get(change.getTarget()).put(change.getField(), change.getValue());
                 return true;
-            case REPLICA:
-            case SECONDARY:
-                if (metadata.get(change.getTarget()).getMode() == Mode.PRIMARY) {
-                    return false;   // Reject update.
-                } else {    // Record change locally, but do not propagate.
-                    store.get(circ(change.getBufferIndex() + bufferStart)).get(change.getTarget()).put(change.getField(), change.getValue());
-                    return true;
-                }
-            default:    // Defaults to false.
-                return false;
+            }
         }
-    }
-
-    @Override
-    public boolean lagWrite(RemoteChange change, GameObjectUUID author) {
-        return write(new LocalChange(change.getTarget(), change.getField(), change.getValue(), getBufferIndex(change.getTimestamp())), author);
     }
 
     @Override
