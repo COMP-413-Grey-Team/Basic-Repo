@@ -1,0 +1,23 @@
+syntax = "proto3";
+// package core.src.edu.rice.comp412fall2020grey.Network;
+
+message PredicateRequest {
+
+  string pred = 1;
+
+  // There are many more basics types, like Enum, Map
+  // See https://developers.google.com/protocol-buffers/docs/proto3
+  // for more information.
+}
+
+message PredicateResponse {
+  string obj = 1;
+}
+
+// Defining a Service, a Service can have multiple RPC operations
+service PredService {
+
+  // Define a RPC operation
+  rpc getObjectWithPred(PredicateRequest) returns (PredicateResponse);
+
+}
