@@ -1,22 +1,19 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Set;
+import sprites.PlayerSprite;
+import sprites.Sprite;
 
 public class World extends JPanel {
 
   private final int WORLD_WIDTH = 1000;
   private final int WORLD_HEIGHT = 660;
-  private final double SPEED = 500;
+  private final double SPEED = 500.0;
   private final int DELTA_T = 17;
-  private final int CIRCLE_RADIUS = 15;
 
-  private final Sprite player;
-  private double playerVelX = 0.0;
-  private double playerVelY = 0.0;
+  private final PlayerSprite player;
   private final Timer timer = new Timer(DELTA_T, (event) -> {
     updateState();
     repaint();
@@ -25,10 +22,7 @@ public class World extends JPanel {
   private Set<Sprite> otherPlayers;
 
   public World() { // TODO: add arguments so server can set initial state
-    player = new Sprite();
-    player.x = 50;
-    player.y = 50;
-    player.color = Color.ORANGE;
+    player = new PlayerSprite(50, 50);
     initWorld();
   }
 
@@ -42,8 +36,7 @@ public class World extends JPanel {
   }
 
   private void updateState() {
-    player.x += playerVelX * (DELTA_T / 1000.0);
-    player.y += playerVelY * (DELTA_T / 1000.0);
+    player.updateState(WORLD_WIDTH, DELTA_T);
   }
 
   @Override
@@ -53,8 +46,7 @@ public class World extends JPanel {
   }
 
   private void doDrawing(Graphics g) {
-    g.setColor(player.color);
-    g.fillOval((int) player.x - CIRCLE_RADIUS, (int) player.y - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2);
+    player.paint(g);
   }
 
   private class GameKeyAdapter extends KeyAdapter {
@@ -64,16 +56,18 @@ public class World extends JPanel {
       int key = e.getKeyCode();
       switch (key) {
         case KeyEvent.VK_LEFT:
-          playerVelX = -SPEED;
+          System.out.println("Clicked left!");
+          player.setPlayerVelX(-SPEED);
           break;
         case KeyEvent.VK_RIGHT:
-          playerVelX = SPEED;
+          System.out.println("Clicked right!");
+          player.setPlayerVelX(SPEED);
           break;
         case KeyEvent.VK_UP:
-          playerVelY = -SPEED;
+          player.setPlayerVelY(-SPEED);
           break;
         case KeyEvent.VK_DOWN:
-          playerVelY = SPEED;
+          player.setPlayerVelY(SPEED);
           break;
         default:
           break;
@@ -86,11 +80,11 @@ public class World extends JPanel {
       switch (key) {
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_RIGHT:
-          playerVelX = 0;
+          player.setPlayerVelX(0);
           break;
         case KeyEvent.VK_UP:
         case KeyEvent.VK_DOWN:
-          playerVelY = 0;
+          player.setPlayerVelY(0);
           break;
         default:
           break;
