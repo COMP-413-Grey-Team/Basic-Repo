@@ -1,5 +1,8 @@
 package edu.rice.comp413fall2020grey;
 
+import edu.rice.comp413fall2020grey.utils.KeyHandler;
+import edu.rice.comp413fall2020grey.utils.MouseHandler;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -22,6 +25,8 @@ public class GamePanel extends JPanel implements Runnable {
 
   private BufferedImage img;
   private Graphics2D g;
+  private MouseHandler mouse;
+  private KeyHandler key;
 
   public GamePanel(final int width, final int height) {
     this.width = width;
@@ -34,7 +39,7 @@ public class GamePanel extends JPanel implements Runnable {
 
   @Override
   public void addNotify() {
-    super.addNotify();
+    super.addNotify();/**/
     if (thread == null) {
       thread = new Thread(this, "GameThread");
       thread.start();
@@ -46,6 +51,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     g = (Graphics2D) img.getGraphics();
+
+    mouse = new MouseHandler();
+    key = new KeyHandler();
   }
 
   @Override
@@ -64,14 +72,16 @@ public class GamePanel extends JPanel implements Runnable {
       int updateCount = 0;
       while(((now - lastUpdateTime) > TIME_BEFORE_UPDATE) && (updateCount < MUST_UPDATE_BEFORE_RENDER)) {
         update();
-        input();
+        input(mouse, key);
         lastUpdateTime += TIME_BEFORE_UPDATE;
         updateCount++;
       }
+
       if (now - lastUpdateTime > TIME_BEFORE_UPDATE) {
         lastUpdateTime = now - TIME_BEFORE_UPDATE;
       }
-      input();
+
+      input(mouse, key);
       render();
       draw();
       lastRenderTime = now;
@@ -102,7 +112,7 @@ public class GamePanel extends JPanel implements Runnable {
 
   }
 
-  public void input() {
+  public void input(MouseHandler mouse, KeyHandler key) {
 
   }
 
