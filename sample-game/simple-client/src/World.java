@@ -6,7 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Set;
 
-public class World extends JPanel implements ActionListener {
+public class World extends JPanel {
 
   private final int WORLD_WIDTH = 1000;
   private final int WORLD_HEIGHT = 660;
@@ -17,7 +17,10 @@ public class World extends JPanel implements ActionListener {
   private final Sprite player;
   private double playerVelX = 0.0;
   private double playerVelY = 0.0;
-  private final Timer timer = new Timer(DELTA_T, this);;
+  private final Timer timer = new Timer(DELTA_T, (event) -> {
+    updateState();
+    repaint();
+  });
 
   private Set<Sprite> otherPlayers;
 
@@ -36,12 +39,6 @@ public class World extends JPanel implements ActionListener {
     setPreferredSize(new Dimension(WORLD_WIDTH, WORLD_HEIGHT));
 
     timer.start();
-  }
-
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    updateState();
-    repaint();
   }
 
   private void updateState() {
