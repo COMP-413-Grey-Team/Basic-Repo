@@ -10,7 +10,7 @@ public interface GameObjectMetadata {
   /**
    * Unique identifier for this game object across the entire distributed system.
    */
-  UUID getUUID();
+  GameObjectUUID getUUID();
 
   /**
    * Returns the type of the game object this metadata is for. This will help determine if this object is interesting to other objects.
