@@ -9,6 +9,7 @@ import edu.rice.comp413fall2020grey.Common.Change.LocalChange;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -45,8 +46,9 @@ public interface DistributedManager {
 
   /**
    * Initializes a new GameObject in the store
+   * interesting_fields is automatically populated with MODE, PREDICATE, and INTERESTING_FIELDS
    */
-  GameObjectUUID create(HashMap<String, Serializable> fields, GameObjectUUID author, int bufferIndex);
+  GameObjectUUID create(HashMap<String, Serializable> fields, HashSet<String> interesting_fields, GameObjectUUID author, int bufferIndex);
 
   boolean delete(GameObjectUUID uuid, GameObjectUUID author, int bufferIndex);
 }

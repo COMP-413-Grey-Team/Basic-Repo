@@ -16,9 +16,12 @@ public class ObjectStore implements DistributedManager{
 
     ObjectStorageReplicationInterface replicaManager;
     ArrayList<HashMap<GameObjectUUID, HashMap<String, Serializable>>> store;
-    HashMap<GameObjectUUID, GameObjectMetadata> metadata;
     int bufferStart = 0; // to be replaced by a circular buffer
     ArrayList<Date> bufferLag;
+
+    public static String INTERESTING_FIELDS = "rbox_interesting_fields"; // HashSet<String>
+    public static String MODE = "rbox_mode"; // Mode
+    public static String PREDICATE = "rbox_predicate";
 
     private int circ(int index) {
         return (bufferStart + index) % store.size();
@@ -63,32 +66,39 @@ public class ObjectStore implements DistributedManager{
 
     @Override
     public boolean write(LocalChange change, GameObjectUUID author) {
-        if(metadata.get(author).getMode() == Mode.PRIMARY) {
+        HashMap<GameObjectUUID, HashMap<String, Serializable>> state = store.get(circ(change.getBufferIndex()));
+        if (state.get(author).get(MODE) == Mode.PRIMARY) {
             // TODO: Handle case where target does not yet exist. (Create new primary)
             // Record change in local store.
-            store.get(circ(change.getBufferIndex())).get(change.getTarget()).put(change.getField(), change.getValue());
+            state.get(change.getTarget()).put(change.getField(), change.getValue());
+            Boolean interesting = ((HashSet<String>)state.get(change.getTarget()).get(INTERESTING_FIELDS)).contains(change.getField());
             // Propagate update
-            if (metadata.get(change.getTarget()).getMode() == Mode.PRIMARY) {
-                replicaManager.broadcastUpdate(change.getTarget(), change.getField(), change.getValue());
+            if (state.get(change.getTarget()).get(MODE) == Mode.PRIMARY) {
+                replicaManager.broadcastUpdate(change.getTarget(), change.getField(), change.getValue(), interesting);
             } else {
-                replicaManager.updatePrimary(change.getTarget(), change.getField(), change.getValue());
+                replicaManager.updatePrimary(change.getTarget(), change.getField(), change.getValue(), interesting);
             }
             return true;
         } else {
-            if (metadata.get(change.getTarget()).getMode() == Mode.PRIMARY) {
+            if (state.get(change.getTarget()).get(MODE) == Mode.PRIMARY) {
                 return false;   // Reject update.
             } else {    // Record change locally, but do not propagate.
-                store.get(circ(change.getBufferIndex() + bufferStart)).get(change.getTarget()).put(change.getField(), change.getValue());
+                state.get(change.getTarget()).put(change.getField(), change.getValue());
                 return true;
             }
         }
     }
 
     @Override
-    public GameObjectUUID create(HashMap<String, Serializable> fields, GameObjectUUID author, int bufferIndex){
-        if (metadata.get(author).getMode() == Mode.PRIMARY) {
+    public GameObjectUUID create(HashMap<String, Serializable> fields, HashSet<String> interesting_fields, GameObjectUUID author, int bufferIndex){
+        HashMap<GameObjectUUID, HashMap<String,Serializable>> state = store.get(circ(bufferIndex));
+        if (state.get(author).get(MODE) == Mode.PRIMARY) {
             GameObjectUUID uuid = GameObjectUUID.randomUUID();
-            store.get(circ(bufferIndex)).put(uuid, fields);
+            interesting_fields.add(MODE);
+            interesting_fields.add(INTERESTING_FIELDS);
+            interesting_fields.add(PREDICATE);
+            fields.put(INTERESTING_FIELDS, interesting_fields);
+            state.put(uuid, fields);
             //TODO
             //inform replica management about new primary
             return uuid;
@@ -99,8 +109,8 @@ public class ObjectStore implements DistributedManager{
 
     @Override
     public boolean delete(GameObjectUUID uuid, GameObjectUUID author, int bufferIndex){
-        if (metadata.get(author).getMode() == Mode.PRIMARY) {
-            store.get(circ(bufferStart)).remove(uuid);
+        if (store.get(circ(bufferIndex)).get(author).get(MODE) == Mode.PRIMARY) {
+            store.get(circ(bufferIndex)).remove(uuid);
             //TODO
             //inform replica management that primary is removed
             return true;

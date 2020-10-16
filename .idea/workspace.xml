@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -27,9 +30,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/comp413.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/comp413.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/DistributedManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/DistributedManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStorageReplicationInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStorageReplicationInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +136,7 @@
       </list>
     </recent_temporary>
   </component>
-  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration>$USER_HOME$/.subversion</configuration>
     <option name="runUnderTerminal" value="true" />
@@ -146,7 +153,14 @@
       <workItem from="1602104682065" duration="1363000" />
       <workItem from="1602273409086" duration="189000" />
       <workItem from="1602273694676" duration="35000" />
-      <workItem from="1602278121338" duration="2798000" />
+      <workItem from="1602278121338" duration="3542000" />
+      <workItem from="1602372167117" duration="4124000" />
+      <workItem from="1602376727648" duration="14000" />
+      <workItem from="1602536133606" duration="166000" />
+      <workItem from="1602536374066" duration="1051000" />
+      <workItem from="1602616320867" duration="97000" />
+      <workItem from="1602710458819" duration="258000" />
+      <workItem from="1602878474341" duration="2125000" />
     </task>
     <task id="LOCAL-00001" summary="Added pom.xml with a dependency">
       <created>1601602054767</created>
@@ -159,7 +173,7 @@
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -198,10 +212,10 @@
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
     <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1200@0.0.1920.1200" timestamp="1602018982248" />
-    <state x="648" y="344" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1602273427090">
+    <state x="648" y="344" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1602536206642">
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
-    <state x="648" y="344" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1200@0.0.1920.1200" timestamp="1602273427090" />
+    <state x="648" y="344" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1200@0.0.1920.1200" timestamp="1602536206642" />
     <state x="473" y="120" key="CommitChangelistDialog2" timestamp="1601602054576">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>

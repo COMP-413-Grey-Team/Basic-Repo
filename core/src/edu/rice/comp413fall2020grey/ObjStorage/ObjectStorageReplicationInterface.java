@@ -23,6 +23,6 @@ public interface ObjectStorageReplicationInterface {
    * If gameObj is a primary, then this function sends msg to every replica of gameObj on other superpeers.
    * If gameObj is a replica, then this function sends msg to its primary.
    */
-  void updatePrimary(GameObjectUUID id, String field, Serializable value);
-  void broadcastUpdate(GameObjectUUID id, String field, Serializable value);
+  void updatePrimary(GameObjectUUID id, String field, Serializable value, Boolean interesting);
+  void broadcastUpdate(GameObjectUUID id, String field, Serializable value, Boolean interesting);
 }
