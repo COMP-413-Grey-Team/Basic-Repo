@@ -1,11 +1,9 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
-import edu.rice.comp413fall2020grey.Common.Change.Change;
-import edu.rice.comp413fall2020grey.Common.Change.RemoteChange;
-import edu.rice.comp413fall2020grey.Common.GameObject;
+import edu.rice.comp413fall2020grey.Common.Change.LocalChange;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
-import edu.rice.comp413fall2020grey.Common.Change.LocalChange;
+import edu.rice.comp413fall2020grey.Common.Change.LocalFieldChange;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,7 +38,7 @@ public interface DistributedManager {
    *
    * @return if the write was accepted
    */
-  boolean write(LocalChange change, GameObjectUUID author);
+  boolean write(LocalFieldChange change, GameObjectUUID author);
 
   int getBufferIndex(Date now);
 

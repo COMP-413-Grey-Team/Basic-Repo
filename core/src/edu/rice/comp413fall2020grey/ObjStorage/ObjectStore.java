@@ -1,23 +1,20 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
-import edu.rice.comp413fall2020grey.Common.Change.Change;
-import edu.rice.comp413fall2020grey.Common.Change.RemoteChange;
-import edu.rice.comp413fall2020grey.Common.GameObject;
-import edu.rice.comp413fall2020grey.Common.GameObjectMetadata;
+import edu.rice.comp413fall2020grey.Common.Change.*;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
-import edu.rice.comp413fall2020grey.Common.Change.LocalChange;
 import edu.rice.comp413fall2020grey.Common.Mode;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 
-public class ObjectStore implements DistributedManager{
+public class ObjectStore implements DistributedManager, ChangeReceiver {
 
     ObjectStorageReplicationInterface replicaManager;
     ArrayList<HashMap<GameObjectUUID, HashMap<String, Serializable>>> store;
     int bufferStart = 0; // to be replaced by a circular buffer
     ArrayList<Date> bufferLag;
+    ArrayList<RemoteChange> remoteChangeBuffer = new ArrayList<>();
 
     public static String INTERESTING_FIELDS = "rbox_interesting_fields"; // HashSet<String>
     public static String MODE = "rbox_mode"; // Mode
@@ -42,14 +39,38 @@ public class ObjectStore implements DistributedManager{
 
     @Override
     public Set<LocalChange> synchronize() {
-        Set<RemoteChange> remoteChanges = replicaManager.flushCache();
         Set<LocalChange> localChanges = new HashSet<>();
-        for (RemoteChange remoteChange: remoteChanges) {
-            int i = getBufferIndex(remoteChange.getTimestamp());
-            store.get(i).get(remoteChange.getTarget()).put(remoteChange.getField(), remoteChange.getValue());
-            localChanges.add(new LocalChange(remoteChange.getTarget(), remoteChange.getField(), remoteChange.getValue(), i));
-        }
+        remoteChangeBuffer.forEach(change -> localChanges.add(applyRemoteChange(change)));
+        remoteChangeBuffer = new ArrayList<>();
         return localChanges;
+    }
+
+    private LocalChange applyRemoteChange(RemoteChange change) {
+        final int bufferIndex = getBufferIndex(change.getTimestamp());
+        if (change instanceof RemoteAddReplicaChange) {
+            final LocalAddReplicaChange
+                localChange =
+                new LocalAddReplicaChange(((RemoteAddReplicaChange) change).getTarget(), bufferIndex);
+            store.get(bufferIndex).put(localChange.getTarget(), localChange.getObject());
+            return localChange;
+        } else if (change instanceof RemoteDeleteReplicaChange) {
+            final LocalDeleteReplicaChange
+                localChange =
+                new LocalDeleteReplicaChange(((RemoteDeleteReplicaChange) change).getTarget(), bufferIndex);
+            store.get(bufferIndex).remove(localChange.getTarget());
+            return localChange;
+        } else if (change instanceof RemoteFieldChange) {
+            final LocalFieldChange
+                localChange =
+                new LocalFieldChange(((RemoteFieldChange) change).getTarget(),
+                    ((RemoteFieldChange) change).getField(),
+                    ((RemoteFieldChange) change).getValue(),
+                    bufferIndex);
+            store.get(bufferIndex).get(localChange.getTarget()).put(localChange.getField(), localChange.getValue());
+            return localChange;
+        } else {
+            throw new IllegalStateException("Unknown change of type " + change.getClass());
+        }
     }
 
     @Override
@@ -65,7 +86,7 @@ public class ObjectStore implements DistributedManager{
     }
 
     @Override
-    public boolean write(LocalChange change, GameObjectUUID author) {
+    public boolean write(LocalFieldChange change, GameObjectUUID author) {
         HashMap<GameObjectUUID, HashMap<String, Serializable>> state = store.get(circ(change.getBufferIndex()));
         if (state.get(author).get(MODE) == Mode.PRIMARY) {
             // Record change in local store.
@@ -113,5 +134,10 @@ public class ObjectStore implements DistributedManager{
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void receiveChange(RemoteChange change) {
+        remoteChangeBuffer.add(change);
     }
 }

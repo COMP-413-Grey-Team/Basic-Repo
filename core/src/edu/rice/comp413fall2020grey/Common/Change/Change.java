@@ -6,25 +6,14 @@ import java.io.Serializable;
 
 public abstract class Change {
     private final GameObjectUUID target;
-    private final String field;
-    private final Serializable value;
 
-    public Change(GameObjectUUID target, String field, Serializable value) {
+
+    public Change(GameObjectUUID target) {
         this.target = target;
-        this.field = field;
-        this.value = value;
     }
 
     public GameObjectUUID getTarget() {
         return target;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public Serializable getValue() {
-        return value;
     }
 
 }
