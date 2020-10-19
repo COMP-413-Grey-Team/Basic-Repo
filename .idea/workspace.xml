@@ -30,13 +30,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/comp413.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/comp413.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/DistributedManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/DistributedManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStorageReplicationInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStorageReplicationInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,7 +155,7 @@
       <workItem from="1602536374066" duration="1051000" />
       <workItem from="1602616320867" duration="97000" />
       <workItem from="1602710458819" duration="258000" />
-      <workItem from="1602878474341" duration="2125000" />
+      <workItem from="1602878474341" duration="4109000" />
     </task>
     <task id="LOCAL-00001" summary="Added pom.xml with a dependency">
       <created>1601602054767</created>

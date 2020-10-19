@@ -68,7 +68,6 @@ public class ObjectStore implements DistributedManager{
     public boolean write(LocalChange change, GameObjectUUID author) {
         HashMap<GameObjectUUID, HashMap<String, Serializable>> state = store.get(circ(change.getBufferIndex()));
         if (state.get(author).get(MODE) == Mode.PRIMARY) {
-            // TODO: Handle case where target does not yet exist. (Create new primary)
             // Record change in local store.
             state.get(change.getTarget()).put(change.getField(), change.getValue());
             Boolean interesting = ((HashSet<String>)state.get(change.getTarget()).get(INTERESTING_FIELDS)).contains(change.getField());
@@ -90,13 +89,10 @@ public class ObjectStore implements DistributedManager{
     }
 
     @Override
-    public GameObjectUUID create(HashMap<String, Serializable> fields, HashSet<String> interesting_fields, GameObjectUUID author, int bufferIndex){
+    public GameObjectUUID create(HashMap<String, Serializable> fields, HashSet<String> interesting_fields, GameObjectUUID author, int bufferIndex) {
         HashMap<GameObjectUUID, HashMap<String,Serializable>> state = store.get(circ(bufferIndex));
         if (state.get(author).get(MODE) == Mode.PRIMARY) {
             GameObjectUUID uuid = GameObjectUUID.randomUUID();
-            interesting_fields.add(MODE);
-            interesting_fields.add(INTERESTING_FIELDS);
-            interesting_fields.add(PREDICATE);
             fields.put(INTERESTING_FIELDS, interesting_fields);
             state.put(uuid, fields);
             //TODO
