@@ -1,4 +1,4 @@
-package edu.rice.comp413fall2020grey.ObjStorage;
+package edu.rice.comp413fall2020grey.Common;
 
 /**
  * Represents an object in a game with an interest function.

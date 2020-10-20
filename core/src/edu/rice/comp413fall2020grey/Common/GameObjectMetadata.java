@@ -1,4 +1,4 @@
-package edu.rice.comp413fall2020grey.ObjStorage;
+package edu.rice.comp413fall2020grey.Common;
 
 import java.util.UUID;
 
