@@ -2,9 +2,10 @@ package sprites;
 
 import java.awt.*;
 
-public class PlayerSprite extends Sprite {
+public abstract class PlayerSprite extends Sprite {
 
-  private static final int CIRCLE_RADIUS = 15;
+  public static final int CIRCLE_RADIUS = 15;
+  public static final double SPEED = 0.5;
 
   private double velX;
   private double velY;
@@ -18,10 +19,6 @@ public class PlayerSprite extends Sprite {
     this.velY = velY;
   }
 
-  public PlayerSprite(Color color, double x, double y) {
-    this(color, x, y, 0, 0);
-  }
-
   @Override
   public void paint(Graphics g) {
     g.setColor(this.getColor());
@@ -33,12 +30,9 @@ public class PlayerSprite extends Sprite {
     this.move(time, boardWidth, boardHeight);
   }
 
-  public void move(int time, double boardWidth, double boardHeight) {
-    this.setX(clamp(0, boardWidth, CIRCLE_RADIUS, getX() + getVelX() * ((double) time)));
-    this.setY(clamp(0, boardHeight, CIRCLE_RADIUS, getY() + getVelY() * ((double) time)));
-  }
+  public abstract void move(int time, double boardWidth, double boardHeight);
 
-  private static double clamp(double min, double max, double radius, double expr) {
+  public static double clamp(double min, double max, double radius, double expr) {
     return Math.min(max - radius, Math.max(min + radius, expr));
   }
 
@@ -64,15 +58,6 @@ public class PlayerSprite extends Sprite {
 
   public void setColor(Color color) {
     this.color = color;
-  }
-
-  public void normalize(double speed) {
-    double totalVel = Math.abs(velX) + Math.abs(velY);
-    if (totalVel == 0)
-      return;
-    double ratio = totalVel / speed;
-    velX /= ratio;
-    velY /= ratio;
   }
 
 }
