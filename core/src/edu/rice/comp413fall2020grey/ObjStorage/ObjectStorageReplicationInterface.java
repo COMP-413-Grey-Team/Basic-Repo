@@ -16,4 +16,7 @@ public interface ObjectStorageReplicationInterface {
    */
   void updatePrimary(GameObjectUUID id, String field, Serializable value, Boolean interesting);
   void broadcastUpdate(GameObjectUUID id, String field, Serializable value, Boolean interesting);
+
+  void createPrimary(GameObjectUUID id);
+  void deletePrimary(GameObjectUUID id);
 }

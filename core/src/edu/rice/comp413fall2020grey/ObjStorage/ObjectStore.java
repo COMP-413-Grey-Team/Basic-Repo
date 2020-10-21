@@ -116,8 +116,7 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
             GameObjectUUID uuid = GameObjectUUID.randomUUID();
             fields.put(INTERESTING_FIELDS, interesting_fields);
             state.put(uuid, fields);
-            //TODO
-            //inform replica management about new primary
+            replicaManager.createPrimary(uuid);
             return uuid;
         } else {
             return null;
@@ -128,8 +127,7 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
     public boolean delete(GameObjectUUID uuid, GameObjectUUID author, int bufferIndex){
         if (store.get(circ(bufferIndex)).get(author).get(MODE) == Mode.PRIMARY) {
             store.get(circ(bufferIndex)).remove(uuid);
-            //TODO
-            //inform replica management that primary is removed
+            replicaManager.deletePrimary(uuid);
             return true;
         } else {
             return false;
