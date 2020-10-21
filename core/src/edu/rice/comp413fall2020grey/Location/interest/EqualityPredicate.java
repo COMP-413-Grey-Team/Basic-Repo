@@ -1,19 +1,23 @@
 package edu.rice.comp413fall2020grey.Location.interest;
 
-import edu.rice.comp413fall2020grey.Common.metadata.ObjectMetadataField;
+import org.bson.conversions.Bson;
 
-public class EqualityPredicate<T> implements InterestPredicate {
+import java.io.Serializable;
+import java.util.HashMap;
+
+public abstract class EqualityPredicate<T> implements InterestPredicate {
     final String fieldName;
     final T value;
 
 
-    public EqualityPredicate(ObjectMetadataField field, T value) {
-        this.fieldName = field.getFieldName();
+    public EqualityPredicate(String field, T value) {
+        this.fieldName = field;
         this.value = value;
     }
 
-    @Override
-    public String toMongoQuery() {
-        return String.format("eq(%s, %s)", fieldName, value);
-    }
+//    @Override
+//    public String toMongoQuery() {
+//        return String.format("eq(%s, %s)", fieldName, value);
+//    }
+
 }
