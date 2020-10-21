@@ -1,16 +1,14 @@
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
-public class Snake extends JFrame {
+public class Game extends JFrame {
 
-  public Snake() {
+  public Game() {
 
     initUI();
   }
 
   private void initUI() {
-
-//    add(new Board());
     add(new World());
 
     setResizable(false);
@@ -24,7 +22,7 @@ public class Snake extends JFrame {
   public static void main(String[] args) {
 
     EventQueue.invokeLater(() -> {
-      JFrame ex = new Snake();
+      JFrame ex = new Game();
       ex.setVisible(true);
     });
   }

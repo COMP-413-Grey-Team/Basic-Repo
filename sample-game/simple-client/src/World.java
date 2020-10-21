@@ -10,7 +10,7 @@ public class World extends JPanel {
 
   private final int WORLD_WIDTH = 1000;
   private final int WORLD_HEIGHT = 660;
-  private final double SPEED = 500.0;
+  private final double SPEED = 0.5;
   private final int DELTA_T = 17;
 
   private final PlayerSprite player;
@@ -22,7 +22,7 @@ public class World extends JPanel {
   private Set<Sprite> otherPlayers;
 
   public World() { // TODO: add arguments so server can set initial state
-    player = new PlayerSprite(50, 50);
+    player = new PlayerSprite(Color.BLUE, 50, 50);
     initWorld();
   }
 
@@ -36,7 +36,7 @@ public class World extends JPanel {
   }
 
   private void updateState() {
-    player.updateState(WORLD_WIDTH, DELTA_T);
+    player.updateState(DELTA_T, WORLD_WIDTH, WORLD_HEIGHT);
   }
 
   @Override
@@ -56,22 +56,23 @@ public class World extends JPanel {
       int key = e.getKeyCode();
       switch (key) {
         case KeyEvent.VK_LEFT:
-          System.out.println("Clicked left!");
-          player.setPlayerVelX(-SPEED);
+//          System.out.println("Clicked left!");
+          player.setVelX(-SPEED);
           break;
         case KeyEvent.VK_RIGHT:
-          System.out.println("Clicked right!");
-          player.setPlayerVelX(SPEED);
+//          System.out.println("Clicked right!");
+          player.setVelX(SPEED);
           break;
         case KeyEvent.VK_UP:
-          player.setPlayerVelY(-SPEED);
+          player.setVelY(-SPEED);
           break;
         case KeyEvent.VK_DOWN:
-          player.setPlayerVelY(SPEED);
+          player.setVelY(SPEED);
           break;
         default:
           break;
       }
+      player.normalize(SPEED);
     }
 
     @Override
@@ -80,15 +81,16 @@ public class World extends JPanel {
       switch (key) {
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_RIGHT:
-          player.setPlayerVelX(0);
+          player.setVelX(0);
           break;
         case KeyEvent.VK_UP:
         case KeyEvent.VK_DOWN:
-          player.setPlayerVelY(0);
+          player.setVelY(0);
           break;
         default:
           break;
       }
+      player.normalize(SPEED);
     }
 
   }
