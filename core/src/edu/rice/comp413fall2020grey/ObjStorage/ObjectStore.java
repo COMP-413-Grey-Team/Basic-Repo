@@ -10,11 +10,11 @@ import java.util.*;
 
 public class ObjectStore implements DistributedManager, ChangeReceiver {
 
-    ObjectStorageReplicationInterface replicaManager;
-    ArrayList<HashMap<GameObjectUUID, HashMap<String, Serializable>>> store;
-    int bufferStart = 0; // to be replaced by a circular buffer
-    ArrayList<Date> bufferLag;
-    ArrayList<RemoteChange> remoteChangeBuffer = new ArrayList<>();
+    private ObjectStorageReplicationInterface replicaManager;
+    private ArrayList<HashMap<GameObjectUUID, HashMap<String, Serializable>>> store;
+    private int bufferStart = 0; // to be replaced by a circular buffer
+    private ArrayList<Date> bufferLag;
+    private ArrayList<RemoteChange> remoteChangeBuffer = new ArrayList<>();
 
     public static String INTERESTING_FIELDS = "rbox_interesting_fields"; // HashSet<String>
     public static String MODE = "rbox_mode"; // Mode
@@ -33,8 +33,14 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
         return -1;
     }
 
-    public ObjectStore(ObjectStorageReplicationInterface replicaManager) {
+    public ObjectStore(ObjectStorageReplicationInterface replicaManager, int size) {
         this.replicaManager = replicaManager;
+        this.store = new ArrayList<>(size);
+        this.bufferLag = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+           store.add(i, new HashMap<>());
+           bufferLag.add(i, Date.from(Instant.now()));
+        }
     }
 
     @Override
@@ -50,7 +56,7 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
         if (change instanceof RemoteAddReplicaChange) {
             final LocalAddReplicaChange
                 localChange =
-                new LocalAddReplicaChange(((RemoteAddReplicaChange) change).getTarget(), bufferIndex);
+                new LocalAddReplicaChange(((RemoteAddReplicaChange) change).getTarget(), ((RemoteAddReplicaChange) change).getObject(), bufferIndex);
             store.get(bufferIndex).put(localChange.getTarget(), localChange.getObject());
             return localChange;
         } else if (change instanceof RemoteDeleteReplicaChange) {
@@ -112,7 +118,7 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
     @Override
     public GameObjectUUID create(HashMap<String, Serializable> fields, HashSet<String> interesting_fields, GameObjectUUID author, int bufferIndex) {
         HashMap<GameObjectUUID, HashMap<String,Serializable>> state = store.get(circ(bufferIndex));
-        if (state.get(author).get(MODE) == Mode.PRIMARY) {
+        if (author == null || state.get(author).get(MODE) == Mode.PRIMARY) {
             GameObjectUUID uuid = GameObjectUUID.randomUUID();
             fields.put(INTERESTING_FIELDS, interesting_fields);
             state.put(uuid, fields);
