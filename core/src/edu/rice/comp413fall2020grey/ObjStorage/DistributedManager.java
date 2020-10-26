@@ -1,9 +1,14 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
-import edu.rice.comp413fall2020grey.Common.GameObject;
+import edu.rice.comp413fall2020grey.Common.Change.LocalChange;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
-import java.util.UUID;
+import edu.rice.comp413fall2020grey.Common.Change.LocalFieldChange;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The interface exposed to the Game Server to interact with the distributed system (specifically, with Object Storage).
@@ -13,7 +18,7 @@ public interface DistributedManager {
   /**
    * Updates all objects in storage according to most recent cache and lag compensation technique
    */
-  void synchronize();
+  Set<LocalChange> synchronize();
 
   /**
    * Advances the buffer for all objects in the store
@@ -26,11 +31,22 @@ public interface DistributedManager {
    * Returns object from storage using some provided object information (relevant keys to be decided)
    * This method can be used at game server/game startup to obtain all the necessary objects to begin rendering the game on the client
    */
-  GameObject read(final GameObjectUUID gameObjectID, final int bufferIndex);
+  Serializable read(final GameObjectUUID gameObjectID, final String field, final int bufferIndex);
 
   /**
    * Sends request from authorObject to change the state of targetObject – state changes reflected in local non-canonical cache.
+   *
    * @return if the write was accepted
    */
-  boolean write(GameObject target, int bufferIndex, GameObject author, String updateMsg);
+  boolean write(LocalFieldChange change, GameObjectUUID author);
+
+  int getBufferIndex(Date now);
+
+  /**
+   * Initializes a new GameObject in the store
+   * interesting_fields is automatically populated with MODE, PREDICATE, and INTERESTING_FIELDS
+   */
+  GameObjectUUID create(HashMap<String, Serializable> fields, HashSet<String> interesting_fields, GameObjectUUID author, int bufferIndex);
+
+  boolean delete(GameObjectUUID uuid, GameObjectUUID author, int bufferIndex);
 }
