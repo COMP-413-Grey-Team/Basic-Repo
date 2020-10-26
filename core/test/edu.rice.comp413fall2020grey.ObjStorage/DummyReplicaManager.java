@@ -1,23 +1,25 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
+import edu.rice.comp413fall2020grey.Common.Change.RemoteChange;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class DummyReplicaManager implements ObjectStorageReplicationInterface {
 
     @Override
-    public void updatePrimary(GameObjectUUID id, String field, Serializable value, Boolean interesting) {
+    public void updatePrimary(RemoteChange change, Boolean interesting) {
 
     }
 
     @Override
-    public void broadcastUpdate(GameObjectUUID id, String field, Serializable value, Boolean interesting) {
+    public void broadcastUpdate(RemoteChange change, Boolean interesting) {
 
     }
 
     @Override
-    public void createPrimary(GameObjectUUID id) {
+    public void createPrimary(GameObjectUUID id, HashMap<String, Serializable> interestingFields) {
 
     }
 

@@ -26,7 +26,8 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
 
     public int getBufferIndex(Date now){
         for (int i = 0; i < bufferLag.size(); i++) {
-            if (bufferLag.get(circ(i)).after(now)) {
+            System.out.println(bufferLag.get(circ(i)).toInstant());
+            if (bufferLag.get(circ(i)).compareTo(now) >= 0) {
                 return i;
             }
         }
@@ -81,14 +82,22 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
 
     @Override
     public void advanceBuffer() {
-        bufferStart = (bufferStart - 1) % store.size();
-        store.set(bufferStart, store.get((bufferStart - 1) % store.size()));
+        bufferStart = (bufferStart - 1 + store.size()) % store.size();
+        HashMap<GameObjectUUID, HashMap<String, Serializable>> asdf = new HashMap<>();
+        store.get(circ(1)).entrySet().forEach(entry -> asdf.put(entry.getKey(),
+                (HashMap<String, Serializable>) entry.getValue().clone()));
+        store.set(bufferStart, asdf);
         bufferLag.set(bufferStart, Date.from(Instant.now()));
     }
 
     @Override
     public Serializable read(GameObjectUUID gameObjectID, String field, int bufferIndex) {
         return store.get(circ(bufferIndex)).get(gameObjectID).get(field);
+    }
+
+    @Override
+    public RemoteChange getReplica(GameObjectUUID id) {
+        return new RemoteAddReplicaChange(id, store.get(circ(0)).get(id), Date.from(Instant.now()));
     }
 
     @Override
@@ -100,9 +109,9 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
             Boolean interesting = ((HashSet<String>)state.get(change.getTarget()).get(INTERESTING_FIELDS)).contains(change.getField());
             // Propagate update
             if (state.get(change.getTarget()).get(MODE) == Mode.PRIMARY) {
-                replicaManager.broadcastUpdate(change.getTarget(), change.getField(), change.getValue(), interesting);
+                replicaManager.broadcastUpdate(new RemoteFieldChange(change.getTarget(), change.getField(), change.getValue(), Date.from(Instant.now())), interesting);
             } else {
-                replicaManager.updatePrimary(change.getTarget(), change.getField(), change.getValue(), interesting);
+                replicaManager.updatePrimary(new RemoteFieldChange(change.getTarget(), change.getField(), change.getValue(), Date.from(Instant.now())), interesting);
             }
             return true;
         } else {
@@ -121,8 +130,15 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
         if (author == null || state.get(author).get(MODE) == Mode.PRIMARY) {
             GameObjectUUID uuid = GameObjectUUID.randomUUID();
             fields.put(INTERESTING_FIELDS, interesting_fields);
+            fields.put(MODE, Mode.PRIMARY);
             state.put(uuid, fields);
-            replicaManager.createPrimary(uuid);
+            HashMap<String, Serializable> interesting_state = new HashMap<>();
+            fields.entrySet().forEach(entry -> {
+                if (interesting_fields.contains(entry.getKey())) {
+                   interesting_state.put(entry.getKey(), entry.getValue()) ;
+                }
+            });
+            replicaManager.createPrimary(uuid, interesting_state);
             return uuid;
         } else {
             return null;
@@ -144,4 +160,5 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
     public void receiveChange(RemoteChange change) {
         remoteChangeBuffer.add(change);
     }
+
 }
