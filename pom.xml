@@ -56,7 +56,6 @@
              <version>6.0.53</version>
              <scope>provided</scope>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
         <dependency>
             <groupId>org.mongodb</groupId>
@@ -83,8 +82,12 @@
             <version>5.7.0</version>
             <scope>compile</scope>
         </dependency>
-
-
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 
