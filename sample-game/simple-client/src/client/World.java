@@ -1,16 +1,19 @@
+package client;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import sprites.CoinSprite;
 import sprites.player.LocalPlayerSprite;
-import sprites.Sprite;
 import sprites.player.RemotePlayerSprite;
+import sync_state.CoinState;
+import sync_state.PlayerState;
 import utils.KeyState;
 
 public class World extends JPanel {
@@ -19,11 +22,21 @@ public class World extends JPanel {
   private final int WORLD_HEIGHT = 660;
   private final int DELTA_T = 17;
 
+  // Buffer set by server and read in mergwRemoteChanges
+  private HashSet<UUID> updatedPlayers = new HashSet<>();
+  private HashMap<UUID, PlayerState> newPlayers = new HashMap<>();
+  private HashMap<UUID, CoinState> newCoins = new HashMap<>();
+
+  private HashSet<UUID> deletedObjects = new HashSet<>();
+
   private final UUID playerUUID = UUID.randomUUID();
   private final LocalPlayerSprite player;
   private final Timer timer = new Timer(DELTA_T, (event) -> {
-    updateState();
+    mergeRemoteChanges();
+    updateInternalState();
     repaint();
+    sendUpdatesToServerAsynchronously(deletedObjects);
+    deletedObjects = new HashSet<>();
   });
 
   private HashMap<UUID, RemotePlayerSprite> otherPlayers = new HashMap<>();
@@ -53,8 +66,9 @@ public class World extends JPanel {
     timer.start();
   }
 
-  private void updateState() {
+  private void updateInternalState() {
     player.updateState(DELTA_T, WORLD_WIDTH, WORLD_HEIGHT);
+
 
     player.checkCoinCollisions(coins).forEach(coins::remove);
 
@@ -77,6 +91,19 @@ public class World extends JPanel {
 
     g.setColor(Color.black);
     g.drawString("Score: " + player.getScore(), 10, 20);
+  }
+
+  private void mergeRemoteChanges() {
+
+  }
+
+  private void sendUpdatesToServerAsynchronously(HashSet<UUID> removedObjects) {
+    // Changes include deleted coins, updated player position/score
+
+  }
+
+  private void handleServerUpdatesAsynchronously(HashMap<UUID, PlayerState> playerStates, HashMap<UUID, CoinState> coinStates) {
+
   }
 
   private class GameKeyAdapter extends KeyAdapter {
