@@ -2,7 +2,90 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a9c20470-d375-40fb-96f1-aa1380b77b2f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Common/Change/Change.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Common/Change/Change.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/Sprites/CoinSprite.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/Sprites/Players/LocalPlayerSprite.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/Sprites/Players/PlayerSprite.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/Sprites/Players/RemotePlayerSprite.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/Sprites/Sprite.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/SyncState/CoinState.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/SyncState/GameState.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/SyncState/GameStateDelta.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/SyncState/PlayerState.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/SyncState/SpriteState.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/Common/Utils/KeyState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/checkstyle-idea.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/description.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/project-template.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/client.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/AbstractLayout.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/DimensionInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/GridConstraints.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/GridLayoutManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/HorizontalInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/LayoutState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/Spacer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/SupportCode$TextWithMnemonic.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/SupportCode.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/Util.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/com/intellij/uiDesigner/core/VerticalInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/edu/rice/comp413fall2020grey/GameLauncher.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/edu/rice/comp413fall2020grey/GamePanel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/edu/rice/comp413fall2020grey/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/out/production/client/edu/rice/comp413fall2020grey/Window.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/edu/rice/comp413fall2020grey/GameLauncher.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/edu/rice/comp413fall2020grey/GamePanel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/edu/rice/comp413fall2020grey/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/edu/rice/comp413fall2020grey/Window.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/edu/rice/comp413fall2020grey/states/GameState.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/edu/rice/comp413fall2020grey/states/GameStateManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/edu/rice/comp413fall2020grey/tiles/TileManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/edu/rice/comp413fall2020grey/utils/KeyHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/edu/rice/comp413fall2020grey/utils/MouseHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/client/Game.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/client/World$GameKeyAdapter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/client/World.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/sprites/CoinSprite.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/sprites/Sprite.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/sprites/player/LocalPlayerSprite.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/sprites/player/PlayerSprite.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/sprites/player/RemotePlayerSprite.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/sync_state/CoinState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/sync_state/GameState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/sync_state/GameStateDelta.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/sync_state/PlayerState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/sync_state/SpriteState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/utils/KeyState$Key.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/simple-client/utils/KeyState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/simple-client.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/client/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/client/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/client/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../core/src/edu/rice/comp413fall2020grey/Game/client/World.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sprites/CoinSprite.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sprites/Sprite.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sprites/player/LocalPlayerSprite.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sprites/player/PlayerSprite.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sprites/player/RemotePlayerSprite.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sync_state/CoinState.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sync_state/GameState.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sync_state/GameStateDelta.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sync_state/PlayerState.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sync_state/SpriteState.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/KeyState.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,34 +171,38 @@
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="1093" y="433" key="#com.intellij.ide.util.MemberChooser/2560.0.2560.1440/0.0.2560.1440/0.0.2560.1440@0.0.2560.1440" timestamp="1602699820520" />
-    <state width="2518" height="306" key="GridCell.Tab.0.bottom" timestamp="1602958715707">
-      <screen x="2560" y="23" width="2560" height="1417" />
+    <state width="2518" height="238" key="GridCell.Tab.0.bottom" timestamp="1603833616680">
+      <screen x="2560" y="0" width="2560" height="1440" />
     </state>
     <state width="2518" height="306" key="GridCell.Tab.0.bottom/2560.0.2560.1440/0.0.2560.1440/0.0.2560.1440@0.0.2560.1440" timestamp="1602701658931" />
+    <state width="2518" height="238" key="GridCell.Tab.0.bottom/2560.0.2560.1440/0.23.2560.1417@2560.0.2560.1440" timestamp="1603833616680" />
     <state width="2518" height="2" key="GridCell.Tab.0.bottom/2560.23.2560.1417/0.0.2560.1440/0.23.2560.1417@0.23.2560.1417" timestamp="1602558261287" />
     <state width="2518" height="306" key="GridCell.Tab.0.bottom/2560.23.2560.1417/0.23.2560.1417/0.0.2560.1440@0.23.2560.1417" timestamp="1602701702140" />
     <state width="2518" height="306" key="GridCell.Tab.0.bottom/2560.23.2560.1417/0.23.2560.1417/0.23.2560.1417@0.23.2560.1417" timestamp="1602701741438" />
     <state width="2518" height="306" key="GridCell.Tab.0.bottom/2560.23.2560.1417/0.23.2560.1417@2560.23.2560.1417" timestamp="1602958715707" />
-    <state width="2518" height="306" key="GridCell.Tab.0.center" timestamp="1602958715706">
-      <screen x="2560" y="23" width="2560" height="1417" />
+    <state width="2518" height="238" key="GridCell.Tab.0.center" timestamp="1603833616677">
+      <screen x="2560" y="0" width="2560" height="1440" />
     </state>
     <state width="2518" height="306" key="GridCell.Tab.0.center/2560.0.2560.1440/0.0.2560.1440/0.0.2560.1440@0.0.2560.1440" timestamp="1602701658928" />
+    <state width="2518" height="238" key="GridCell.Tab.0.center/2560.0.2560.1440/0.23.2560.1417@2560.0.2560.1440" timestamp="1603833616677" />
     <state width="2518" height="2" key="GridCell.Tab.0.center/2560.23.2560.1417/0.0.2560.1440/0.23.2560.1417@0.23.2560.1417" timestamp="1602558261286" />
     <state width="2518" height="306" key="GridCell.Tab.0.center/2560.23.2560.1417/0.23.2560.1417/0.0.2560.1440@0.23.2560.1417" timestamp="1602701702099" />
     <state width="2518" height="306" key="GridCell.Tab.0.center/2560.23.2560.1417/0.23.2560.1417/0.23.2560.1417@0.23.2560.1417" timestamp="1602701741431" />
     <state width="2518" height="306" key="GridCell.Tab.0.center/2560.23.2560.1417/0.23.2560.1417@2560.23.2560.1417" timestamp="1602958715706" />
-    <state width="2518" height="306" key="GridCell.Tab.0.left" timestamp="1602958715705">
-      <screen x="2560" y="23" width="2560" height="1417" />
+    <state width="2518" height="238" key="GridCell.Tab.0.left" timestamp="1603833616675">
+      <screen x="2560" y="0" width="2560" height="1440" />
     </state>
     <state width="2518" height="306" key="GridCell.Tab.0.left/2560.0.2560.1440/0.0.2560.1440/0.0.2560.1440@0.0.2560.1440" timestamp="1602701658926" />
+    <state width="2518" height="238" key="GridCell.Tab.0.left/2560.0.2560.1440/0.23.2560.1417@2560.0.2560.1440" timestamp="1603833616675" />
     <state width="2518" height="2" key="GridCell.Tab.0.left/2560.23.2560.1417/0.0.2560.1440/0.23.2560.1417@0.23.2560.1417" timestamp="1602558261285" />
     <state width="2518" height="306" key="GridCell.Tab.0.left/2560.23.2560.1417/0.23.2560.1417/0.0.2560.1440@0.23.2560.1417" timestamp="1602701741215" />
     <state width="1638" height="3" key="GridCell.Tab.0.left/2560.23.2560.1417/0.23.2560.1417/0.23.2560.1417@0.23.2560.1417" timestamp="1602701456179" />
     <state width="2518" height="306" key="GridCell.Tab.0.left/2560.23.2560.1417/0.23.2560.1417@2560.23.2560.1417" timestamp="1602958715705" />
-    <state width="2518" height="306" key="GridCell.Tab.0.right" timestamp="1602958715706">
-      <screen x="2560" y="23" width="2560" height="1417" />
+    <state width="2518" height="238" key="GridCell.Tab.0.right" timestamp="1603833616679">
+      <screen x="2560" y="0" width="2560" height="1440" />
     </state>
     <state width="2518" height="306" key="GridCell.Tab.0.right/2560.0.2560.1440/0.0.2560.1440/0.0.2560.1440@0.0.2560.1440" timestamp="1602701658930" />
+    <state width="2518" height="238" key="GridCell.Tab.0.right/2560.0.2560.1440/0.23.2560.1417@2560.0.2560.1440" timestamp="1603833616679" />
     <state width="2518" height="2" key="GridCell.Tab.0.right/2560.23.2560.1417/0.0.2560.1440/0.23.2560.1417@0.23.2560.1417" timestamp="1602558261286" />
     <state width="2518" height="306" key="GridCell.Tab.0.right/2560.23.2560.1417/0.23.2560.1417/0.0.2560.1440@0.23.2560.1417" timestamp="1602701702138" />
     <state width="2518" height="306" key="GridCell.Tab.0.right/2560.23.2560.1417/0.23.2560.1417/0.23.2560.1417@0.23.2560.1417" timestamp="1602701741436" />
