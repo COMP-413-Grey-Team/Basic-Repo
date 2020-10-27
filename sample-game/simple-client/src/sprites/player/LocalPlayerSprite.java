@@ -1,5 +1,6 @@
 package sprites.player;
 
+import sync_state.PlayerState;
 import utils.KeyState;
 
 import java.awt.*;
@@ -7,8 +8,8 @@ import java.awt.*;
 public class LocalPlayerSprite extends PlayerSprite {
   private final KeyState keyState;
 
-  public LocalPlayerSprite(Color color, double x, double y, int score, KeyState keyState) {
-    super(color, x, y, keyState.horizontalMultiplier() * SPEED, keyState.verticalMultiplier() * SPEED, score);
+  public LocalPlayerSprite(Color color, double x, double y, int score, String name, KeyState keyState) {
+    super(color, x, y, keyState.horizontalMultiplier() * SPEED, keyState.verticalMultiplier() * SPEED, score, name);
     this.keyState = keyState;
   }
 
@@ -20,5 +21,9 @@ public class LocalPlayerSprite extends PlayerSprite {
   public void updateVelocity() {
     this.setVelX(keyState.horizontalMultiplier() * SPEED);
     this.setVelY(keyState.verticalMultiplier() * SPEED);
+  }
+
+  public PlayerState getPlayerState() {
+    return new PlayerState(getX(), getY(), getName(), getColor(), getScore());
   }
 }

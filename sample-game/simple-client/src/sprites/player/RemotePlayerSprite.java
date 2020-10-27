@@ -3,8 +3,8 @@ package sprites.player;
 import java.awt.*;
 
 public class RemotePlayerSprite extends PlayerSprite {
-  public RemotePlayerSprite(Color color, double x, double y, double velX, double velY, int score) {
-    super(color, x, y, velX, velY, score);
+  public RemotePlayerSprite(Color color, double x, double y, double velX, double velY, int score, String name) {
+    super(color, x, y, velX, velY, score, name);
   }
 
   @Override

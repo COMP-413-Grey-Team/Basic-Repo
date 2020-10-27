@@ -6,9 +6,15 @@ import java.util.UUID;
 // Sent from client to server
 public class GameStateDelta {
 
-  HashSet<UUID> deletedCoins;
+  public UUID playerUUID;
+  public PlayerState updatedPlayerState;
 
-  UUID playerUUID;
-  PlayerState updatedPlayerState;
+  public HashSet<UUID> deletedCoins;
+
+  public GameStateDelta(UUID playerUUID, PlayerState updatedPlayerState, HashSet<UUID> deletedCoins) {
+    this.playerUUID = playerUUID;
+    this.updatedPlayerState = updatedPlayerState;
+    this.deletedCoins = deletedCoins;
+  }
 
 }

@@ -19,14 +19,16 @@ public abstract class PlayerSprite extends Sprite {
   private double velY;
   private int score;
 
+  private String name;
   private Color color;
 
-  public PlayerSprite(Color color, double x, double y, double velX, double velY, int score) {
+  public PlayerSprite(Color color, double x, double y, double velX, double velY, int score, String name) {
     super(x, y);
     this.color = color;
     this.velX = velX;
     this.velY = velY;
     this.score = score;
+    this.name = name;
   }
 
   @Override
@@ -70,7 +72,7 @@ public abstract class PlayerSprite extends Sprite {
     this.color = color;
   }
 
-  public Set<UUID> checkCoinCollisions(HashMap<UUID, CoinSprite> coins) {
+  public Set<UUID> checkCoinCollisions(Map<UUID, CoinSprite> coins) {
     final Set<UUID> collected = coins.entrySet()
                                   .stream()
                                   .filter(coin -> {
@@ -95,5 +97,13 @@ public abstract class PlayerSprite extends Sprite {
 
   public void incrementScore() {
     score++;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 }

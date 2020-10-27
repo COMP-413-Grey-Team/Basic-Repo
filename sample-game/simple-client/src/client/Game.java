@@ -1,6 +1,9 @@
 package client;
 
-import java.awt.EventQueue;
+import sprites.player.LocalPlayerSprite;
+import sync_state.PlayerState;
+
+import java.awt.*;
 import javax.swing.JFrame;
 
 public class Game extends JFrame {
@@ -11,7 +14,7 @@ public class Game extends JFrame {
   }
 
   private void initUI() {
-    add(new World());
+    add(new World(new PlayerState(30, 30, "Evan", Color.BLUE, 0)));
 
     setResizable(false);
     pack();
