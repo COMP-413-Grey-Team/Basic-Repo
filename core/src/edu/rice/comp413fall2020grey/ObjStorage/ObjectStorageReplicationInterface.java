@@ -1,9 +1,8 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
-import edu.rice.comp413fall2020grey.Common.GameObject;
-import edu.rice.comp413fall2020grey.Common.Message;
+import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
-import java.util.Set;
+import java.io.Serializable;
 
 /**
  * The interface implemented by Replication that will be used by Object Storage
@@ -12,13 +11,12 @@ import java.util.Set;
 public interface ObjectStorageReplicationInterface {
 
   /**
-   * Returns every message that Replication has received since this function was last called.
-   */
-  Set<Message> flushCache();
-
-  /**
    * If gameObj is a primary, then this function sends msg to every replica of gameObj on other superpeers.
    * If gameObj is a replica, then this function sends msg to its primary.
    */
-  void sendUpdate(GameObject gameObj, Message msg);
+  void updatePrimary(GameObjectUUID id, String field, Serializable value, Boolean interesting);
+  void broadcastUpdate(GameObjectUUID id, String field, Serializable value, Boolean interesting);
+
+  void createPrimary(GameObjectUUID id);
+  void deletePrimary(GameObjectUUID id);
 }
