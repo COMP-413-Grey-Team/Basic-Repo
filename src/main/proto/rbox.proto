@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+// add in messages here
+
+
+// this is the ONLY service defined (all RPCs go here)
+service RBoxService {
+
+  // Define a RPC operation
+  rpc connectTo(ServerInformation) returns (ConnectionConfirmation);
+}
