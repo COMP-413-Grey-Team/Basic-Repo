@@ -30,8 +30,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/comp413.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/comp413.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,8 +50,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Concept" />
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -100,7 +101,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+    <property name="settings.editor.selected.configurable" value="fileTemplates" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -111,23 +112,104 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.Main" />
+  <component name="RunManager" selected="JUnit.Test">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="comp413" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="edu.rice.comp413fall2020grey.*" />
+          <option name="PATTERN" value="edu.rice.comp413fall2020grey.ObjStorage.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="edu.rice.comp413fall2020grey.ObjStorage" />
+      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.ObjStorage.Test" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test.testBuffer" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="comp413" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.rice.comp413fall2020grey.ObjStorage.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.rice.comp413fall2020grey.ObjStorage" />
+      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.ObjStorage.Test" />
+      <option name="METHOD_NAME" value="testBuffer" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test.testReplicas" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="comp413" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.rice.comp413fall2020grey.ObjStorage.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.rice.comp413fall2020grey.ObjStorage" />
+      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.ObjStorage.Test" />
+      <option name="METHOD_NAME" value="testReplicas" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test.testSynchronize" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="comp413" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.rice.comp413fall2020grey.ObjStorage.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.rice.comp413fall2020grey.ObjStorage" />
+      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.ObjStorage.Test" />
+      <option name="METHOD_NAME" value="testSynchronize" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test.testWrite" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="comp413" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.rice.comp413fall2020grey.ObjStorage.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.rice.comp413fall2020grey.ObjStorage" />
+      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.ObjStorage.Test" />
+      <option name="METHOD_NAME" value="testWrite" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.Test" />
+        <item itemvalue="JUnit.Test.testReplicas" />
+        <item itemvalue="JUnit.Test.testSynchronize" />
+        <item itemvalue="JUnit.Test.testBuffer" />
+        <item itemvalue="JUnit.Test.testWrite" />
       </list>
     </recent_temporary>
   </component>
@@ -156,6 +238,8 @@
       <workItem from="1602616320867" duration="97000" />
       <workItem from="1602710458819" duration="258000" />
       <workItem from="1602878474341" duration="4109000" />
+      <workItem from="1603576855702" duration="209000" />
+      <workItem from="1603745831096" duration="5750000" />
     </task>
     <task id="LOCAL-00001" summary="Added pom.xml with a dependency">
       <created>1601602054767</created>
@@ -203,10 +287,10 @@
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="384" y="126" key="#Project_Structure/0.23.1792.1044@0.23.1792.1044" timestamp="1601507476999" />
-    <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser" timestamp="1602018982248">
+    <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser" timestamp="1603751515848">
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
-    <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1200@0.0.1920.1200" timestamp="1602018982248" />
+    <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1200@0.0.1920.1200" timestamp="1603751515848" />
     <state x="648" y="344" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1602536206642">
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
@@ -215,25 +299,30 @@
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="473" y="120" key="CommitChangelistDialog2/0.23.1792.1044@0.23.1792.1044" timestamp="1601602054576" />
-    <state width="1750" height="286" key="GridCell.Tab.0.bottom" timestamp="1601601636832">
-      <screen x="0" y="23" width="1792" height="1044" />
+    <state width="1878" height="344" key="GridCell.Tab.0.bottom" timestamp="1603752391685">
+      <screen x="0" y="0" width="1920" height="1200" />
     </state>
+    <state width="1878" height="344" key="GridCell.Tab.0.bottom/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391685" />
     <state width="1750" height="286" key="GridCell.Tab.0.bottom/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636832" />
-    <state width="1750" height="286" key="GridCell.Tab.0.center" timestamp="1601601636831">
-      <screen x="0" y="23" width="1792" height="1044" />
+    <state width="1878" height="344" key="GridCell.Tab.0.center" timestamp="1603752391683">
+      <screen x="0" y="0" width="1920" height="1200" />
     </state>
+    <state width="1878" height="344" key="GridCell.Tab.0.center/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391683" />
     <state width="1750" height="286" key="GridCell.Tab.0.center/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
-    <state width="1750" height="286" key="GridCell.Tab.0.left" timestamp="1601601636831">
-      <screen x="0" y="23" width="1792" height="1044" />
+    <state width="1878" height="344" key="GridCell.Tab.0.left" timestamp="1603752391682">
+      <screen x="0" y="0" width="1920" height="1200" />
     </state>
+    <state width="1878" height="344" key="GridCell.Tab.0.left/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391682" />
     <state width="1750" height="286" key="GridCell.Tab.0.left/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
-    <state width="1750" height="286" key="GridCell.Tab.0.right" timestamp="1601601636831">
-      <screen x="0" y="23" width="1792" height="1044" />
+    <state width="1878" height="344" key="GridCell.Tab.0.right" timestamp="1603752391684">
+      <screen x="0" y="0" width="1920" height="1200" />
     </state>
+    <state width="1878" height="344" key="GridCell.Tab.0.right/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391684" />
     <state width="1750" height="286" key="GridCell.Tab.0.right/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
-    <state x="450" y="41" key="SettingsEditor" timestamp="1601508817826">
-      <screen x="0" y="23" width="1792" height="1044" />
+    <state x="482" y="21" key="SettingsEditor" timestamp="1603489036397">
+      <screen x="0" y="0" width="1920" height="1200" />
     </state>
+    <state x="482" y="21" key="SettingsEditor/0.0.1920.1200@0.0.1920.1200" timestamp="1603489036397" />
     <state x="450" y="41" key="SettingsEditor/0.23.1792.1044@0.23.1792.1044" timestamp="1601508817826" />
     <state x="593" y="444" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1601507272007">
       <screen x="0" y="23" width="1792" height="1044" />
@@ -247,9 +336,10 @@
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="264" y="167" key="new project wizard/0.23.1792.1044@0.23.1792.1044" timestamp="1601507379153" />
-    <state x="561" y="255" width="670" height="676" key="search.everywhere.popup" timestamp="1601508295136">
-      <screen x="0" y="23" width="1792" height="1044" />
+    <state x="601" y="267" width="718" height="778" key="search.everywhere.popup" timestamp="1603489029691">
+      <screen x="0" y="0" width="1920" height="1200" />
     </state>
+    <state x="601" y="267" width="718" height="778" key="search.everywhere.popup/0.0.1920.1200@0.0.1920.1200" timestamp="1603489029691" />
     <state x="561" y="255" width="670" height="676" key="search.everywhere.popup/0.23.1792.1044@0.23.1792.1044" timestamp="1601508295136" />
   </component>
 </project>
