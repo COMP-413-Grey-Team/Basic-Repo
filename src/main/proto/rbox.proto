@@ -1,11 +1,33 @@
 syntax = "proto3";
 
-// add in messages here
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
+// add in messages here
+message ReplicationMessage {
+	google.protobuf.Timestamp timestamp = 1;
+	string originSuperpeerUUID = 2;
+	string targetObjectUUID = 3;
+}
+
+message SubscribeRequest {
+	ReplicationMessage msg = 1;
+}
+
+message UnsubscribeRequest {
+	ReplicationMessage msg  = 1;
+}
+
+message UpdateMessage {
+	ReplicationMessage msg  = 1;
+	bytes remoteChange = 2;
+}
 
 // this is the ONLY service defined (all RPCs go here)
 service RBoxService {
+    // Replication
+    rpc handleSubscribe(SubscribeRequest) returns (UpdateMessage);
+  	rpc handleUpdate(UpdateMessage) returns (google.protobuf.Empty);
+    rpc handleUnsubscribe(UnsubscribeRequest) returns (google.protobuf.Empty);
 
-  // Define a RPC operation
-  rpc connectTo(ServerInformation) returns (ConnectionConfirmation);
 }
