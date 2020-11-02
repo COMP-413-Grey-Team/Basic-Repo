@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+
+message PlayerUUID {
+    string playerID = 1;
+}
+
+
+message CoinState {
+    double x = 0;
+    double y = 0;
+}
+
+
+message PlayerState {
+    string name = 1;
+    string color = 2;
+    string score = 3;
+    double x = 0;
+    double y = 0;
+}
+
+
+message InitialPlayerState {
+    string name = 1;
+    string color = 2;
+}
+
+
+message UpdateFromClient {
+    string gameObjectUUID = 1;
+    PlayerState playerState = 3;
+    repeated string = 2;
+    string timestamp = 4;
+}
+
+message UpdateFromServer {
+    map<string, PlayerState> playerStates = 1;
+    map<string, CoinState> coinStates = 2;
+    string timestamp = 3;
+}
+
+message Empty {
+
+}
+
+
+message SuperPeerInfo {
+    string hostname = 1;
+}
+
+
+message InitPlayerResponse {
+    string playerUUID = 1;
+    UpdateFromServer initialState = 2;
+}
+
+
+service GameServer {
+   rpc publishUpdate(UpdateFromClient) returns UpdateFromServer;
+   rpc getAssignedSuperPeer(Empty) returns SuperPeerInfo;
+   rpc initPlayer(InitialPlayerState) returns UpdateFromServer;
+   rpc removeMe(PlayerUUID) returns Empty;
+}
