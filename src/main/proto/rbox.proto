@@ -26,7 +26,6 @@ message UpdateMessage {
 message CreatePrimaryRequest {
 	ReplicationMessage msg = 1;
 	map<string, bytes> interestingFields = 2;
-	string predicate = 3;
 }
 
 message DeletePrimaryRequest {
