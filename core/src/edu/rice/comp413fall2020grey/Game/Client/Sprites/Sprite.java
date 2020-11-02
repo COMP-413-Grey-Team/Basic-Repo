@@ -1,4 +1,4 @@
-package edu.rice.comp413fall2020grey.Game.Common.Sprites;
+package edu.rice.comp413fall2020grey.Game.Client.Sprites;
 
 import java.awt.*;
 
