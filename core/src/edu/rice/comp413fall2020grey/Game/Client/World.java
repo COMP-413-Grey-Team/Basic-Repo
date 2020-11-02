@@ -1,8 +1,9 @@
 package edu.rice.comp413fall2020grey.Game.Client;
 
-import edu.rice.comp413fall2020grey.Game.Common.Sprites.CoinSprite;
-import edu.rice.comp413fall2020grey.Game.Common.Sprites.Players.LocalPlayerSprite;
-import edu.rice.comp413fall2020grey.Game.Common.Sprites.Players.RemotePlayerSprite;
+import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
+import edu.rice.comp413fall2020grey.Game.Client.Sprites.CoinSprite;
+import edu.rice.comp413fall2020grey.Game.Client.Sprites.Players.LocalPlayerSprite;
+import edu.rice.comp413fall2020grey.Game.Client.Sprites.Players.RemotePlayerSprite;
 import edu.rice.comp413fall2020grey.Game.Common.SyncState.CoinState;
 import edu.rice.comp413fall2020grey.Game.Common.SyncState.GameStateDelta;
 import edu.rice.comp413fall2020grey.Game.Common.SyncState.PlayerState;
@@ -15,7 +16,6 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -33,24 +33,24 @@ public class World extends JPanel {
   });
 
   // Local State
-  private final UUID playerUUID = UUID.randomUUID();
+  private final GameObjectUUID playerUUID = GameObjectUUID.randomUUID();
   private LocalPlayerSprite player;
-  private Map<UUID, RemotePlayerSprite> otherPlayers = new HashMap<>();
-  private Map<UUID, CoinSprite> coins = new HashMap<>();
+  private Map<GameObjectUUID, RemotePlayerSprite> otherPlayers = new HashMap<>();
+  private Map<GameObjectUUID, CoinSprite> coins = new HashMap<>();
 
   // Local changes that need to be synced to the server
-  private HashSet<UUID> deletedCoins = new HashSet<>();
+  private HashSet<GameObjectUUID> deletedCoins = new HashSet<>();
 
   // Remote changes that have yet to be merged locally
-  private HashMap<UUID, PlayerState> updatedPlayers = new HashMap<>();
-  private HashMap<UUID, CoinState> newCoins = new HashMap<>();
+  private HashMap<GameObjectUUID, PlayerState> updatedPlayers = new HashMap<>();
+  private HashMap<GameObjectUUID, CoinState> newCoins = new HashMap<>();
 
   private final KeyState keyState = new KeyState();
 
   public World(PlayerState playerState) { // TODO: add arguments so server can set initial state
     this.player = new LocalPlayerSprite(playerState.color, playerState.x, playerState.y, playerState.score, playerState.name, keyState);
     for (int i = 0; i < 20; i++) {
-      coins.put(UUID.randomUUID(), randomCoin());
+      coins.put(GameObjectUUID.randomUUID(), randomCoin());
     }
     initWorld();
   }
@@ -127,7 +127,7 @@ public class World extends JPanel {
     deletedCoins = new HashSet<>();
   }
 
-  private void handleServerUpdatesAsynchronously(HashMap<UUID, PlayerState> playerStates, HashMap<UUID, CoinState> coinStates) {
+  private void handleServerUpdatesAsynchronously(HashMap<GameObjectUUID, PlayerState> playerStates, HashMap<GameObjectUUID, CoinState> coinStates) {
     playerStates.forEach(updatedPlayers::put);
     coinStates.forEach(newCoins::put);
   }

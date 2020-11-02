@@ -1,17 +1,18 @@
 package edu.rice.comp413fall2020grey.Game.Common.SyncState;
 
+import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
+
 import java.util.HashSet;
-import java.util.UUID;
 
 // Sent from client to server
 public class GameStateDelta {
 
-  public UUID playerUUID;
+  public GameObjectUUID playerUUID;
   public PlayerState updatedPlayerState;
 
-  public HashSet<UUID> deletedCoins;
+  public HashSet<GameObjectUUID> deletedCoins;
 
-  public GameStateDelta(UUID playerUUID, PlayerState updatedPlayerState, HashSet<UUID> deletedCoins) {
+  public GameStateDelta(GameObjectUUID playerUUID, PlayerState updatedPlayerState, HashSet<GameObjectUUID> deletedCoins) {
     this.playerUUID = playerUUID;
     this.updatedPlayerState = updatedPlayerState;
     this.deletedCoins = deletedCoins;

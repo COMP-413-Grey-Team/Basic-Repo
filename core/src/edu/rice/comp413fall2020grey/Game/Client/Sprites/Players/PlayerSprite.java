@@ -1,13 +1,12 @@
-package edu.rice.comp413fall2020grey.Game.Common.Sprites.Players;
+package edu.rice.comp413fall2020grey.Game.Client.Sprites.Players;
 
-import edu.rice.comp413fall2020grey.Game.Common.Sprites.CoinSprite;
-import edu.rice.comp413fall2020grey.Game.Common.Sprites.Sprite;
+import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
+import edu.rice.comp413fall2020grey.Game.Client.Sprites.CoinSprite;
+import edu.rice.comp413fall2020grey.Game.Client.Sprites.Sprite;
 
 import java.awt.*;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public abstract class PlayerSprite extends Sprite {
@@ -72,8 +71,8 @@ public abstract class PlayerSprite extends Sprite {
     this.color = color;
   }
 
-  public Set<UUID> checkCoinCollisions(Map<UUID, CoinSprite> coins) {
-    final Set<UUID> collected = coins.entrySet()
+  public Set<GameObjectUUID> checkCoinCollisions(Map<GameObjectUUID, CoinSprite> coins) {
+    final Set<GameObjectUUID> collected = coins.entrySet()
                                     .stream()
                                     .filter(coin -> {
                                       final CoinSprite sprite = coin.getValue();

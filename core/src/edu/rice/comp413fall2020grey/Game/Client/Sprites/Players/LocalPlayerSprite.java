@@ -1,4 +1,4 @@
-package edu.rice.comp413fall2020grey.Game.Common.Sprites.Players;
+package edu.rice.comp413fall2020grey.Game.Client.Sprites.Players;
 
 import edu.rice.comp413fall2020grey.Game.Common.SyncState.PlayerState;
 import edu.rice.comp413fall2020grey.Game.Common.Utils.KeyState;
