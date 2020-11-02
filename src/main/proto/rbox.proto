@@ -23,6 +23,8 @@ message UpdateMessage {
 	bytes remoteChange = 2;
 }
 
+
+
 // this is the ONLY service defined (all RPCs go here)
 service RBoxService {
     // Replication
