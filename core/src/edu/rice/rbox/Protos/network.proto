@@ -1,0 +1,29 @@
+syntax = "proto3";
+//option java_multiple_files = true;
+package core.src.edu.rice.rbox.Networking;
+
+
+// Request payload
+message ServerInformation {
+  // Each message attribute is strongly typed.
+  // You also must assign a "tag" number.
+  // Each tag number is unique within the message.
+  string server_name = 1;
+
+  // This defines a strongly typed list of String
+  string server_type = 2;
+
+  // There are many more basics types, like Enum, Map
+  // See https://developers.google.com/protocol-buffers/docs/proto3
+  // for more information.
+}
+
+message ConnectionConfirmation {
+  string confirmation = 1;
+}
+
+// Defining a Service, a Service can have multiple RPC operations
+service ConnectionService {
+  // Define a RPC operation
+  rpc connectTo(ServerInformation) returns (ConnectionConfirmation);
+}
