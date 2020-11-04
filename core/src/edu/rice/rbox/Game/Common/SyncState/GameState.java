@@ -1,5 +1,6 @@
 package edu.rice.rbox.Game.Common.SyncState;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.UUID;
@@ -9,12 +10,14 @@ public class GameState implements Serializable {
 
   public final HashMap<UUID, PlayerState> playerStates;
   public final HashMap<UUID, CoinState> coinStates;
+  public final Color backgroundColor;
 
-  public GameState(HashMap<UUID, PlayerState>
-                       playerStates,
-                   HashMap<UUID, CoinState> coinStates) {
+  public GameState(HashMap<UUID, PlayerState> playerStates,
+                   HashMap<UUID, CoinState> coinStates,
+                   Color backgroundColor) {
     this.playerStates = playerStates;
     this.coinStates = coinStates;
+    this.backgroundColor = backgroundColor;
   }
 
 }

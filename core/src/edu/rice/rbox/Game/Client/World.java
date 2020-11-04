@@ -126,7 +126,8 @@ public class World extends JPanel {
 
   private void sendUpdatesToServerAsynchronously() {
     // TODO: send this to the server
-    new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins);
+    // TODO: add doors on left and right, with collision detection. Pass in that as the last parameter.
+    new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, GameStateDelta.MovingRooms.NOT);
 
     deletedCoins = new HashSet<>();
   }
