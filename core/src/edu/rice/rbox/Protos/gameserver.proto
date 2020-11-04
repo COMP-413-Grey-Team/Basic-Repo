@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+option java_outer_classname = "GameNetworkProto";
 
 message PlayerUUID {
     string playerID = 1;
