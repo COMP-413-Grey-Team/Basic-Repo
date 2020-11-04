@@ -1,7 +1,5 @@
 syntax = "proto3";
 //option java_multiple_files = true;
-package core.src.edu.rice.comp413fall2020grey.Networking;
-
 
 // Request payload
 message ServerInformation {

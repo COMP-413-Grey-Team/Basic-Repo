@@ -2676,6 +2676,1475 @@ public final class Rbox {
 
   }
 
+  public interface CreatePrimaryRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:CreatePrimaryRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    boolean hasMsg();
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    Rbox.ReplicationMessage getMsg();
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    Rbox.ReplicationMessageOrBuilder getMsgOrBuilder();
+
+    /**
+     * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+     */
+    int getInterestingFieldsCount();
+    /**
+     * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+     */
+    boolean containsInterestingFields(
+        java.lang.String key);
+    /**
+     * Use {@link #getInterestingFieldsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, com.google.protobuf.ByteString>
+    getInterestingFields();
+    /**
+     * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+     */
+    java.util.Map<java.lang.String, com.google.protobuf.ByteString>
+    getInterestingFieldsMap();
+    /**
+     * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+     */
+
+    com.google.protobuf.ByteString getInterestingFieldsOrDefault(
+        java.lang.String key,
+        com.google.protobuf.ByteString defaultValue);
+    /**
+     * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+     */
+
+    com.google.protobuf.ByteString getInterestingFieldsOrThrow(
+        java.lang.String key);
+  }
+  /**
+   * Protobuf type {@code CreatePrimaryRequest}
+   */
+  public  static final class CreatePrimaryRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:CreatePrimaryRequest)
+      CreatePrimaryRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use CreatePrimaryRequest.newBuilder() to construct.
+    private CreatePrimaryRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private CreatePrimaryRequest() {
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private CreatePrimaryRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              Rbox.ReplicationMessage.Builder subBuilder = null;
+              if (msg_ != null) {
+                subBuilder = msg_.toBuilder();
+              }
+              msg_ = input.readMessage(Rbox.ReplicationMessage.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(msg_);
+                msg_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                interestingFields_ = com.google.protobuf.MapField.newMapField(
+                    InterestingFieldsDefaultEntryHolder.defaultEntry);
+                mutable_bitField0_ |= 0x00000002;
+              }
+              com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ByteString>
+              interestingFields__ = input.readMessage(
+                  InterestingFieldsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              interestingFields_.getMutableMap().put(
+                  interestingFields__.getKey(), interestingFields__.getValue());
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return Rbox.internal_static_CreatePrimaryRequest_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapField internalGetMapField(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetInterestingFields();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return Rbox.internal_static_CreatePrimaryRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              Rbox.CreatePrimaryRequest.class, Rbox.CreatePrimaryRequest.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int MSG_FIELD_NUMBER = 1;
+    private Rbox.ReplicationMessage msg_;
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    public boolean hasMsg() {
+      return msg_ != null;
+    }
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    public Rbox.ReplicationMessage getMsg() {
+      return msg_ == null ? Rbox.ReplicationMessage.getDefaultInstance() : msg_;
+    }
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    public Rbox.ReplicationMessageOrBuilder getMsgOrBuilder() {
+      return getMsg();
+    }
+
+    public static final int INTERESTINGFIELDS_FIELD_NUMBER = 2;
+    private static final class InterestingFieldsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, com.google.protobuf.ByteString> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, com.google.protobuf.ByteString>newDefaultInstance(
+                  Rbox.internal_static_CreatePrimaryRequest_InterestingFieldsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.BYTES,
+                  com.google.protobuf.ByteString.EMPTY);
+    }
+    private com.google.protobuf.MapField<
+        java.lang.String, com.google.protobuf.ByteString> interestingFields_;
+    private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ByteString>
+    internalGetInterestingFields() {
+      if (interestingFields_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            InterestingFieldsDefaultEntryHolder.defaultEntry);
+      }
+      return interestingFields_;
+    }
+
+    public int getInterestingFieldsCount() {
+      return internalGetInterestingFields().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+     */
+
+    public boolean containsInterestingFields(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      return internalGetInterestingFields().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getInterestingFieldsMap()} instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, com.google.protobuf.ByteString> getInterestingFields() {
+      return getInterestingFieldsMap();
+    }
+    /**
+     * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+     */
+
+    public java.util.Map<java.lang.String, com.google.protobuf.ByteString> getInterestingFieldsMap() {
+      return internalGetInterestingFields().getMap();
+    }
+    /**
+     * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+     */
+
+    public com.google.protobuf.ByteString getInterestingFieldsOrDefault(
+        java.lang.String key,
+        com.google.protobuf.ByteString defaultValue) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, com.google.protobuf.ByteString> map =
+          internalGetInterestingFields().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+     */
+
+    public com.google.protobuf.ByteString getInterestingFieldsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new java.lang.NullPointerException(); }
+      java.util.Map<java.lang.String, com.google.protobuf.ByteString> map =
+          internalGetInterestingFields().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (msg_ != null) {
+        output.writeMessage(1, getMsg());
+      }
+      com.google.protobuf.GeneratedMessageV3
+        .serializeStringMapTo(
+          output,
+          internalGetInterestingFields(),
+          InterestingFieldsDefaultEntryHolder.defaultEntry,
+          2);
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (msg_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getMsg());
+      }
+      for (java.util.Map.Entry<java.lang.String, com.google.protobuf.ByteString> entry
+           : internalGetInterestingFields().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, com.google.protobuf.ByteString>
+        interestingFields__ = InterestingFieldsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, interestingFields__);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof Rbox.CreatePrimaryRequest)) {
+        return super.equals(obj);
+      }
+      Rbox.CreatePrimaryRequest other = (Rbox.CreatePrimaryRequest) obj;
+
+      boolean result = true;
+      result = result && (hasMsg() == other.hasMsg());
+      if (hasMsg()) {
+        result = result && getMsg()
+            .equals(other.getMsg());
+      }
+      result = result && internalGetInterestingFields().equals(
+          other.internalGetInterestingFields());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasMsg()) {
+        hash = (37 * hash) + MSG_FIELD_NUMBER;
+        hash = (53 * hash) + getMsg().hashCode();
+      }
+      if (!internalGetInterestingFields().getMap().isEmpty()) {
+        hash = (37 * hash) + INTERESTINGFIELDS_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetInterestingFields().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static Rbox.CreatePrimaryRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static Rbox.CreatePrimaryRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static Rbox.CreatePrimaryRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static Rbox.CreatePrimaryRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static Rbox.CreatePrimaryRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static Rbox.CreatePrimaryRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static Rbox.CreatePrimaryRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static Rbox.CreatePrimaryRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static Rbox.CreatePrimaryRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static Rbox.CreatePrimaryRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static Rbox.CreatePrimaryRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static Rbox.CreatePrimaryRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(Rbox.CreatePrimaryRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code CreatePrimaryRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:CreatePrimaryRequest)
+        Rbox.CreatePrimaryRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return Rbox.internal_static_CreatePrimaryRequest_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetInterestingFields();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapField internalGetMutableMapField(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetMutableInterestingFields();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return Rbox.internal_static_CreatePrimaryRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                Rbox.CreatePrimaryRequest.class, Rbox.CreatePrimaryRequest.Builder.class);
+      }
+
+      // Construct using Rbox.CreatePrimaryRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (msgBuilder_ == null) {
+          msg_ = null;
+        } else {
+          msg_ = null;
+          msgBuilder_ = null;
+        }
+        internalGetMutableInterestingFields().clear();
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return Rbox.internal_static_CreatePrimaryRequest_descriptor;
+      }
+
+      public Rbox.CreatePrimaryRequest getDefaultInstanceForType() {
+        return Rbox.CreatePrimaryRequest.getDefaultInstance();
+      }
+
+      public Rbox.CreatePrimaryRequest build() {
+        Rbox.CreatePrimaryRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public Rbox.CreatePrimaryRequest buildPartial() {
+        Rbox.CreatePrimaryRequest result = new Rbox.CreatePrimaryRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (msgBuilder_ == null) {
+          result.msg_ = msg_;
+        } else {
+          result.msg_ = msgBuilder_.build();
+        }
+        result.interestingFields_ = internalGetInterestingFields();
+        result.interestingFields_.makeImmutable();
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof Rbox.CreatePrimaryRequest) {
+          return mergeFrom((Rbox.CreatePrimaryRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(Rbox.CreatePrimaryRequest other) {
+        if (other == Rbox.CreatePrimaryRequest.getDefaultInstance()) return this;
+        if (other.hasMsg()) {
+          mergeMsg(other.getMsg());
+        }
+        internalGetMutableInterestingFields().mergeFrom(
+            other.internalGetInterestingFields());
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        Rbox.CreatePrimaryRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (Rbox.CreatePrimaryRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private Rbox.ReplicationMessage msg_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          Rbox.ReplicationMessage, Rbox.ReplicationMessage.Builder, Rbox.ReplicationMessageOrBuilder> msgBuilder_;
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public boolean hasMsg() {
+        return msgBuilder_ != null || msg_ != null;
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Rbox.ReplicationMessage getMsg() {
+        if (msgBuilder_ == null) {
+          return msg_ == null ? Rbox.ReplicationMessage.getDefaultInstance() : msg_;
+        } else {
+          return msgBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Builder setMsg(Rbox.ReplicationMessage value) {
+        if (msgBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          msg_ = value;
+          onChanged();
+        } else {
+          msgBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Builder setMsg(
+          Rbox.ReplicationMessage.Builder builderForValue) {
+        if (msgBuilder_ == null) {
+          msg_ = builderForValue.build();
+          onChanged();
+        } else {
+          msgBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Builder mergeMsg(Rbox.ReplicationMessage value) {
+        if (msgBuilder_ == null) {
+          if (msg_ != null) {
+            msg_ =
+              Rbox.ReplicationMessage.newBuilder(msg_).mergeFrom(value).buildPartial();
+          } else {
+            msg_ = value;
+          }
+          onChanged();
+        } else {
+          msgBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Builder clearMsg() {
+        if (msgBuilder_ == null) {
+          msg_ = null;
+          onChanged();
+        } else {
+          msg_ = null;
+          msgBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Rbox.ReplicationMessage.Builder getMsgBuilder() {
+        
+        onChanged();
+        return getMsgFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Rbox.ReplicationMessageOrBuilder getMsgOrBuilder() {
+        if (msgBuilder_ != null) {
+          return msgBuilder_.getMessageOrBuilder();
+        } else {
+          return msg_ == null ?
+              Rbox.ReplicationMessage.getDefaultInstance() : msg_;
+        }
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          Rbox.ReplicationMessage, Rbox.ReplicationMessage.Builder, Rbox.ReplicationMessageOrBuilder> 
+          getMsgFieldBuilder() {
+        if (msgBuilder_ == null) {
+          msgBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              Rbox.ReplicationMessage, Rbox.ReplicationMessage.Builder, Rbox.ReplicationMessageOrBuilder>(
+                  getMsg(),
+                  getParentForChildren(),
+                  isClean());
+          msg_ = null;
+        }
+        return msgBuilder_;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, com.google.protobuf.ByteString> interestingFields_;
+      private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ByteString>
+      internalGetInterestingFields() {
+        if (interestingFields_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              InterestingFieldsDefaultEntryHolder.defaultEntry);
+        }
+        return interestingFields_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, com.google.protobuf.ByteString>
+      internalGetMutableInterestingFields() {
+        onChanged();;
+        if (interestingFields_ == null) {
+          interestingFields_ = com.google.protobuf.MapField.newMapField(
+              InterestingFieldsDefaultEntryHolder.defaultEntry);
+        }
+        if (!interestingFields_.isMutable()) {
+          interestingFields_ = interestingFields_.copy();
+        }
+        return interestingFields_;
+      }
+
+      public int getInterestingFieldsCount() {
+        return internalGetInterestingFields().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+       */
+
+      public boolean containsInterestingFields(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        return internalGetInterestingFields().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getInterestingFieldsMap()} instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, com.google.protobuf.ByteString> getInterestingFields() {
+        return getInterestingFieldsMap();
+      }
+      /**
+       * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+       */
+
+      public java.util.Map<java.lang.String, com.google.protobuf.ByteString> getInterestingFieldsMap() {
+        return internalGetInterestingFields().getMap();
+      }
+      /**
+       * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+       */
+
+      public com.google.protobuf.ByteString getInterestingFieldsOrDefault(
+          java.lang.String key,
+          com.google.protobuf.ByteString defaultValue) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, com.google.protobuf.ByteString> map =
+            internalGetInterestingFields().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+       */
+
+      public com.google.protobuf.ByteString getInterestingFieldsOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        java.util.Map<java.lang.String, com.google.protobuf.ByteString> map =
+            internalGetInterestingFields().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearInterestingFields() {
+        internalGetMutableInterestingFields().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+       */
+
+      public Builder removeInterestingFields(
+          java.lang.String key) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableInterestingFields().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, com.google.protobuf.ByteString>
+      getMutableInterestingFields() {
+        return internalGetMutableInterestingFields().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+       */
+      public Builder putInterestingFields(
+          java.lang.String key,
+          com.google.protobuf.ByteString value) {
+        if (key == null) { throw new java.lang.NullPointerException(); }
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableInterestingFields().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;string, bytes&gt; interestingFields = 2;</code>
+       */
+
+      public Builder putAllInterestingFields(
+          java.util.Map<java.lang.String, com.google.protobuf.ByteString> values) {
+        internalGetMutableInterestingFields().getMutableMap()
+            .putAll(values);
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:CreatePrimaryRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:CreatePrimaryRequest)
+    private static final Rbox.CreatePrimaryRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new Rbox.CreatePrimaryRequest();
+    }
+
+    public static Rbox.CreatePrimaryRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<CreatePrimaryRequest>
+        PARSER = new com.google.protobuf.AbstractParser<CreatePrimaryRequest>() {
+      public CreatePrimaryRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new CreatePrimaryRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<CreatePrimaryRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<CreatePrimaryRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public Rbox.CreatePrimaryRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface DeletePrimaryRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:DeletePrimaryRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    boolean hasMsg();
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    Rbox.ReplicationMessage getMsg();
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    Rbox.ReplicationMessageOrBuilder getMsgOrBuilder();
+  }
+  /**
+   * Protobuf type {@code DeletePrimaryRequest}
+   */
+  public  static final class DeletePrimaryRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:DeletePrimaryRequest)
+      DeletePrimaryRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use DeletePrimaryRequest.newBuilder() to construct.
+    private DeletePrimaryRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private DeletePrimaryRequest() {
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private DeletePrimaryRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              Rbox.ReplicationMessage.Builder subBuilder = null;
+              if (msg_ != null) {
+                subBuilder = msg_.toBuilder();
+              }
+              msg_ = input.readMessage(Rbox.ReplicationMessage.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(msg_);
+                msg_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return Rbox.internal_static_DeletePrimaryRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return Rbox.internal_static_DeletePrimaryRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              Rbox.DeletePrimaryRequest.class, Rbox.DeletePrimaryRequest.Builder.class);
+    }
+
+    public static final int MSG_FIELD_NUMBER = 1;
+    private Rbox.ReplicationMessage msg_;
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    public boolean hasMsg() {
+      return msg_ != null;
+    }
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    public Rbox.ReplicationMessage getMsg() {
+      return msg_ == null ? Rbox.ReplicationMessage.getDefaultInstance() : msg_;
+    }
+    /**
+     * <code>.ReplicationMessage msg = 1;</code>
+     */
+    public Rbox.ReplicationMessageOrBuilder getMsgOrBuilder() {
+      return getMsg();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (msg_ != null) {
+        output.writeMessage(1, getMsg());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (msg_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getMsg());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof Rbox.DeletePrimaryRequest)) {
+        return super.equals(obj);
+      }
+      Rbox.DeletePrimaryRequest other = (Rbox.DeletePrimaryRequest) obj;
+
+      boolean result = true;
+      result = result && (hasMsg() == other.hasMsg());
+      if (hasMsg()) {
+        result = result && getMsg()
+            .equals(other.getMsg());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasMsg()) {
+        hash = (37 * hash) + MSG_FIELD_NUMBER;
+        hash = (53 * hash) + getMsg().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static Rbox.DeletePrimaryRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static Rbox.DeletePrimaryRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static Rbox.DeletePrimaryRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static Rbox.DeletePrimaryRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static Rbox.DeletePrimaryRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static Rbox.DeletePrimaryRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static Rbox.DeletePrimaryRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static Rbox.DeletePrimaryRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static Rbox.DeletePrimaryRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static Rbox.DeletePrimaryRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static Rbox.DeletePrimaryRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static Rbox.DeletePrimaryRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(Rbox.DeletePrimaryRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code DeletePrimaryRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:DeletePrimaryRequest)
+        Rbox.DeletePrimaryRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return Rbox.internal_static_DeletePrimaryRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return Rbox.internal_static_DeletePrimaryRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                Rbox.DeletePrimaryRequest.class, Rbox.DeletePrimaryRequest.Builder.class);
+      }
+
+      // Construct using Rbox.DeletePrimaryRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (msgBuilder_ == null) {
+          msg_ = null;
+        } else {
+          msg_ = null;
+          msgBuilder_ = null;
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return Rbox.internal_static_DeletePrimaryRequest_descriptor;
+      }
+
+      public Rbox.DeletePrimaryRequest getDefaultInstanceForType() {
+        return Rbox.DeletePrimaryRequest.getDefaultInstance();
+      }
+
+      public Rbox.DeletePrimaryRequest build() {
+        Rbox.DeletePrimaryRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public Rbox.DeletePrimaryRequest buildPartial() {
+        Rbox.DeletePrimaryRequest result = new Rbox.DeletePrimaryRequest(this);
+        if (msgBuilder_ == null) {
+          result.msg_ = msg_;
+        } else {
+          result.msg_ = msgBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof Rbox.DeletePrimaryRequest) {
+          return mergeFrom((Rbox.DeletePrimaryRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(Rbox.DeletePrimaryRequest other) {
+        if (other == Rbox.DeletePrimaryRequest.getDefaultInstance()) return this;
+        if (other.hasMsg()) {
+          mergeMsg(other.getMsg());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        Rbox.DeletePrimaryRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (Rbox.DeletePrimaryRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private Rbox.ReplicationMessage msg_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          Rbox.ReplicationMessage, Rbox.ReplicationMessage.Builder, Rbox.ReplicationMessageOrBuilder> msgBuilder_;
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public boolean hasMsg() {
+        return msgBuilder_ != null || msg_ != null;
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Rbox.ReplicationMessage getMsg() {
+        if (msgBuilder_ == null) {
+          return msg_ == null ? Rbox.ReplicationMessage.getDefaultInstance() : msg_;
+        } else {
+          return msgBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Builder setMsg(Rbox.ReplicationMessage value) {
+        if (msgBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          msg_ = value;
+          onChanged();
+        } else {
+          msgBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Builder setMsg(
+          Rbox.ReplicationMessage.Builder builderForValue) {
+        if (msgBuilder_ == null) {
+          msg_ = builderForValue.build();
+          onChanged();
+        } else {
+          msgBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Builder mergeMsg(Rbox.ReplicationMessage value) {
+        if (msgBuilder_ == null) {
+          if (msg_ != null) {
+            msg_ =
+              Rbox.ReplicationMessage.newBuilder(msg_).mergeFrom(value).buildPartial();
+          } else {
+            msg_ = value;
+          }
+          onChanged();
+        } else {
+          msgBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Builder clearMsg() {
+        if (msgBuilder_ == null) {
+          msg_ = null;
+          onChanged();
+        } else {
+          msg_ = null;
+          msgBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Rbox.ReplicationMessage.Builder getMsgBuilder() {
+        
+        onChanged();
+        return getMsgFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      public Rbox.ReplicationMessageOrBuilder getMsgOrBuilder() {
+        if (msgBuilder_ != null) {
+          return msgBuilder_.getMessageOrBuilder();
+        } else {
+          return msg_ == null ?
+              Rbox.ReplicationMessage.getDefaultInstance() : msg_;
+        }
+      }
+      /**
+       * <code>.ReplicationMessage msg = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          Rbox.ReplicationMessage, Rbox.ReplicationMessage.Builder, Rbox.ReplicationMessageOrBuilder> 
+          getMsgFieldBuilder() {
+        if (msgBuilder_ == null) {
+          msgBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              Rbox.ReplicationMessage, Rbox.ReplicationMessage.Builder, Rbox.ReplicationMessageOrBuilder>(
+                  getMsg(),
+                  getParentForChildren(),
+                  isClean());
+          msg_ = null;
+        }
+        return msgBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:DeletePrimaryRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:DeletePrimaryRequest)
+    private static final Rbox.DeletePrimaryRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new Rbox.DeletePrimaryRequest();
+    }
+
+    public static Rbox.DeletePrimaryRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<DeletePrimaryRequest>
+        PARSER = new com.google.protobuf.AbstractParser<DeletePrimaryRequest>() {
+      public DeletePrimaryRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new DeletePrimaryRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<DeletePrimaryRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DeletePrimaryRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public Rbox.DeletePrimaryRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_ReplicationMessage_descriptor;
   private static final 
@@ -2696,6 +4165,21 @@ public final class Rbox {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_UpdateMessage_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_CreatePrimaryRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_CreatePrimaryRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_CreatePrimaryRequest_InterestingFieldsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_CreatePrimaryRequest_InterestingFieldsEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_DeletePrimaryRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_DeletePrimaryRequest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -2714,12 +4198,22 @@ public final class Rbox {
       "ationMessage\"6\n\022UnsubscribeRequest\022 \n\003ms" +
       "g\030\001 \001(\0132\023.ReplicationMessage\"G\n\rUpdateMe" +
       "ssage\022 \n\003msg\030\001 \001(\0132\023.ReplicationMessage\022" +
-      "\024\n\014remoteChange\030\002 \001(\0142\275\001\n\013RBoxService\0224\n",
-      "\017handleSubscribe\022\021.SubscribeRequest\032\016.Up" +
-      "dateMessage\0226\n\014handleUpdate\022\016.UpdateMess" +
-      "age\032\026.google.protobuf.Empty\022@\n\021handleUns" +
-      "ubscribe\022\023.UnsubscribeRequest\032\026.google.p" +
-      "rotobuf.Emptyb\006proto3"
+      "\024\n\014remoteChange\030\002 \001(\014\"\273\001\n\024CreatePrimaryR",
+      "equest\022 \n\003msg\030\001 \001(\0132\023.ReplicationMessage" +
+      "\022G\n\021interestingFields\030\002 \003(\0132,.CreatePrim" +
+      "aryRequest.InterestingFieldsEntry\0328\n\026Int" +
+      "erestingFieldsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005valu" +
+      "e\030\002 \001(\014:\0028\001\"8\n\024DeletePrimaryRequest\022 \n\003m" +
+      "sg\030\001 \001(\0132\023.ReplicationMessage2\311\002\n\013RBoxSe" +
+      "rvice\0224\n\017handleSubscribe\022\021.SubscribeRequ" +
+      "est\032\016.UpdateMessage\0226\n\014handleUpdate\022\016.Up" +
+      "dateMessage\032\026.google.protobuf.Empty\022@\n\021h" +
+      "andleUnsubscribe\022\023.UnsubscribeRequest\032\026.",
+      "google.protobuf.Empty\022D\n\023handleCreatePri" +
+      "mary\022\025.CreatePrimaryRequest\032\026.google.pro" +
+      "tobuf.Empty\022D\n\023handleDeletePrimary\022\025.Del" +
+      "etePrimaryRequest\032\026.google.protobuf.Empt" +
+      "yb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2759,6 +4253,24 @@ public final class Rbox {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_UpdateMessage_descriptor,
         new java.lang.String[] { "Msg", "RemoteChange", });
+    internal_static_CreatePrimaryRequest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_CreatePrimaryRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_CreatePrimaryRequest_descriptor,
+        new java.lang.String[] { "Msg", "InterestingFields", });
+    internal_static_CreatePrimaryRequest_InterestingFieldsEntry_descriptor =
+      internal_static_CreatePrimaryRequest_descriptor.getNestedTypes().get(0);
+    internal_static_CreatePrimaryRequest_InterestingFieldsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_CreatePrimaryRequest_InterestingFieldsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_DeletePrimaryRequest_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_DeletePrimaryRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_DeletePrimaryRequest_descriptor,
+        new java.lang.String[] { "Msg", });
     com.google.protobuf.TimestampProto.getDescriptor();
     com.google.protobuf.EmptyProto.getDescriptor();
   }
