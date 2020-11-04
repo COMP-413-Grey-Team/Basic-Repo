@@ -23,11 +23,23 @@ message UpdateMessage {
 	bytes remoteChange = 2;
 }
 
+message CreatePrimaryRequest {
+	ReplicationMessage msg = 1;
+	map<string, bytes> interestingFields = 2;
+}
+
+message DeletePrimaryRequest {
+	ReplicationMessage msg = 1;
+}
+
 // this is the ONLY service defined (all RPCs go here)
 service RBoxService {
-    // Replication
+    // Replication <=> Replication
     rpc handleSubscribe(SubscribeRequest) returns (UpdateMessage);
   	rpc handleUpdate(UpdateMessage) returns (google.protobuf.Empty);
     rpc handleUnsubscribe(UnsubscribeRequest) returns (google.protobuf.Empty);
 
+    // Replication => Registrar
+    rpc handleCreatePrimary(CreatePrimaryRequest) returns (google.protobuf.Empty);
+    rpc handleDeletePrimary(DeletePrimaryRequest) returns (google.protobuf.Empty);
 }
