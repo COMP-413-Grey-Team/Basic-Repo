@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package grpc.health.v1;
+import "google/protobuf/timestamp.proto";
+
+
+message BasicInfo {
+  string senderId = 1;
+  google.protobuf.Timestamp time = 2;
+}
+
+message HealthCheckRequest {
+   BasicInfo sender = 1;
+   string service = 2;
+}
+
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;  // Used only by the Watch method.
+  }
+  BasicInfo sender = 1;
+  ServingStatus status = 2;
+}
+
+service Health {
+  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
+
+  rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
+}
+
+message ElectionMessage {
+    BasicInfo sender = 1;
+    repeated BasicInfo log = 2;
+}
+
+message ElectedLeader {
+    BasicInfo sender = 1;
+    string electedUUID = 2;
+}
+
+message NewRegistrarMessage {
+    BasicInfo sender = 1;
+}
+
+service Election {
+    rpc Elect(ElectionMessage) returns (ElectedLeader);
+    rpc Alert(NewRegistrarMessage) returns (BasicInfo);
+}
+
+message PromoteSecondaryMessage {
+    BasicInfo sender = 1;
+    string promotedUUID = 2;
+}
+
+service Promotion {
+    rpc Promote(PromoteSecondaryMessage) returns (BasicInfo);
+}
+
+message ConnectMessage {
+    BasicInfo sender = 1;
+    string connectionIP = 2;
+}
+
+service Connection {
+    rpc Connect(ConnectMessage) returns (BasicInfo);
+}
