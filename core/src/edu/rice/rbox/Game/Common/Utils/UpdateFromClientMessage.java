@@ -13,11 +13,11 @@ public class UpdateFromClientMessage {
                                  HashSet<GameObjectUUID> deletedCoins, Integer movingRooms) {
     update.setGameObjectUUID(objectID);
     update.setMovingRoomsValue(movingRooms);
-    this.constructPlayerState(playerState);
+    this.constructPlayerMessage(playerState);
     this.constructDeletedCoins(deletedCoins);
   }
 
-  private void constructPlayerState(PlayerState playerState) {
+  private void constructPlayerMessage(PlayerState playerState) {
 
   }
 

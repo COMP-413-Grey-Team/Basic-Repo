@@ -1,10 +1,10 @@
 package edu.rice.rbox.Game.Common.Utils;
 
-import edu.rice.rbox.Protos.Generated.GameNetworkProto.PlayerState;
+import edu.rice.rbox.Protos.Generated.GameNetworkProto.PlayerMessage;
 
 public class PlayerStateMessage {
 
-  private final PlayerState.Builder state = PlayerState.newBuilder();
+  private final PlayerMessage.Builder state = PlayerMessage.newBuilder();
 
   public PlayerStateMessage(String color, String name, Integer score, Double x, Double y) {
     state.setColor(color);
@@ -14,7 +14,7 @@ public class PlayerStateMessage {
     state.setY(y);
   }
 
-  public PlayerState getPlayerStateMessage() {
+  public PlayerMessage getPlayerMessageMessage() {
     return this.state.build();
   }
 

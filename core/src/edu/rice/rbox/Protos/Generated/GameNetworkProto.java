@@ -13,8 +13,8 @@ public final class GameNetworkProto {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface PlayerUUIDOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:PlayerUUID)
+  public interface PlayerIDOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:PlayerID)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -28,18 +28,18 @@ public final class GameNetworkProto {
         getPlayerIDBytes();
   }
   /**
-   * Protobuf type {@code PlayerUUID}
+   * Protobuf type {@code PlayerID}
    */
-  public  static final class PlayerUUID extends
+  public  static final class PlayerID extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:PlayerUUID)
-      PlayerUUIDOrBuilder {
+      // @@protoc_insertion_point(message_implements:PlayerID)
+      PlayerIDOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use PlayerUUID.newBuilder() to construct.
-    private PlayerUUID(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use PlayerID.newBuilder() to construct.
+    private PlayerID(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private PlayerUUID() {
+    private PlayerID() {
       playerID_ = "";
     }
 
@@ -48,7 +48,7 @@ public final class GameNetworkProto {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private PlayerUUID(
+    private PlayerID(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -91,14 +91,14 @@ public final class GameNetworkProto {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return GameNetworkProto.internal_static_PlayerUUID_descriptor;
+      return GameNetworkProto.internal_static_PlayerID_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return GameNetworkProto.internal_static_PlayerUUID_fieldAccessorTable
+      return GameNetworkProto.internal_static_PlayerID_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              GameNetworkProto.PlayerUUID.class, GameNetworkProto.PlayerUUID.Builder.class);
+              GameNetworkProto.PlayerID.class, GameNetworkProto.PlayerID.Builder.class);
     }
 
     public static final int PLAYERID_FIELD_NUMBER = 1;
@@ -171,10 +171,10 @@ public final class GameNetworkProto {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof GameNetworkProto.PlayerUUID)) {
+      if (!(obj instanceof GameNetworkProto.PlayerID)) {
         return super.equals(obj);
       }
-      GameNetworkProto.PlayerUUID other = (GameNetworkProto.PlayerUUID) obj;
+      GameNetworkProto.PlayerID other = (GameNetworkProto.PlayerID) obj;
 
       boolean result = true;
       result = result && getPlayerID()
@@ -197,69 +197,69 @@ public final class GameNetworkProto {
       return hash;
     }
 
-    public static GameNetworkProto.PlayerUUID parseFrom(
+    public static GameNetworkProto.PlayerID parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static GameNetworkProto.PlayerUUID parseFrom(
+    public static GameNetworkProto.PlayerID parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static GameNetworkProto.PlayerUUID parseFrom(
+    public static GameNetworkProto.PlayerID parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static GameNetworkProto.PlayerUUID parseFrom(
+    public static GameNetworkProto.PlayerID parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static GameNetworkProto.PlayerUUID parseFrom(byte[] data)
+    public static GameNetworkProto.PlayerID parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static GameNetworkProto.PlayerUUID parseFrom(
+    public static GameNetworkProto.PlayerID parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static GameNetworkProto.PlayerUUID parseFrom(java.io.InputStream input)
+    public static GameNetworkProto.PlayerID parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static GameNetworkProto.PlayerUUID parseFrom(
+    public static GameNetworkProto.PlayerID parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static GameNetworkProto.PlayerUUID parseDelimitedFrom(java.io.InputStream input)
+    public static GameNetworkProto.PlayerID parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static GameNetworkProto.PlayerUUID parseDelimitedFrom(
+    public static GameNetworkProto.PlayerID parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static GameNetworkProto.PlayerUUID parseFrom(
+    public static GameNetworkProto.PlayerID parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static GameNetworkProto.PlayerUUID parseFrom(
+    public static GameNetworkProto.PlayerID parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -271,7 +271,7 @@ public final class GameNetworkProto {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(GameNetworkProto.PlayerUUID prototype) {
+    public static Builder newBuilder(GameNetworkProto.PlayerID prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -286,25 +286,25 @@ public final class GameNetworkProto {
       return builder;
     }
     /**
-     * Protobuf type {@code PlayerUUID}
+     * Protobuf type {@code PlayerID}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:PlayerUUID)
-        GameNetworkProto.PlayerUUIDOrBuilder {
+        // @@protoc_insertion_point(builder_implements:PlayerID)
+        GameNetworkProto.PlayerIDOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return GameNetworkProto.internal_static_PlayerUUID_descriptor;
+        return GameNetworkProto.internal_static_PlayerID_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return GameNetworkProto.internal_static_PlayerUUID_fieldAccessorTable
+        return GameNetworkProto.internal_static_PlayerID_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                GameNetworkProto.PlayerUUID.class, GameNetworkProto.PlayerUUID.Builder.class);
+                GameNetworkProto.PlayerID.class, GameNetworkProto.PlayerID.Builder.class);
       }
 
-      // Construct using GameNetworkProto.PlayerUUID.newBuilder()
+      // Construct using GameNetworkProto.PlayerID.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -328,23 +328,23 @@ public final class GameNetworkProto {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return GameNetworkProto.internal_static_PlayerUUID_descriptor;
+        return GameNetworkProto.internal_static_PlayerID_descriptor;
       }
 
-      public GameNetworkProto.PlayerUUID getDefaultInstanceForType() {
-        return GameNetworkProto.PlayerUUID.getDefaultInstance();
+      public GameNetworkProto.PlayerID getDefaultInstanceForType() {
+        return GameNetworkProto.PlayerID.getDefaultInstance();
       }
 
-      public GameNetworkProto.PlayerUUID build() {
-        GameNetworkProto.PlayerUUID result = buildPartial();
+      public GameNetworkProto.PlayerID build() {
+        GameNetworkProto.PlayerID result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public GameNetworkProto.PlayerUUID buildPartial() {
-        GameNetworkProto.PlayerUUID result = new GameNetworkProto.PlayerUUID(this);
+      public GameNetworkProto.PlayerID buildPartial() {
+        GameNetworkProto.PlayerID result = new GameNetworkProto.PlayerID(this);
         result.playerID_ = playerID_;
         onBuilt();
         return result;
@@ -377,16 +377,16 @@ public final class GameNetworkProto {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof GameNetworkProto.PlayerUUID) {
-          return mergeFrom((GameNetworkProto.PlayerUUID)other);
+        if (other instanceof GameNetworkProto.PlayerID) {
+          return mergeFrom((GameNetworkProto.PlayerID)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(GameNetworkProto.PlayerUUID other) {
-        if (other == GameNetworkProto.PlayerUUID.getDefaultInstance()) return this;
+      public Builder mergeFrom(GameNetworkProto.PlayerID other) {
+        if (other == GameNetworkProto.PlayerID.getDefaultInstance()) return this;
         if (!other.getPlayerID().isEmpty()) {
           playerID_ = other.playerID_;
           onChanged();
@@ -404,11 +404,11 @@ public final class GameNetworkProto {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        GameNetworkProto.PlayerUUID parsedMessage = null;
+        GameNetworkProto.PlayerID parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (GameNetworkProto.PlayerUUID) e.getUnfinishedMessage();
+          parsedMessage = (GameNetworkProto.PlayerID) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -497,46 +497,46 @@ public final class GameNetworkProto {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:PlayerUUID)
+      // @@protoc_insertion_point(builder_scope:PlayerID)
     }
 
-    // @@protoc_insertion_point(class_scope:PlayerUUID)
-    private static final GameNetworkProto.PlayerUUID DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:PlayerID)
+    private static final GameNetworkProto.PlayerID DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new GameNetworkProto.PlayerUUID();
+      DEFAULT_INSTANCE = new GameNetworkProto.PlayerID();
     }
 
-    public static GameNetworkProto.PlayerUUID getDefaultInstance() {
+    public static GameNetworkProto.PlayerID getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<PlayerUUID>
-        PARSER = new com.google.protobuf.AbstractParser<PlayerUUID>() {
-      public PlayerUUID parsePartialFrom(
+    private static final com.google.protobuf.Parser<PlayerID>
+        PARSER = new com.google.protobuf.AbstractParser<PlayerID>() {
+      public PlayerID parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new PlayerUUID(input, extensionRegistry);
+          return new PlayerID(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<PlayerUUID> parser() {
+    public static com.google.protobuf.Parser<PlayerID> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<PlayerUUID> getParserForType() {
+    public com.google.protobuf.Parser<PlayerID> getParserForType() {
       return PARSER;
     }
 
-    public GameNetworkProto.PlayerUUID getDefaultInstanceForType() {
+    public GameNetworkProto.PlayerID getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface CoinStateOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:CoinState)
+  public interface CoinMessageOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:CoinMessage)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -550,18 +550,18 @@ public final class GameNetworkProto {
     double getY();
   }
   /**
-   * Protobuf type {@code CoinState}
+   * Protobuf type {@code CoinMessage}
    */
-  public  static final class CoinState extends
+  public  static final class CoinMessage extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:CoinState)
-      CoinStateOrBuilder {
+      // @@protoc_insertion_point(message_implements:CoinMessage)
+      CoinMessageOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use CoinState.newBuilder() to construct.
-    private CoinState(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use CoinMessage.newBuilder() to construct.
+    private CoinMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private CoinState() {
+    private CoinMessage() {
       x_ = 0D;
       y_ = 0D;
     }
@@ -571,7 +571,7 @@ public final class GameNetworkProto {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private CoinState(
+    private CoinMessage(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -618,14 +618,14 @@ public final class GameNetworkProto {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return GameNetworkProto.internal_static_CoinState_descriptor;
+      return GameNetworkProto.internal_static_CoinMessage_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return GameNetworkProto.internal_static_CoinState_fieldAccessorTable
+      return GameNetworkProto.internal_static_CoinMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              GameNetworkProto.CoinState.class, GameNetworkProto.CoinState.Builder.class);
+              GameNetworkProto.CoinMessage.class, GameNetworkProto.CoinMessage.Builder.class);
     }
 
     public static final int X_FIELD_NUMBER = 1;
@@ -690,10 +690,10 @@ public final class GameNetworkProto {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof GameNetworkProto.CoinState)) {
+      if (!(obj instanceof GameNetworkProto.CoinMessage)) {
         return super.equals(obj);
       }
-      GameNetworkProto.CoinState other = (GameNetworkProto.CoinState) obj;
+      GameNetworkProto.CoinMessage other = (GameNetworkProto.CoinMessage) obj;
 
       boolean result = true;
       result = result && (
@@ -726,69 +726,69 @@ public final class GameNetworkProto {
       return hash;
     }
 
-    public static GameNetworkProto.CoinState parseFrom(
+    public static GameNetworkProto.CoinMessage parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static GameNetworkProto.CoinState parseFrom(
+    public static GameNetworkProto.CoinMessage parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static GameNetworkProto.CoinState parseFrom(
+    public static GameNetworkProto.CoinMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static GameNetworkProto.CoinState parseFrom(
+    public static GameNetworkProto.CoinMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static GameNetworkProto.CoinState parseFrom(byte[] data)
+    public static GameNetworkProto.CoinMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static GameNetworkProto.CoinState parseFrom(
+    public static GameNetworkProto.CoinMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static GameNetworkProto.CoinState parseFrom(java.io.InputStream input)
+    public static GameNetworkProto.CoinMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static GameNetworkProto.CoinState parseFrom(
+    public static GameNetworkProto.CoinMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static GameNetworkProto.CoinState parseDelimitedFrom(java.io.InputStream input)
+    public static GameNetworkProto.CoinMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static GameNetworkProto.CoinState parseDelimitedFrom(
+    public static GameNetworkProto.CoinMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static GameNetworkProto.CoinState parseFrom(
+    public static GameNetworkProto.CoinMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static GameNetworkProto.CoinState parseFrom(
+    public static GameNetworkProto.CoinMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -800,7 +800,7 @@ public final class GameNetworkProto {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(GameNetworkProto.CoinState prototype) {
+    public static Builder newBuilder(GameNetworkProto.CoinMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -815,25 +815,25 @@ public final class GameNetworkProto {
       return builder;
     }
     /**
-     * Protobuf type {@code CoinState}
+     * Protobuf type {@code CoinMessage}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:CoinState)
-        GameNetworkProto.CoinStateOrBuilder {
+        // @@protoc_insertion_point(builder_implements:CoinMessage)
+        GameNetworkProto.CoinMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return GameNetworkProto.internal_static_CoinState_descriptor;
+        return GameNetworkProto.internal_static_CoinMessage_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return GameNetworkProto.internal_static_CoinState_fieldAccessorTable
+        return GameNetworkProto.internal_static_CoinMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                GameNetworkProto.CoinState.class, GameNetworkProto.CoinState.Builder.class);
+                GameNetworkProto.CoinMessage.class, GameNetworkProto.CoinMessage.Builder.class);
       }
 
-      // Construct using GameNetworkProto.CoinState.newBuilder()
+      // Construct using GameNetworkProto.CoinMessage.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -859,23 +859,23 @@ public final class GameNetworkProto {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return GameNetworkProto.internal_static_CoinState_descriptor;
+        return GameNetworkProto.internal_static_CoinMessage_descriptor;
       }
 
-      public GameNetworkProto.CoinState getDefaultInstanceForType() {
-        return GameNetworkProto.CoinState.getDefaultInstance();
+      public GameNetworkProto.CoinMessage getDefaultInstanceForType() {
+        return GameNetworkProto.CoinMessage.getDefaultInstance();
       }
 
-      public GameNetworkProto.CoinState build() {
-        GameNetworkProto.CoinState result = buildPartial();
+      public GameNetworkProto.CoinMessage build() {
+        GameNetworkProto.CoinMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public GameNetworkProto.CoinState buildPartial() {
-        GameNetworkProto.CoinState result = new GameNetworkProto.CoinState(this);
+      public GameNetworkProto.CoinMessage buildPartial() {
+        GameNetworkProto.CoinMessage result = new GameNetworkProto.CoinMessage(this);
         result.x_ = x_;
         result.y_ = y_;
         onBuilt();
@@ -909,16 +909,16 @@ public final class GameNetworkProto {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof GameNetworkProto.CoinState) {
-          return mergeFrom((GameNetworkProto.CoinState)other);
+        if (other instanceof GameNetworkProto.CoinMessage) {
+          return mergeFrom((GameNetworkProto.CoinMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(GameNetworkProto.CoinState other) {
-        if (other == GameNetworkProto.CoinState.getDefaultInstance()) return this;
+      public Builder mergeFrom(GameNetworkProto.CoinMessage other) {
+        if (other == GameNetworkProto.CoinMessage.getDefaultInstance()) return this;
         if (other.getX() != 0D) {
           setX(other.getX());
         }
@@ -938,11 +938,11 @@ public final class GameNetworkProto {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        GameNetworkProto.CoinState parsedMessage = null;
+        GameNetworkProto.CoinMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (GameNetworkProto.CoinState) e.getUnfinishedMessage();
+          parsedMessage = (GameNetworkProto.CoinMessage) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1014,46 +1014,46 @@ public final class GameNetworkProto {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:CoinState)
+      // @@protoc_insertion_point(builder_scope:CoinMessage)
     }
 
-    // @@protoc_insertion_point(class_scope:CoinState)
-    private static final GameNetworkProto.CoinState DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:CoinMessage)
+    private static final GameNetworkProto.CoinMessage DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new GameNetworkProto.CoinState();
+      DEFAULT_INSTANCE = new GameNetworkProto.CoinMessage();
     }
 
-    public static GameNetworkProto.CoinState getDefaultInstance() {
+    public static GameNetworkProto.CoinMessage getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<CoinState>
-        PARSER = new com.google.protobuf.AbstractParser<CoinState>() {
-      public CoinState parsePartialFrom(
+    private static final com.google.protobuf.Parser<CoinMessage>
+        PARSER = new com.google.protobuf.AbstractParser<CoinMessage>() {
+      public CoinMessage parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new CoinState(input, extensionRegistry);
+          return new CoinMessage(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<CoinState> parser() {
+    public static com.google.protobuf.Parser<CoinMessage> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<CoinState> getParserForType() {
+    public com.google.protobuf.Parser<CoinMessage> getParserForType() {
       return PARSER;
     }
 
-    public GameNetworkProto.CoinState getDefaultInstanceForType() {
+    public GameNetworkProto.CoinMessage getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface PlayerStateOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:PlayerState)
+  public interface PlayerMessageOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:PlayerMessage)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1097,18 +1097,18 @@ public final class GameNetworkProto {
     double getY();
   }
   /**
-   * Protobuf type {@code PlayerState}
+   * Protobuf type {@code PlayerMessage}
    */
-  public  static final class PlayerState extends
+  public  static final class PlayerMessage extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:PlayerState)
-      PlayerStateOrBuilder {
+      // @@protoc_insertion_point(message_implements:PlayerMessage)
+      PlayerMessageOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use PlayerState.newBuilder() to construct.
-    private PlayerState(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use PlayerMessage.newBuilder() to construct.
+    private PlayerMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private PlayerState() {
+    private PlayerMessage() {
       name_ = "";
       color_ = "";
       score_ = "";
@@ -1121,7 +1121,7 @@ public final class GameNetworkProto {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private PlayerState(
+    private PlayerMessage(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1186,14 +1186,14 @@ public final class GameNetworkProto {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return GameNetworkProto.internal_static_PlayerState_descriptor;
+      return GameNetworkProto.internal_static_PlayerMessage_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return GameNetworkProto.internal_static_PlayerState_fieldAccessorTable
+      return GameNetworkProto.internal_static_PlayerMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              GameNetworkProto.PlayerState.class, GameNetworkProto.PlayerState.Builder.class);
+              GameNetworkProto.PlayerMessage.class, GameNetworkProto.PlayerMessage.Builder.class);
     }
 
     public static final int NAME_FIELD_NUMBER = 1;
@@ -1378,10 +1378,10 @@ public final class GameNetworkProto {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof GameNetworkProto.PlayerState)) {
+      if (!(obj instanceof GameNetworkProto.PlayerMessage)) {
         return super.equals(obj);
       }
-      GameNetworkProto.PlayerState other = (GameNetworkProto.PlayerState) obj;
+      GameNetworkProto.PlayerMessage other = (GameNetworkProto.PlayerMessage) obj;
 
       boolean result = true;
       result = result && getName()
@@ -1426,69 +1426,69 @@ public final class GameNetworkProto {
       return hash;
     }
 
-    public static GameNetworkProto.PlayerState parseFrom(
+    public static GameNetworkProto.PlayerMessage parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static GameNetworkProto.PlayerState parseFrom(
+    public static GameNetworkProto.PlayerMessage parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static GameNetworkProto.PlayerState parseFrom(
+    public static GameNetworkProto.PlayerMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static GameNetworkProto.PlayerState parseFrom(
+    public static GameNetworkProto.PlayerMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static GameNetworkProto.PlayerState parseFrom(byte[] data)
+    public static GameNetworkProto.PlayerMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static GameNetworkProto.PlayerState parseFrom(
+    public static GameNetworkProto.PlayerMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static GameNetworkProto.PlayerState parseFrom(java.io.InputStream input)
+    public static GameNetworkProto.PlayerMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static GameNetworkProto.PlayerState parseFrom(
+    public static GameNetworkProto.PlayerMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static GameNetworkProto.PlayerState parseDelimitedFrom(java.io.InputStream input)
+    public static GameNetworkProto.PlayerMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static GameNetworkProto.PlayerState parseDelimitedFrom(
+    public static GameNetworkProto.PlayerMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static GameNetworkProto.PlayerState parseFrom(
+    public static GameNetworkProto.PlayerMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static GameNetworkProto.PlayerState parseFrom(
+    public static GameNetworkProto.PlayerMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1500,7 +1500,7 @@ public final class GameNetworkProto {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(GameNetworkProto.PlayerState prototype) {
+    public static Builder newBuilder(GameNetworkProto.PlayerMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -1515,25 +1515,25 @@ public final class GameNetworkProto {
       return builder;
     }
     /**
-     * Protobuf type {@code PlayerState}
+     * Protobuf type {@code PlayerMessage}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:PlayerState)
-        GameNetworkProto.PlayerStateOrBuilder {
+        // @@protoc_insertion_point(builder_implements:PlayerMessage)
+        GameNetworkProto.PlayerMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return GameNetworkProto.internal_static_PlayerState_descriptor;
+        return GameNetworkProto.internal_static_PlayerMessage_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return GameNetworkProto.internal_static_PlayerState_fieldAccessorTable
+        return GameNetworkProto.internal_static_PlayerMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                GameNetworkProto.PlayerState.class, GameNetworkProto.PlayerState.Builder.class);
+                GameNetworkProto.PlayerMessage.class, GameNetworkProto.PlayerMessage.Builder.class);
       }
 
-      // Construct using GameNetworkProto.PlayerState.newBuilder()
+      // Construct using GameNetworkProto.PlayerMessage.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1565,23 +1565,23 @@ public final class GameNetworkProto {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return GameNetworkProto.internal_static_PlayerState_descriptor;
+        return GameNetworkProto.internal_static_PlayerMessage_descriptor;
       }
 
-      public GameNetworkProto.PlayerState getDefaultInstanceForType() {
-        return GameNetworkProto.PlayerState.getDefaultInstance();
+      public GameNetworkProto.PlayerMessage getDefaultInstanceForType() {
+        return GameNetworkProto.PlayerMessage.getDefaultInstance();
       }
 
-      public GameNetworkProto.PlayerState build() {
-        GameNetworkProto.PlayerState result = buildPartial();
+      public GameNetworkProto.PlayerMessage build() {
+        GameNetworkProto.PlayerMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public GameNetworkProto.PlayerState buildPartial() {
-        GameNetworkProto.PlayerState result = new GameNetworkProto.PlayerState(this);
+      public GameNetworkProto.PlayerMessage buildPartial() {
+        GameNetworkProto.PlayerMessage result = new GameNetworkProto.PlayerMessage(this);
         result.name_ = name_;
         result.color_ = color_;
         result.score_ = score_;
@@ -1618,16 +1618,16 @@ public final class GameNetworkProto {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof GameNetworkProto.PlayerState) {
-          return mergeFrom((GameNetworkProto.PlayerState)other);
+        if (other instanceof GameNetworkProto.PlayerMessage) {
+          return mergeFrom((GameNetworkProto.PlayerMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(GameNetworkProto.PlayerState other) {
-        if (other == GameNetworkProto.PlayerState.getDefaultInstance()) return this;
+      public Builder mergeFrom(GameNetworkProto.PlayerMessage other) {
+        if (other == GameNetworkProto.PlayerMessage.getDefaultInstance()) return this;
         if (!other.getName().isEmpty()) {
           name_ = other.name_;
           onChanged();
@@ -1659,11 +1659,11 @@ public final class GameNetworkProto {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        GameNetworkProto.PlayerState parsedMessage = null;
+        GameNetworkProto.PlayerMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (GameNetworkProto.PlayerState) e.getUnfinishedMessage();
+          parsedMessage = (GameNetworkProto.PlayerMessage) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1942,39 +1942,39 @@ public final class GameNetworkProto {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:PlayerState)
+      // @@protoc_insertion_point(builder_scope:PlayerMessage)
     }
 
-    // @@protoc_insertion_point(class_scope:PlayerState)
-    private static final GameNetworkProto.PlayerState DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:PlayerMessage)
+    private static final GameNetworkProto.PlayerMessage DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new GameNetworkProto.PlayerState();
+      DEFAULT_INSTANCE = new GameNetworkProto.PlayerMessage();
     }
 
-    public static GameNetworkProto.PlayerState getDefaultInstance() {
+    public static GameNetworkProto.PlayerMessage getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<PlayerState>
-        PARSER = new com.google.protobuf.AbstractParser<PlayerState>() {
-      public PlayerState parsePartialFrom(
+    private static final com.google.protobuf.Parser<PlayerMessage>
+        PARSER = new com.google.protobuf.AbstractParser<PlayerMessage>() {
+      public PlayerMessage parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new PlayerState(input, extensionRegistry);
+          return new PlayerMessage(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<PlayerState> parser() {
+    public static com.google.protobuf.Parser<PlayerMessage> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<PlayerState> getParserForType() {
+    public com.google.protobuf.Parser<PlayerMessage> getParserForType() {
       return PARSER;
     }
 
-    public GameNetworkProto.PlayerState getDefaultInstanceForType() {
+    public GameNetworkProto.PlayerMessage getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2654,17 +2654,17 @@ public final class GameNetworkProto {
         getGameObjectUUIDBytes();
 
     /**
-     * <code>.PlayerState playerState = 3;</code>
+     * <code>.PlayerMessage playerState = 3;</code>
      */
     boolean hasPlayerState();
     /**
-     * <code>.PlayerState playerState = 3;</code>
+     * <code>.PlayerMessage playerState = 3;</code>
      */
-    GameNetworkProto.PlayerState getPlayerState();
+    GameNetworkProto.PlayerMessage getPlayerState();
     /**
-     * <code>.PlayerState playerState = 3;</code>
+     * <code>.PlayerMessage playerState = 3;</code>
      */
-    GameNetworkProto.PlayerStateOrBuilder getPlayerStateOrBuilder();
+    GameNetworkProto.PlayerMessageOrBuilder getPlayerStateOrBuilder();
 
     /**
      * <code>repeated string deletedCoins = 2;</code>
@@ -2767,11 +2767,11 @@ public final class GameNetworkProto {
               break;
             }
             case 26: {
-              GameNetworkProto.PlayerState.Builder subBuilder = null;
+              GameNetworkProto.PlayerMessage.Builder subBuilder = null;
               if (playerState_ != null) {
                 subBuilder = playerState_.toBuilder();
               }
-              playerState_ = input.readMessage(GameNetworkProto.PlayerState.parser(), extensionRegistry);
+              playerState_ = input.readMessage(GameNetworkProto.PlayerMessage.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(playerState_);
                 playerState_ = subBuilder.buildPartial();
@@ -2961,23 +2961,23 @@ public final class GameNetworkProto {
     }
 
     public static final int PLAYERSTATE_FIELD_NUMBER = 3;
-    private GameNetworkProto.PlayerState playerState_;
+    private GameNetworkProto.PlayerMessage playerState_;
     /**
-     * <code>.PlayerState playerState = 3;</code>
+     * <code>.PlayerMessage playerState = 3;</code>
      */
     public boolean hasPlayerState() {
       return playerState_ != null;
     }
     /**
-     * <code>.PlayerState playerState = 3;</code>
+     * <code>.PlayerMessage playerState = 3;</code>
      */
-    public GameNetworkProto.PlayerState getPlayerState() {
-      return playerState_ == null ? GameNetworkProto.PlayerState.getDefaultInstance() : playerState_;
+    public GameNetworkProto.PlayerMessage getPlayerState() {
+      return playerState_ == null ? GameNetworkProto.PlayerMessage.getDefaultInstance() : playerState_;
     }
     /**
-     * <code>.PlayerState playerState = 3;</code>
+     * <code>.PlayerMessage playerState = 3;</code>
      */
-    public GameNetworkProto.PlayerStateOrBuilder getPlayerStateOrBuilder() {
+    public GameNetworkProto.PlayerMessageOrBuilder getPlayerStateOrBuilder() {
       return getPlayerState();
     }
 
@@ -3513,29 +3513,29 @@ public final class GameNetworkProto {
         return this;
       }
 
-      private GameNetworkProto.PlayerState playerState_ = null;
+      private GameNetworkProto.PlayerMessage playerState_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          GameNetworkProto.PlayerState, GameNetworkProto.PlayerState.Builder, GameNetworkProto.PlayerStateOrBuilder> playerStateBuilder_;
+          GameNetworkProto.PlayerMessage, GameNetworkProto.PlayerMessage.Builder, GameNetworkProto.PlayerMessageOrBuilder> playerStateBuilder_;
       /**
-       * <code>.PlayerState playerState = 3;</code>
+       * <code>.PlayerMessage playerState = 3;</code>
        */
       public boolean hasPlayerState() {
         return playerStateBuilder_ != null || playerState_ != null;
       }
       /**
-       * <code>.PlayerState playerState = 3;</code>
+       * <code>.PlayerMessage playerState = 3;</code>
        */
-      public GameNetworkProto.PlayerState getPlayerState() {
+      public GameNetworkProto.PlayerMessage getPlayerState() {
         if (playerStateBuilder_ == null) {
-          return playerState_ == null ? GameNetworkProto.PlayerState.getDefaultInstance() : playerState_;
+          return playerState_ == null ? GameNetworkProto.PlayerMessage.getDefaultInstance() : playerState_;
         } else {
           return playerStateBuilder_.getMessage();
         }
       }
       /**
-       * <code>.PlayerState playerState = 3;</code>
+       * <code>.PlayerMessage playerState = 3;</code>
        */
-      public Builder setPlayerState(GameNetworkProto.PlayerState value) {
+      public Builder setPlayerState(GameNetworkProto.PlayerMessage value) {
         if (playerStateBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3549,10 +3549,10 @@ public final class GameNetworkProto {
         return this;
       }
       /**
-       * <code>.PlayerState playerState = 3;</code>
+       * <code>.PlayerMessage playerState = 3;</code>
        */
       public Builder setPlayerState(
-          GameNetworkProto.PlayerState.Builder builderForValue) {
+          GameNetworkProto.PlayerMessage.Builder builderForValue) {
         if (playerStateBuilder_ == null) {
           playerState_ = builderForValue.build();
           onChanged();
@@ -3563,13 +3563,13 @@ public final class GameNetworkProto {
         return this;
       }
       /**
-       * <code>.PlayerState playerState = 3;</code>
+       * <code>.PlayerMessage playerState = 3;</code>
        */
-      public Builder mergePlayerState(GameNetworkProto.PlayerState value) {
+      public Builder mergePlayerState(GameNetworkProto.PlayerMessage value) {
         if (playerStateBuilder_ == null) {
           if (playerState_ != null) {
             playerState_ =
-              GameNetworkProto.PlayerState.newBuilder(playerState_).mergeFrom(value).buildPartial();
+              GameNetworkProto.PlayerMessage.newBuilder(playerState_).mergeFrom(value).buildPartial();
           } else {
             playerState_ = value;
           }
@@ -3581,7 +3581,7 @@ public final class GameNetworkProto {
         return this;
       }
       /**
-       * <code>.PlayerState playerState = 3;</code>
+       * <code>.PlayerMessage playerState = 3;</code>
        */
       public Builder clearPlayerState() {
         if (playerStateBuilder_ == null) {
@@ -3595,33 +3595,33 @@ public final class GameNetworkProto {
         return this;
       }
       /**
-       * <code>.PlayerState playerState = 3;</code>
+       * <code>.PlayerMessage playerState = 3;</code>
        */
-      public GameNetworkProto.PlayerState.Builder getPlayerStateBuilder() {
+      public GameNetworkProto.PlayerMessage.Builder getPlayerStateBuilder() {
         
         onChanged();
         return getPlayerStateFieldBuilder().getBuilder();
       }
       /**
-       * <code>.PlayerState playerState = 3;</code>
+       * <code>.PlayerMessage playerState = 3;</code>
        */
-      public GameNetworkProto.PlayerStateOrBuilder getPlayerStateOrBuilder() {
+      public GameNetworkProto.PlayerMessageOrBuilder getPlayerStateOrBuilder() {
         if (playerStateBuilder_ != null) {
           return playerStateBuilder_.getMessageOrBuilder();
         } else {
           return playerState_ == null ?
-              GameNetworkProto.PlayerState.getDefaultInstance() : playerState_;
+              GameNetworkProto.PlayerMessage.getDefaultInstance() : playerState_;
         }
       }
       /**
-       * <code>.PlayerState playerState = 3;</code>
+       * <code>.PlayerMessage playerState = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          GameNetworkProto.PlayerState, GameNetworkProto.PlayerState.Builder, GameNetworkProto.PlayerStateOrBuilder> 
+          GameNetworkProto.PlayerMessage, GameNetworkProto.PlayerMessage.Builder, GameNetworkProto.PlayerMessageOrBuilder> 
           getPlayerStateFieldBuilder() {
         if (playerStateBuilder_ == null) {
           playerStateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              GameNetworkProto.PlayerState, GameNetworkProto.PlayerState.Builder, GameNetworkProto.PlayerStateOrBuilder>(
+              GameNetworkProto.PlayerMessage, GameNetworkProto.PlayerMessage.Builder, GameNetworkProto.PlayerMessageOrBuilder>(
                   getPlayerState(),
                   getParentForChildren(),
                   isClean());
@@ -3890,11 +3890,11 @@ public final class GameNetworkProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+     * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
      */
     int getPlayerStatesCount();
     /**
-     * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+     * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
      */
     boolean containsPlayerStates(
         java.lang.String key);
@@ -3902,33 +3902,33 @@ public final class GameNetworkProto {
      * Use {@link #getPlayerStatesMap()} instead.
      */
     @java.lang.Deprecated
-    java.util.Map<java.lang.String, GameNetworkProto.PlayerState>
+    java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage>
     getPlayerStates();
     /**
-     * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+     * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
      */
-    java.util.Map<java.lang.String, GameNetworkProto.PlayerState>
+    java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage>
     getPlayerStatesMap();
     /**
-     * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+     * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
      */
 
-    GameNetworkProto.PlayerState getPlayerStatesOrDefault(
+    GameNetworkProto.PlayerMessage getPlayerStatesOrDefault(
         java.lang.String key,
-        GameNetworkProto.PlayerState defaultValue);
+        GameNetworkProto.PlayerMessage defaultValue);
     /**
-     * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+     * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
      */
 
-    GameNetworkProto.PlayerState getPlayerStatesOrThrow(
+    GameNetworkProto.PlayerMessage getPlayerStatesOrThrow(
         java.lang.String key);
 
     /**
-     * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+     * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
      */
     int getCoinStatesCount();
     /**
-     * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+     * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
      */
     boolean containsCoinStates(
         java.lang.String key);
@@ -3936,25 +3936,25 @@ public final class GameNetworkProto {
      * Use {@link #getCoinStatesMap()} instead.
      */
     @java.lang.Deprecated
-    java.util.Map<java.lang.String, GameNetworkProto.CoinState>
+    java.util.Map<java.lang.String, GameNetworkProto.CoinMessage>
     getCoinStates();
     /**
-     * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+     * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
      */
-    java.util.Map<java.lang.String, GameNetworkProto.CoinState>
+    java.util.Map<java.lang.String, GameNetworkProto.CoinMessage>
     getCoinStatesMap();
     /**
-     * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+     * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
      */
 
-    GameNetworkProto.CoinState getCoinStatesOrDefault(
+    GameNetworkProto.CoinMessage getCoinStatesOrDefault(
         java.lang.String key,
-        GameNetworkProto.CoinState defaultValue);
+        GameNetworkProto.CoinMessage defaultValue);
     /**
-     * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+     * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
      */
 
-    GameNetworkProto.CoinState getCoinStatesOrThrow(
+    GameNetworkProto.CoinMessage getCoinStatesOrThrow(
         java.lang.String key);
 
     /**
@@ -4028,7 +4028,7 @@ public final class GameNetworkProto {
                     PlayerStatesDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000001;
               }
-              com.google.protobuf.MapEntry<java.lang.String, GameNetworkProto.PlayerState>
+              com.google.protobuf.MapEntry<java.lang.String, GameNetworkProto.PlayerMessage>
               playerStates__ = input.readMessage(
                   PlayerStatesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               playerStates_.getMutableMap().put(
@@ -4041,7 +4041,7 @@ public final class GameNetworkProto {
                     CoinStatesDefaultEntryHolder.defaultEntry);
                 mutable_bitField0_ |= 0x00000002;
               }
-              com.google.protobuf.MapEntry<java.lang.String, GameNetworkProto.CoinState>
+              com.google.protobuf.MapEntry<java.lang.String, GameNetworkProto.CoinMessage>
               coinStates__ = input.readMessage(
                   CoinStatesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               coinStates_.getMutableMap().put(
@@ -4101,18 +4101,18 @@ public final class GameNetworkProto {
     public static final int PLAYERSTATES_FIELD_NUMBER = 1;
     private static final class PlayerStatesDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
-          java.lang.String, GameNetworkProto.PlayerState> defaultEntry =
+          java.lang.String, GameNetworkProto.PlayerMessage> defaultEntry =
               com.google.protobuf.MapEntry
-              .<java.lang.String, GameNetworkProto.PlayerState>newDefaultInstance(
+              .<java.lang.String, GameNetworkProto.PlayerMessage>newDefaultInstance(
                   GameNetworkProto.internal_static_UpdateFromServer_PlayerStatesEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                  GameNetworkProto.PlayerState.getDefaultInstance());
+                  GameNetworkProto.PlayerMessage.getDefaultInstance());
     }
     private com.google.protobuf.MapField<
-        java.lang.String, GameNetworkProto.PlayerState> playerStates_;
-    private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.PlayerState>
+        java.lang.String, GameNetworkProto.PlayerMessage> playerStates_;
+    private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.PlayerMessage>
     internalGetPlayerStates() {
       if (playerStates_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
@@ -4125,7 +4125,7 @@ public final class GameNetworkProto {
       return internalGetPlayerStates().getMap().size();
     }
     /**
-     * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+     * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
      */
 
     public boolean containsPlayerStates(
@@ -4137,36 +4137,36 @@ public final class GameNetworkProto {
      * Use {@link #getPlayerStatesMap()} instead.
      */
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, GameNetworkProto.PlayerState> getPlayerStates() {
+    public java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage> getPlayerStates() {
       return getPlayerStatesMap();
     }
     /**
-     * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+     * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
      */
 
-    public java.util.Map<java.lang.String, GameNetworkProto.PlayerState> getPlayerStatesMap() {
+    public java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage> getPlayerStatesMap() {
       return internalGetPlayerStates().getMap();
     }
     /**
-     * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+     * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
      */
 
-    public GameNetworkProto.PlayerState getPlayerStatesOrDefault(
+    public GameNetworkProto.PlayerMessage getPlayerStatesOrDefault(
         java.lang.String key,
-        GameNetworkProto.PlayerState defaultValue) {
+        GameNetworkProto.PlayerMessage defaultValue) {
       if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, GameNetworkProto.PlayerState> map =
+      java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage> map =
           internalGetPlayerStates().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+     * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
      */
 
-    public GameNetworkProto.PlayerState getPlayerStatesOrThrow(
+    public GameNetworkProto.PlayerMessage getPlayerStatesOrThrow(
         java.lang.String key) {
       if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, GameNetworkProto.PlayerState> map =
+      java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage> map =
           internalGetPlayerStates().getMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
@@ -4177,18 +4177,18 @@ public final class GameNetworkProto {
     public static final int COINSTATES_FIELD_NUMBER = 2;
     private static final class CoinStatesDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
-          java.lang.String, GameNetworkProto.CoinState> defaultEntry =
+          java.lang.String, GameNetworkProto.CoinMessage> defaultEntry =
               com.google.protobuf.MapEntry
-              .<java.lang.String, GameNetworkProto.CoinState>newDefaultInstance(
+              .<java.lang.String, GameNetworkProto.CoinMessage>newDefaultInstance(
                   GameNetworkProto.internal_static_UpdateFromServer_CoinStatesEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                  GameNetworkProto.CoinState.getDefaultInstance());
+                  GameNetworkProto.CoinMessage.getDefaultInstance());
     }
     private com.google.protobuf.MapField<
-        java.lang.String, GameNetworkProto.CoinState> coinStates_;
-    private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.CoinState>
+        java.lang.String, GameNetworkProto.CoinMessage> coinStates_;
+    private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.CoinMessage>
     internalGetCoinStates() {
       if (coinStates_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
@@ -4201,7 +4201,7 @@ public final class GameNetworkProto {
       return internalGetCoinStates().getMap().size();
     }
     /**
-     * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+     * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
      */
 
     public boolean containsCoinStates(
@@ -4213,36 +4213,36 @@ public final class GameNetworkProto {
      * Use {@link #getCoinStatesMap()} instead.
      */
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, GameNetworkProto.CoinState> getCoinStates() {
+    public java.util.Map<java.lang.String, GameNetworkProto.CoinMessage> getCoinStates() {
       return getCoinStatesMap();
     }
     /**
-     * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+     * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
      */
 
-    public java.util.Map<java.lang.String, GameNetworkProto.CoinState> getCoinStatesMap() {
+    public java.util.Map<java.lang.String, GameNetworkProto.CoinMessage> getCoinStatesMap() {
       return internalGetCoinStates().getMap();
     }
     /**
-     * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+     * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
      */
 
-    public GameNetworkProto.CoinState getCoinStatesOrDefault(
+    public GameNetworkProto.CoinMessage getCoinStatesOrDefault(
         java.lang.String key,
-        GameNetworkProto.CoinState defaultValue) {
+        GameNetworkProto.CoinMessage defaultValue) {
       if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, GameNetworkProto.CoinState> map =
+      java.util.Map<java.lang.String, GameNetworkProto.CoinMessage> map =
           internalGetCoinStates().getMap();
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+     * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
      */
 
-    public GameNetworkProto.CoinState getCoinStatesOrThrow(
+    public GameNetworkProto.CoinMessage getCoinStatesOrThrow(
         java.lang.String key) {
       if (key == null) { throw new java.lang.NullPointerException(); }
-      java.util.Map<java.lang.String, GameNetworkProto.CoinState> map =
+      java.util.Map<java.lang.String, GameNetworkProto.CoinMessage> map =
           internalGetCoinStates().getMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
@@ -4356,9 +4356,9 @@ public final class GameNetworkProto {
       if (size != -1) return size;
 
       size = 0;
-      for (java.util.Map.Entry<java.lang.String, GameNetworkProto.PlayerState> entry
+      for (java.util.Map.Entry<java.lang.String, GameNetworkProto.PlayerMessage> entry
            : internalGetPlayerStates().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<java.lang.String, GameNetworkProto.PlayerState>
+        com.google.protobuf.MapEntry<java.lang.String, GameNetworkProto.PlayerMessage>
         playerStates__ = PlayerStatesDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
@@ -4366,9 +4366,9 @@ public final class GameNetworkProto {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(1, playerStates__);
       }
-      for (java.util.Map.Entry<java.lang.String, GameNetworkProto.CoinState> entry
+      for (java.util.Map.Entry<java.lang.String, GameNetworkProto.CoinMessage> entry
            : internalGetCoinStates().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<java.lang.String, GameNetworkProto.CoinState>
+        com.google.protobuf.MapEntry<java.lang.String, GameNetworkProto.CoinMessage>
         coinStates__ = CoinStatesDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
@@ -4703,8 +4703,8 @@ public final class GameNetworkProto {
       private int bitField0_;
 
       private com.google.protobuf.MapField<
-          java.lang.String, GameNetworkProto.PlayerState> playerStates_;
-      private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.PlayerState>
+          java.lang.String, GameNetworkProto.PlayerMessage> playerStates_;
+      private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.PlayerMessage>
       internalGetPlayerStates() {
         if (playerStates_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
@@ -4712,7 +4712,7 @@ public final class GameNetworkProto {
         }
         return playerStates_;
       }
-      private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.PlayerState>
+      private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.PlayerMessage>
       internalGetMutablePlayerStates() {
         onChanged();;
         if (playerStates_ == null) {
@@ -4729,7 +4729,7 @@ public final class GameNetworkProto {
         return internalGetPlayerStates().getMap().size();
       }
       /**
-       * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+       * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
        */
 
       public boolean containsPlayerStates(
@@ -4741,36 +4741,36 @@ public final class GameNetworkProto {
        * Use {@link #getPlayerStatesMap()} instead.
        */
       @java.lang.Deprecated
-      public java.util.Map<java.lang.String, GameNetworkProto.PlayerState> getPlayerStates() {
+      public java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage> getPlayerStates() {
         return getPlayerStatesMap();
       }
       /**
-       * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+       * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
        */
 
-      public java.util.Map<java.lang.String, GameNetworkProto.PlayerState> getPlayerStatesMap() {
+      public java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage> getPlayerStatesMap() {
         return internalGetPlayerStates().getMap();
       }
       /**
-       * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+       * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
        */
 
-      public GameNetworkProto.PlayerState getPlayerStatesOrDefault(
+      public GameNetworkProto.PlayerMessage getPlayerStatesOrDefault(
           java.lang.String key,
-          GameNetworkProto.PlayerState defaultValue) {
+          GameNetworkProto.PlayerMessage defaultValue) {
         if (key == null) { throw new java.lang.NullPointerException(); }
-        java.util.Map<java.lang.String, GameNetworkProto.PlayerState> map =
+        java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage> map =
             internalGetPlayerStates().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
       }
       /**
-       * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+       * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
        */
 
-      public GameNetworkProto.PlayerState getPlayerStatesOrThrow(
+      public GameNetworkProto.PlayerMessage getPlayerStatesOrThrow(
           java.lang.String key) {
         if (key == null) { throw new java.lang.NullPointerException(); }
-        java.util.Map<java.lang.String, GameNetworkProto.PlayerState> map =
+        java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage> map =
             internalGetPlayerStates().getMap();
         if (!map.containsKey(key)) {
           throw new java.lang.IllegalArgumentException();
@@ -4784,7 +4784,7 @@ public final class GameNetworkProto {
         return this;
       }
       /**
-       * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+       * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
        */
 
       public Builder removePlayerStates(
@@ -4798,16 +4798,16 @@ public final class GameNetworkProto {
        * Use alternate mutation accessors instead.
        */
       @java.lang.Deprecated
-      public java.util.Map<java.lang.String, GameNetworkProto.PlayerState>
+      public java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage>
       getMutablePlayerStates() {
         return internalGetMutablePlayerStates().getMutableMap();
       }
       /**
-       * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+       * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
        */
       public Builder putPlayerStates(
           java.lang.String key,
-          GameNetworkProto.PlayerState value) {
+          GameNetworkProto.PlayerMessage value) {
         if (key == null) { throw new java.lang.NullPointerException(); }
         if (value == null) { throw new java.lang.NullPointerException(); }
         internalGetMutablePlayerStates().getMutableMap()
@@ -4815,19 +4815,19 @@ public final class GameNetworkProto {
         return this;
       }
       /**
-       * <code>map&lt;string, .PlayerState&gt; playerStates = 1;</code>
+       * <code>map&lt;string, .PlayerMessage&gt; playerStates = 1;</code>
        */
 
       public Builder putAllPlayerStates(
-          java.util.Map<java.lang.String, GameNetworkProto.PlayerState> values) {
+          java.util.Map<java.lang.String, GameNetworkProto.PlayerMessage> values) {
         internalGetMutablePlayerStates().getMutableMap()
             .putAll(values);
         return this;
       }
 
       private com.google.protobuf.MapField<
-          java.lang.String, GameNetworkProto.CoinState> coinStates_;
-      private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.CoinState>
+          java.lang.String, GameNetworkProto.CoinMessage> coinStates_;
+      private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.CoinMessage>
       internalGetCoinStates() {
         if (coinStates_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
@@ -4835,7 +4835,7 @@ public final class GameNetworkProto {
         }
         return coinStates_;
       }
-      private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.CoinState>
+      private com.google.protobuf.MapField<java.lang.String, GameNetworkProto.CoinMessage>
       internalGetMutableCoinStates() {
         onChanged();;
         if (coinStates_ == null) {
@@ -4852,7 +4852,7 @@ public final class GameNetworkProto {
         return internalGetCoinStates().getMap().size();
       }
       /**
-       * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+       * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
        */
 
       public boolean containsCoinStates(
@@ -4864,36 +4864,36 @@ public final class GameNetworkProto {
        * Use {@link #getCoinStatesMap()} instead.
        */
       @java.lang.Deprecated
-      public java.util.Map<java.lang.String, GameNetworkProto.CoinState> getCoinStates() {
+      public java.util.Map<java.lang.String, GameNetworkProto.CoinMessage> getCoinStates() {
         return getCoinStatesMap();
       }
       /**
-       * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+       * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
        */
 
-      public java.util.Map<java.lang.String, GameNetworkProto.CoinState> getCoinStatesMap() {
+      public java.util.Map<java.lang.String, GameNetworkProto.CoinMessage> getCoinStatesMap() {
         return internalGetCoinStates().getMap();
       }
       /**
-       * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+       * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
        */
 
-      public GameNetworkProto.CoinState getCoinStatesOrDefault(
+      public GameNetworkProto.CoinMessage getCoinStatesOrDefault(
           java.lang.String key,
-          GameNetworkProto.CoinState defaultValue) {
+          GameNetworkProto.CoinMessage defaultValue) {
         if (key == null) { throw new java.lang.NullPointerException(); }
-        java.util.Map<java.lang.String, GameNetworkProto.CoinState> map =
+        java.util.Map<java.lang.String, GameNetworkProto.CoinMessage> map =
             internalGetCoinStates().getMap();
         return map.containsKey(key) ? map.get(key) : defaultValue;
       }
       /**
-       * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+       * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
        */
 
-      public GameNetworkProto.CoinState getCoinStatesOrThrow(
+      public GameNetworkProto.CoinMessage getCoinStatesOrThrow(
           java.lang.String key) {
         if (key == null) { throw new java.lang.NullPointerException(); }
-        java.util.Map<java.lang.String, GameNetworkProto.CoinState> map =
+        java.util.Map<java.lang.String, GameNetworkProto.CoinMessage> map =
             internalGetCoinStates().getMap();
         if (!map.containsKey(key)) {
           throw new java.lang.IllegalArgumentException();
@@ -4907,7 +4907,7 @@ public final class GameNetworkProto {
         return this;
       }
       /**
-       * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+       * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
        */
 
       public Builder removeCoinStates(
@@ -4921,16 +4921,16 @@ public final class GameNetworkProto {
        * Use alternate mutation accessors instead.
        */
       @java.lang.Deprecated
-      public java.util.Map<java.lang.String, GameNetworkProto.CoinState>
+      public java.util.Map<java.lang.String, GameNetworkProto.CoinMessage>
       getMutableCoinStates() {
         return internalGetMutableCoinStates().getMutableMap();
       }
       /**
-       * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+       * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
        */
       public Builder putCoinStates(
           java.lang.String key,
-          GameNetworkProto.CoinState value) {
+          GameNetworkProto.CoinMessage value) {
         if (key == null) { throw new java.lang.NullPointerException(); }
         if (value == null) { throw new java.lang.NullPointerException(); }
         internalGetMutableCoinStates().getMutableMap()
@@ -4938,11 +4938,11 @@ public final class GameNetworkProto {
         return this;
       }
       /**
-       * <code>map&lt;string, .CoinState&gt; coinStates = 2;</code>
+       * <code>map&lt;string, .CoinMessage&gt; coinStates = 2;</code>
        */
 
       public Builder putAllCoinStates(
-          java.util.Map<java.lang.String, GameNetworkProto.CoinState> values) {
+          java.util.Map<java.lang.String, GameNetworkProto.CoinMessage> values) {
         internalGetMutableCoinStates().getMutableMap()
             .putAll(values);
         return this;
@@ -6757,20 +6757,20 @@ public final class GameNetworkProto {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_PlayerUUID_descriptor;
+    internal_static_PlayerID_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_PlayerUUID_fieldAccessorTable;
+      internal_static_PlayerID_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_CoinState_descriptor;
+    internal_static_CoinMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_CoinState_fieldAccessorTable;
+      internal_static_CoinMessage_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_PlayerState_descriptor;
+    internal_static_PlayerMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_PlayerState_fieldAccessorTable;
+      internal_static_PlayerMessage_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_InitialPlayerState_descriptor;
   private static final 
@@ -6820,34 +6820,34 @@ public final class GameNetworkProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\020gameserver.proto\"\036\n\nPlayerUUID\022\020\n\010play" +
-      "erID\030\001 \001(\t\"!\n\tCoinState\022\t\n\001x\030\001 \001(\001\022\t\n\001y\030" +
-      "\002 \001(\001\"O\n\013PlayerState\022\014\n\004name\030\001 \001(\t\022\r\n\005co" +
-      "lor\030\002 \001(\t\022\r\n\005score\030\003 \001(\t\022\t\n\001x\030\004 \001(\001\022\t\n\001y" +
-      "\030\005 \001(\001\"1\n\022InitialPlayerState\022\014\n\004name\030\001 \001" +
-      "(\t\022\r\n\005color\030\002 \001(\t\"\327\001\n\020UpdateFromClient\022\026" +
-      "\n\016gameObjectUUID\030\001 \001(\t\022!\n\013playerState\030\003 " +
-      "\001(\0132\014.PlayerState\022\024\n\014deletedCoins\030\002 \003(\t\022" +
-      "\021\n\ttimestamp\030\004 \001(\t\0222\n\013movingRooms\030\005 \001(\0162" +
-      "\035.UpdateFromClient.MovingRooms\"+\n\013Moving",
-      "Rooms\022\007\n\003NOT\020\000\022\010\n\004LEFT\020\001\022\t\n\005RIGHT\020\002\"\255\002\n\020" +
-      "UpdateFromServer\0229\n\014playerStates\030\001 \003(\0132#" +
-      ".UpdateFromServer.PlayerStatesEntry\0225\n\nc" +
-      "oinStates\030\002 \003(\0132!.UpdateFromServer.CoinS" +
-      "tatesEntry\022\021\n\ttimestamp\030\003 \001(\t\022\022\n\nworldCo" +
-      "lor\030\004 \001(\t\032A\n\021PlayerStatesEntry\022\013\n\003key\030\001 " +
-      "\001(\t\022\033\n\005value\030\002 \001(\0132\014.PlayerState:\0028\001\032=\n\017" +
-      "CoinStatesEntry\022\013\n\003key\030\001 \001(\t\022\031\n\005value\030\002 " +
-      "\001(\0132\n.CoinState:\0028\001\"\007\n\005Empty\"!\n\rSuperPee" +
-      "rInfo\022\020\n\010hostname\030\001 \001(\t\"Q\n\022InitPlayerRes",
-      "ponse\022\022\n\nplayerUUID\030\001 \001(\t\022\'\n\014initialStat" +
-      "e\030\002 \001(\0132\021.UpdateFromServer2\312\001\n\nGameServe" +
-      "r\0225\n\rpublishUpdate\022\021.UpdateFromClient\032\021." +
-      "UpdateFromServer\022.\n\024getAssignedSuperPeer" +
-      "\022\006.Empty\032\016.SuperPeerInfo\0224\n\ninitPlayer\022\023" +
-      ".InitialPlayerState\032\021.UpdateFromServer\022\037" +
-      "\n\010removeMe\022\013.PlayerUUID\032\006.EmptyB\022B\020GameN" +
-      "etworkProtob\006proto3"
+      "\n\020gameserver.proto\"\034\n\010PlayerID\022\020\n\010player" +
+      "ID\030\001 \001(\t\"#\n\013CoinMessage\022\t\n\001x\030\001 \001(\001\022\t\n\001y\030" +
+      "\002 \001(\001\"Q\n\rPlayerMessage\022\014\n\004name\030\001 \001(\t\022\r\n\005" +
+      "color\030\002 \001(\t\022\r\n\005score\030\003 \001(\t\022\t\n\001x\030\004 \001(\001\022\t\n" +
+      "\001y\030\005 \001(\001\"1\n\022InitialPlayerState\022\014\n\004name\030\001" +
+      " \001(\t\022\r\n\005color\030\002 \001(\t\"\331\001\n\020UpdateFromClient" +
+      "\022\026\n\016gameObjectUUID\030\001 \001(\t\022#\n\013playerState\030" +
+      "\003 \001(\0132\016.PlayerMessage\022\024\n\014deletedCoins\030\002 " +
+      "\003(\t\022\021\n\ttimestamp\030\004 \001(\t\0222\n\013movingRooms\030\005 " +
+      "\001(\0162\035.UpdateFromClient.MovingRooms\"+\n\013Mo",
+      "vingRooms\022\007\n\003NOT\020\000\022\010\n\004LEFT\020\001\022\t\n\005RIGHT\020\002\"" +
+      "\261\002\n\020UpdateFromServer\0229\n\014playerStates\030\001 \003" +
+      "(\0132#.UpdateFromServer.PlayerStatesEntry\022" +
+      "5\n\ncoinStates\030\002 \003(\0132!.UpdateFromServer.C" +
+      "oinStatesEntry\022\021\n\ttimestamp\030\003 \001(\t\022\022\n\nwor" +
+      "ldColor\030\004 \001(\t\032C\n\021PlayerStatesEntry\022\013\n\003ke" +
+      "y\030\001 \001(\t\022\035\n\005value\030\002 \001(\0132\016.PlayerMessage:\002" +
+      "8\001\032?\n\017CoinStatesEntry\022\013\n\003key\030\001 \001(\t\022\033\n\005va" +
+      "lue\030\002 \001(\0132\014.CoinMessage:\0028\001\"\007\n\005Empty\"!\n\r" +
+      "SuperPeerInfo\022\020\n\010hostname\030\001 \001(\t\"Q\n\022InitP",
+      "layerResponse\022\022\n\nplayerUUID\030\001 \001(\t\022\'\n\014ini" +
+      "tialState\030\002 \001(\0132\021.UpdateFromServer2\310\001\n\nG" +
+      "ameServer\0225\n\rpublishUpdate\022\021.UpdateFromC" +
+      "lient\032\021.UpdateFromServer\022.\n\024getAssignedS" +
+      "uperPeer\022\006.Empty\032\016.SuperPeerInfo\0224\n\ninit" +
+      "Player\022\023.InitialPlayerState\032\021.UpdateFrom" +
+      "Server\022\035\n\010removeMe\022\t.PlayerID\032\006.EmptyB\022B" +
+      "\020GameNetworkProtob\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -6861,23 +6861,23 @@ public final class GameNetworkProto {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_PlayerUUID_descriptor =
+    internal_static_PlayerID_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_PlayerUUID_fieldAccessorTable = new
+    internal_static_PlayerID_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_PlayerUUID_descriptor,
+        internal_static_PlayerID_descriptor,
         new java.lang.String[] { "PlayerID", });
-    internal_static_CoinState_descriptor =
+    internal_static_CoinMessage_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_CoinState_fieldAccessorTable = new
+    internal_static_CoinMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_CoinState_descriptor,
+        internal_static_CoinMessage_descriptor,
         new java.lang.String[] { "X", "Y", });
-    internal_static_PlayerState_descriptor =
+    internal_static_PlayerMessage_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_PlayerState_fieldAccessorTable = new
+    internal_static_PlayerMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_PlayerState_descriptor,
+        internal_static_PlayerMessage_descriptor,
         new java.lang.String[] { "Name", "Color", "Score", "X", "Y", });
     internal_static_InitialPlayerState_descriptor =
       getDescriptor().getMessageTypes().get(3);

@@ -2,18 +2,18 @@ syntax = "proto3";
 
 option java_outer_classname = "GameNetworkProto";
 
-message PlayerUUID {
+message PlayerID {
     string playerID = 1;
 }
 
 
-message CoinState {
+message CoinMessage {
     double x = 1;
     double y = 2;
 }
 
 
-message PlayerState {
+message PlayerMessage {
     string name = 1;
     string color = 2;
     string score = 3;
@@ -30,7 +30,7 @@ message InitialPlayerState {
 
 message UpdateFromClient {
     string gameObjectUUID = 1;
-    PlayerState playerState = 3;
+    PlayerMessage playerState = 3;
     repeated string deletedCoins = 2;
     string timestamp = 4;
 
@@ -44,8 +44,8 @@ message UpdateFromClient {
 }
 
 message UpdateFromServer {
-    map<string, PlayerState> playerStates = 1;
-    map<string, CoinState> coinStates = 2;
+    map<string, PlayerMessage> playerStates = 1;
+    map<string, CoinMessage> coinStates = 2;
     string timestamp = 3;
     string worldColor = 4;
 }
@@ -70,5 +70,5 @@ service GameServer {
    rpc publishUpdate(UpdateFromClient) returns (UpdateFromServer);
    rpc getAssignedSuperPeer(Empty) returns (SuperPeerInfo);
    rpc initPlayer(InitialPlayerState) returns (UpdateFromServer);
-   rpc removeMe(PlayerUUID) returns (Empty);
+   rpc removeMe(PlayerID) returns (Empty);
 }
