@@ -4,7 +4,14 @@
 .classpath
 .project
 *.class
+
+# Removing all bindary files
 /target/classes/edu/rice/comp413fall2020grey/*
 /core/.idea/*
 /core/src/edu/.idea/*
 /core/src/edu/rice/.idea/*
+/core/src/edu/rice/comp413fall2020grey/Location/.idea/*
+/sample-game/.idea/*
+
+*.DS_Store
+
