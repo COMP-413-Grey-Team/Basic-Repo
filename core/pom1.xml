@@ -113,6 +113,8 @@
                     <protocArtifact>com.google.protobuf:protoc:3.4.0:exe:${os.detected.classifier}</protocArtifact>
                     <pluginId>grpc-java</pluginId>
                     <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.7.0:exe:${os.detected.classifier}</pluginArtifact>
+                    <protoSourceRoot> src/edu/rice/rbox/Protos </protoSourceRoot>
+                    <outputDirectory> src/edu/rice/rbox/Protos/Generated </outputDirectory>
                 </configuration>
                 <executions>
                     <execution>

@@ -1,2 +1,4 @@
-package edu.rice.rbox.Game.Common.Utils;public class PlayerStateMessage {
+package edu.rice.rbox.Game.Common.Utils;
+
+public class PlayerStateMessage {
 }
