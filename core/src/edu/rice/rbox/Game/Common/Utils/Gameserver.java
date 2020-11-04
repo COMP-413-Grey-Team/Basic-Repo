@@ -2693,6 +2693,15 @@ public final class Gameserver {
      */
     com.google.protobuf.ByteString
         getTimestampBytes();
+
+    /**
+     * <code>.UpdateFromClient.MovingRooms movingRooms = 5;</code>
+     */
+    int getMovingRoomsValue();
+    /**
+     * <code>.UpdateFromClient.MovingRooms movingRooms = 5;</code>
+     */
+    Gameserver.UpdateFromClient.MovingRooms getMovingRooms();
   }
   /**
    * Protobuf type {@code UpdateFromClient}
@@ -2710,6 +2719,7 @@ public final class Gameserver {
       gameObjectUUID_ = "";
       deletedCoins_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       timestamp_ = "";
+      movingRooms_ = 0;
     }
 
     @java.lang.Override
@@ -2774,6 +2784,12 @@ public final class Gameserver {
               timestamp_ = s;
               break;
             }
+            case 40: {
+              int rawValue = input.readEnum();
+
+              movingRooms_ = rawValue;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -2799,6 +2815,113 @@ public final class Gameserver {
       return Gameserver.internal_static_UpdateFromClient_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               Gameserver.UpdateFromClient.class, Gameserver.UpdateFromClient.Builder.class);
+    }
+
+    /**
+     * Protobuf enum {@code UpdateFromClient.MovingRooms}
+     */
+    public enum MovingRooms
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>NOT = 0;</code>
+       */
+      NOT(0),
+      /**
+       * <code>LEFT = 1;</code>
+       */
+      LEFT(1),
+      /**
+       * <code>RIGHT = 2;</code>
+       */
+      RIGHT(2),
+      UNRECOGNIZED(-1),
+      ;
+
+      /**
+       * <code>NOT = 0;</code>
+       */
+      public static final int NOT_VALUE = 0;
+      /**
+       * <code>LEFT = 1;</code>
+       */
+      public static final int LEFT_VALUE = 1;
+      /**
+       * <code>RIGHT = 2;</code>
+       */
+      public static final int RIGHT_VALUE = 2;
+
+
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
+
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static MovingRooms valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static MovingRooms forNumber(int value) {
+        switch (value) {
+          case 0: return NOT;
+          case 1: return LEFT;
+          case 2: return RIGHT;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<MovingRooms>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          MovingRooms> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<MovingRooms>() {
+              public MovingRooms findValueByNumber(int number) {
+                return MovingRooms.forNumber(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return Gameserver.UpdateFromClient.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final MovingRooms[] VALUES = values();
+
+      public static MovingRooms valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private MovingRooms(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:UpdateFromClient.MovingRooms)
     }
 
     private int bitField0_;
@@ -2920,6 +3043,22 @@ public final class Gameserver {
       }
     }
 
+    public static final int MOVINGROOMS_FIELD_NUMBER = 5;
+    private int movingRooms_;
+    /**
+     * <code>.UpdateFromClient.MovingRooms movingRooms = 5;</code>
+     */
+    public int getMovingRoomsValue() {
+      return movingRooms_;
+    }
+    /**
+     * <code>.UpdateFromClient.MovingRooms movingRooms = 5;</code>
+     */
+    public Gameserver.UpdateFromClient.MovingRooms getMovingRooms() {
+      Gameserver.UpdateFromClient.MovingRooms result = Gameserver.UpdateFromClient.MovingRooms.valueOf(movingRooms_);
+      return result == null ? Gameserver.UpdateFromClient.MovingRooms.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -2943,6 +3082,9 @@ public final class Gameserver {
       }
       if (!getTimestampBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, timestamp_);
+      }
+      if (movingRooms_ != Gameserver.UpdateFromClient.MovingRooms.NOT.getNumber()) {
+        output.writeEnum(5, movingRooms_);
       }
       unknownFields.writeTo(output);
     }
@@ -2969,6 +3111,10 @@ public final class Gameserver {
       }
       if (!getTimestampBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, timestamp_);
+      }
+      if (movingRooms_ != Gameserver.UpdateFromClient.MovingRooms.NOT.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(5, movingRooms_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2997,6 +3143,7 @@ public final class Gameserver {
           .equals(other.getDeletedCoinsList());
       result = result && getTimestamp()
           .equals(other.getTimestamp());
+      result = result && movingRooms_ == other.movingRooms_;
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -3020,6 +3167,8 @@ public final class Gameserver {
       }
       hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
       hash = (53 * hash) + getTimestamp().hashCode();
+      hash = (37 * hash) + MOVINGROOMS_FIELD_NUMBER;
+      hash = (53 * hash) + movingRooms_;
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3161,6 +3310,8 @@ public final class Gameserver {
         bitField0_ = (bitField0_ & ~0x00000004);
         timestamp_ = "";
 
+        movingRooms_ = 0;
+
         return this;
       }
 
@@ -3197,6 +3348,7 @@ public final class Gameserver {
         }
         result.deletedCoins_ = deletedCoins_;
         result.timestamp_ = timestamp_;
+        result.movingRooms_ = movingRooms_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3259,6 +3411,9 @@ public final class Gameserver {
         if (!other.getTimestamp().isEmpty()) {
           timestamp_ = other.timestamp_;
           onChanged();
+        }
+        if (other.movingRooms_ != 0) {
+          setMovingRoomsValue(other.getMovingRoomsValue());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -3636,6 +3791,50 @@ public final class Gameserver {
         onChanged();
         return this;
       }
+
+      private int movingRooms_ = 0;
+      /**
+       * <code>.UpdateFromClient.MovingRooms movingRooms = 5;</code>
+       */
+      public int getMovingRoomsValue() {
+        return movingRooms_;
+      }
+      /**
+       * <code>.UpdateFromClient.MovingRooms movingRooms = 5;</code>
+       */
+      public Builder setMovingRoomsValue(int value) {
+        movingRooms_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.UpdateFromClient.MovingRooms movingRooms = 5;</code>
+       */
+      public Gameserver.UpdateFromClient.MovingRooms getMovingRooms() {
+        Gameserver.UpdateFromClient.MovingRooms result = Gameserver.UpdateFromClient.MovingRooms.valueOf(movingRooms_);
+        return result == null ? Gameserver.UpdateFromClient.MovingRooms.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.UpdateFromClient.MovingRooms movingRooms = 5;</code>
+       */
+      public Builder setMovingRooms(Gameserver.UpdateFromClient.MovingRooms value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        movingRooms_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.UpdateFromClient.MovingRooms movingRooms = 5;</code>
+       */
+      public Builder clearMovingRooms() {
+        
+        movingRooms_ = 0;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFieldsProto3(unknownFields);
@@ -3766,6 +3965,16 @@ public final class Gameserver {
      */
     com.google.protobuf.ByteString
         getTimestampBytes();
+
+    /**
+     * <code>string worldColor = 4;</code>
+     */
+    java.lang.String getWorldColor();
+    /**
+     * <code>string worldColor = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getWorldColorBytes();
   }
   /**
    * Protobuf type {@code UpdateFromServer}
@@ -3781,6 +3990,7 @@ public final class Gameserver {
     }
     private UpdateFromServer() {
       timestamp_ = "";
+      worldColor_ = "";
     }
 
     @java.lang.Override
@@ -3841,6 +4051,12 @@ public final class Gameserver {
               java.lang.String s = input.readStringRequireUtf8();
 
               timestamp_ = s;
+              break;
+            }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              worldColor_ = s;
               break;
             }
           }
@@ -4067,6 +4283,40 @@ public final class Gameserver {
       }
     }
 
+    public static final int WORLDCOLOR_FIELD_NUMBER = 4;
+    private volatile java.lang.Object worldColor_;
+    /**
+     * <code>string worldColor = 4;</code>
+     */
+    public java.lang.String getWorldColor() {
+      java.lang.Object ref = worldColor_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        worldColor_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string worldColor = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getWorldColorBytes() {
+      java.lang.Object ref = worldColor_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        worldColor_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -4093,6 +4343,9 @@ public final class Gameserver {
           2);
       if (!getTimestampBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, timestamp_);
+      }
+      if (!getWorldColorBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, worldColor_);
       }
       unknownFields.writeTo(output);
     }
@@ -4125,6 +4378,9 @@ public final class Gameserver {
       if (!getTimestampBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, timestamp_);
       }
+      if (!getWorldColorBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, worldColor_);
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -4147,6 +4403,8 @@ public final class Gameserver {
           other.internalGetCoinStates());
       result = result && getTimestamp()
           .equals(other.getTimestamp());
+      result = result && getWorldColor()
+          .equals(other.getWorldColor());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -4168,6 +4426,8 @@ public final class Gameserver {
       }
       hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
       hash = (53 * hash) + getTimestamp().hashCode();
+      hash = (37 * hash) + WORLDCOLOR_FIELD_NUMBER;
+      hash = (53 * hash) + getWorldColor().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4327,6 +4587,8 @@ public final class Gameserver {
         internalGetMutableCoinStates().clear();
         timestamp_ = "";
 
+        worldColor_ = "";
+
         return this;
       }
 
@@ -4356,6 +4618,7 @@ public final class Gameserver {
         result.coinStates_ = internalGetCoinStates();
         result.coinStates_.makeImmutable();
         result.timestamp_ = timestamp_;
+        result.worldColor_ = worldColor_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4404,6 +4667,10 @@ public final class Gameserver {
             other.internalGetCoinStates());
         if (!other.getTimestamp().isEmpty()) {
           timestamp_ = other.timestamp_;
+          onChanged();
+        }
+        if (!other.getWorldColor().isEmpty()) {
+          worldColor_ = other.worldColor_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -4745,6 +5012,75 @@ public final class Gameserver {
   checkByteStringIsUtf8(value);
         
         timestamp_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object worldColor_ = "";
+      /**
+       * <code>string worldColor = 4;</code>
+       */
+      public java.lang.String getWorldColor() {
+        java.lang.Object ref = worldColor_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          worldColor_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string worldColor = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getWorldColorBytes() {
+        java.lang.Object ref = worldColor_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          worldColor_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string worldColor = 4;</code>
+       */
+      public Builder setWorldColor(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        worldColor_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string worldColor = 4;</code>
+       */
+      public Builder clearWorldColor() {
+        
+        worldColor_ = getDefaultInstance().getWorldColor();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string worldColor = 4;</code>
+       */
+      public Builder setWorldColorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        worldColor_ = value;
         onChanged();
         return this;
       }
@@ -6488,26 +6824,28 @@ public final class Gameserver {
       "\002 \001(\001\"O\n\013PlayerState\022\014\n\004name\030\001 \001(\t\022\r\n\005co" +
       "lor\030\002 \001(\t\022\r\n\005score\030\003 \001(\t\022\t\n\001x\030\004 \001(\001\022\t\n\001y" +
       "\030\005 \001(\001\"1\n\022InitialPlayerState\022\014\n\004name\030\001 \001" +
-      "(\t\022\r\n\005color\030\002 \001(\t\"v\n\020UpdateFromClient\022\026\n" +
-      "\016gameObjectUUID\030\001 \001(\t\022!\n\013playerState\030\003 \001" +
-      "(\0132\014.PlayerState\022\024\n\014deletedCoins\030\002 \003(\t\022\021" +
-      "\n\ttimestamp\030\004 \001(\t\"\231\002\n\020UpdateFromServer\0229" +
-      "\n\014playerStates\030\001 \003(\0132#.UpdateFromServer.",
-      "PlayerStatesEntry\0225\n\ncoinStates\030\002 \003(\0132!." +
-      "UpdateFromServer.CoinStatesEntry\022\021\n\ttime" +
-      "stamp\030\003 \001(\t\032A\n\021PlayerStatesEntry\022\013\n\003key\030" +
-      "\001 \001(\t\022\033\n\005value\030\002 \001(\0132\014.PlayerState:\0028\001\032=" +
-      "\n\017CoinStatesEntry\022\013\n\003key\030\001 \001(\t\022\031\n\005value\030" +
-      "\002 \001(\0132\n.CoinState:\0028\001\"\007\n\005Empty\"!\n\rSuperP" +
-      "eerInfo\022\020\n\010hostname\030\001 \001(\t\"Q\n\022InitPlayerR" +
-      "esponse\022\022\n\nplayerUUID\030\001 \001(\t\022\'\n\014initialSt" +
-      "ate\030\002 \001(\0132\021.UpdateFromServer2\312\001\n\nGameSer" +
-      "ver\0225\n\rpublishUpdate\022\021.UpdateFromClient\032",
-      "\021.UpdateFromServer\022.\n\024getAssignedSuperPe" +
-      "er\022\006.Empty\032\016.SuperPeerInfo\0224\n\ninitPlayer" +
-      "\022\023.InitialPlayerState\032\021.UpdateFromServer" +
-      "\022\037\n\010removeMe\022\013.PlayerUUID\032\006.Emptyb\006proto" +
-      "3"
+      "(\t\022\r\n\005color\030\002 \001(\t\"\327\001\n\020UpdateFromClient\022\026" +
+      "\n\016gameObjectUUID\030\001 \001(\t\022!\n\013playerState\030\003 " +
+      "\001(\0132\014.PlayerState\022\024\n\014deletedCoins\030\002 \003(\t\022" +
+      "\021\n\ttimestamp\030\004 \001(\t\0222\n\013movingRooms\030\005 \001(\0162" +
+      "\035.UpdateFromClient.MovingRooms\"+\n\013Moving",
+      "Rooms\022\007\n\003NOT\020\000\022\010\n\004LEFT\020\001\022\t\n\005RIGHT\020\002\"\255\002\n\020" +
+      "UpdateFromServer\0229\n\014playerStates\030\001 \003(\0132#" +
+      ".UpdateFromServer.PlayerStatesEntry\0225\n\nc" +
+      "oinStates\030\002 \003(\0132!.UpdateFromServer.CoinS" +
+      "tatesEntry\022\021\n\ttimestamp\030\003 \001(\t\022\022\n\nworldCo" +
+      "lor\030\004 \001(\t\032A\n\021PlayerStatesEntry\022\013\n\003key\030\001 " +
+      "\001(\t\022\033\n\005value\030\002 \001(\0132\014.PlayerState:\0028\001\032=\n\017" +
+      "CoinStatesEntry\022\013\n\003key\030\001 \001(\t\022\031\n\005value\030\002 " +
+      "\001(\0132\n.CoinState:\0028\001\"\007\n\005Empty\"!\n\rSuperPee" +
+      "rInfo\022\020\n\010hostname\030\001 \001(\t\"Q\n\022InitPlayerRes",
+      "ponse\022\022\n\nplayerUUID\030\001 \001(\t\022\'\n\014initialStat" +
+      "e\030\002 \001(\0132\021.UpdateFromServer2\312\001\n\nGameServe" +
+      "r\0225\n\rpublishUpdate\022\021.UpdateFromClient\032\021." +
+      "UpdateFromServer\022.\n\024getAssignedSuperPeer" +
+      "\022\006.Empty\032\016.SuperPeerInfo\0224\n\ninitPlayer\022\023" +
+      ".InitialPlayerState\032\021.UpdateFromServer\022\037" +
+      "\n\010removeMe\022\013.PlayerUUID\032\006.Emptyb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -6550,13 +6888,13 @@ public final class Gameserver {
     internal_static_UpdateFromClient_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_UpdateFromClient_descriptor,
-        new java.lang.String[] { "GameObjectUUID", "PlayerState", "DeletedCoins", "Timestamp", });
+        new java.lang.String[] { "GameObjectUUID", "PlayerState", "DeletedCoins", "Timestamp", "MovingRooms", });
     internal_static_UpdateFromServer_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_UpdateFromServer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_UpdateFromServer_descriptor,
-        new java.lang.String[] { "PlayerStates", "CoinStates", "Timestamp", });
+        new java.lang.String[] { "PlayerStates", "CoinStates", "Timestamp", "WorldColor", });
     internal_static_UpdateFromServer_PlayerStatesEntry_descriptor =
       internal_static_UpdateFromServer_descriptor.getNestedTypes().get(0);
     internal_static_UpdateFromServer_PlayerStatesEntry_fieldAccessorTable = new

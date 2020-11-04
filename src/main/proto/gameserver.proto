@@ -32,12 +32,21 @@ message UpdateFromClient {
     PlayerState playerState = 3;
     repeated string deletedCoins = 2;
     string timestamp = 4;
+
+    enum MovingRooms {
+        NOT = 0;
+        LEFT = 1;
+        RIGHT = 2;
+    }
+
+    MovingRooms movingRooms = 5;
 }
 
 message UpdateFromServer {
     map<string, PlayerState> playerStates = 1;
     map<string, CoinState> coinStates = 2;
     string timestamp = 3;
+    string worldColor = 4;
 }
 
 message Empty {
