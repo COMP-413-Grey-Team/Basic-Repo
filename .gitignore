@@ -5,3 +5,4 @@
 .project
 *.class
 /target/classes/edu/rice/comp413fall2020grey/*
+/core/.idea/*
