@@ -15,7 +15,7 @@
 /sample-game/client/.idea/*
 
 # Do not include target files
-/target/*
+target/*
 /core/target/*
 
 *.DS_Store
