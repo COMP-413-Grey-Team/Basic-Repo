@@ -8,6 +8,7 @@ import edu.rice.rbox.Game.Common.SyncState.GameStateDelta;
 import edu.rice.rbox.ObjStorage.ObjectStore;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -24,8 +25,10 @@ public class GameStateManager {
   private HashMap<GameObjectUUID, GameObjectUUID> roomToCoinSpawner;
 
   // This class will be responsible for taking in changes from the clients, resolving them, interacting with Object Storage, and returning a snapshot to send back to the game client.
-  public GameState handleUpdateFromPlayer(GameStateDelta update) {
+  public void handleUpdateFromPlayer(GameStateDelta update) {
     final GameObjectUUID playerUUID = update.playerUUID;
+//    final int bufferIndex = objectStore.getBufferIndex(update.timestamp);
+    final int bufferIndex = 0;
 
     if (update.movingRooms != NOT) {
       // Remove from old room, add to new room, and give them a new position
@@ -38,31 +41,25 @@ public class GameStateManager {
     } else {
       // Update player position and score
       // Remove coins they have collected
-      update.updatedPlayerState.updateObjectStore(objectStore, bufferIndex);
+//      update.updatedPlayerState.updateObjectStore(objectStore, bufferIndex);
 
       for (final GameObjectUUID collectedCoin : update.deletedCoins) {
         // TODO(Object Storage): do we need an "exists" method?
         // delete currently returns false only when a replica tries to delete something
         // There needs to be a way to check if the coin exists to be deleted.
         if (objectStore.delete(collectedCoin, playerUUID, bufferIndex)) {
-          final int score = objectStore.read(playerUUID, "score", bufferIndex);
-          objectStore.write(new LocalFieldChange(playerUUID, "score", score + 1, bufferIndex), playerUUID);
+//          final int score = objectStore.read(playerUUID, "score", bufferIndex);
+//          objectStore.write(new LocalFieldChange(playerUUID, "score", score + 1, bufferIndex), playerUUID);
         }
       }
     }
-    return currentGameState();
   }
 
-  public void handlePlayerQuitting(GameObjectUUID player) {
+  public void handlePlayerQuitting(GameObjectUUID player, Date timestamp) {
     final GameObjectUUID roomUUID = playerToRoom.get(player);
     playerToRoom.remove(player);
     roomToPlayers.get(roomUUID).remove(player);
-    objectStore.delete(player, player, bufferIndex);
-  }
-
-  private GameState currentGameState() {
-
-    return new GameState()
+    objectStore.delete(player, player, objectStore.getBufferIndex(timestamp));
   }
 
 }

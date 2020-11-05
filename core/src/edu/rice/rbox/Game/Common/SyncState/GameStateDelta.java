@@ -2,6 +2,7 @@ package edu.rice.rbox.Game.Common.SyncState;
 
 import edu.rice.rbox.Common.GameObjectUUID;
 
+import java.util.Date;
 import java.util.HashSet;
 
 // Sent from client to server
@@ -13,6 +14,7 @@ public class GameStateDelta {
     RIGHT;
   }
 
+  public Date timestamp;
   public GameObjectUUID playerUUID;
   public PlayerState updatedPlayerState;
   public MovingRooms movingRooms;

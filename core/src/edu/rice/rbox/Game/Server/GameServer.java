@@ -1,15 +1,21 @@
 package edu.rice.rbox.Game.Server;
 
+import edu.rice.rbox.Common.Change.LocalAddReplicaChange;
+import edu.rice.rbox.Common.Change.LocalChange;
+import edu.rice.rbox.ObjStorage.ObjectStore;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Set;
 
 public class GameServer extends Thread {
 
   private final ServerSocket serverSocket;
   ClientConnectionManager clientConnectionManager;
+  private ObjectStore objectStore;
 
   public GameServer(int port) throws IOException {
     serverSocket = new ServerSocket(port);
@@ -18,27 +24,20 @@ public class GameServer extends Thread {
 
   public void run() {
     while (true) {
-      try {
-        // TODO: this is all sample code from a tutorial, likely to be replaced by ConnectionServer.
-        // The ClientConnectionManager will be responsible for mapping each connection to a client to the GameObjectUUID
-        // corresponding to the player that client corresponds to.
 
-        System.out.println("Waiting for client on port " +
-                               serverSocket.getLocalPort() + "...");
-        Socket server = serverSocket.accept();
+      final Set<LocalChange> localChanges = objectStore.synchronize();
+      localChanges.forEach(change -> {
+        if (change instanceof LocalAddReplicaChange) {
+          LocalAddReplicaChange larc = (LocalAddReplicaChange) change;
+          for (int i = change.getBufferIndex(); i >= 0; i--) {
+            objectStore.create(new LocalAddReplicaChange(larc.getTarget(), larc.getObject(), i));
+          }
+        }
+      });
+      objectStore.advanceBuffer();
 
-        System.out.println("Just connected to " + server.getRemoteSocketAddress());
-        DataInputStream in = new DataInputStream(server.getInputStream());
+      // TODO: game logic.
 
-        System.out.println(in.readUTF());
-        DataOutputStream out = new DataOutputStream(server.getOutputStream());
-        out.writeUTF("Thank you for connecting to " + server.getLocalSocketAddress()
-                         + "\nGoodbye!");
-        server.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-        break;
-      }
     }
   }
 
