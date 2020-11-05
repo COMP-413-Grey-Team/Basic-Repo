@@ -1,7 +1,7 @@
-package edu.rice.comp413fall2020grey.ObjStorage;
+package edu.rice.rbox.ObjStorage;
 
-import edu.rice.comp413fall2020grey.Common.Change.RemoteChange;
-import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
+import edu.rice.rbox.Common.Change.RemoteChange;
+import edu.rice.rbox.Common.GameObjectUUID;
 
 import java.io.Serializable;
 import java.util.HashMap;
