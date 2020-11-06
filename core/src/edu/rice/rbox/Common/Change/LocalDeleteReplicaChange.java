@@ -17,7 +17,12 @@ public class LocalDeleteReplicaChange extends DeleteReplicaChange implements Loc
   }
 
   @Override
+<<<<<<< HEAD
   public LocalDeleteReplicaChange copyWithIndex(int i) {
       return new LocalDeleteReplicaChange(this.getTarget(), i);
+=======
+  public LocalChange copyWithBufferIndex(int i) {
+    return new LocalDeleteReplicaChange(this.getTarget(), i);
+>>>>>>> d959a60 (merges new changes)
   }
 }

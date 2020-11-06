@@ -17,8 +17,9 @@ public class LocalFieldChange extends FieldChange implements LocalChange {
   }
 
   @Override
-  public LocalFieldChange copyWithIndex(int i) {
+  public LocalChange copyWithBufferIndex(int i) {
     return new LocalFieldChange(this.getTarget(), this.getField(), this.getValue(), i);
   }
 
 }
+
