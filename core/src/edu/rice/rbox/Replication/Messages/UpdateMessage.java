@@ -1,9 +1,12 @@
 package edu.rice.rbox.Replication.Messages;
 
 <<<<<<< HEAD:core/src/edu/rice/rbox/Replication/Messages/UpdateMessage.java
+<<<<<<< HEAD:core/src/edu/rice/rbox/Replication/Messages/UpdateMessage.java
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
 =======
+=======
+>>>>>>> ce7c210141f92f16e84a6a67b4ab90cc620f71bf:core/src/edu/rice/comp413fall2020grey/Replication/Messages/UpdateMessage.java
 import edu.rice.comp413fall2020grey.Common.GameField;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 import edu.rice.comp413fall2020grey.Common.ServerUUID;
