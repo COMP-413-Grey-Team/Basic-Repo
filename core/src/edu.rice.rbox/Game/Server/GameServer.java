@@ -26,12 +26,12 @@ public class GameServer extends Thread {
     while (true) {
 
       final Set<LocalChange> localChanges = objectStore.synchronize();
-      localChanges.forEach(change -> {
-        if (change instanceof LocalAddReplicaChange) { // Add this new object to my local data
-          LocalAddReplicaChange larc = (LocalAddReplicaChange) change;
-
-        }
-      });
+//      localChanges.forEach(change -> {
+//        if (change instanceof LocalAddReplicaChange) { // Add this new object to my local data
+//          LocalAddReplicaChange larc = (LocalAddReplicaChange) change;
+//
+//        }
+//      });
       objectStore.advanceBuffer();
 
       // TODO: game logic.

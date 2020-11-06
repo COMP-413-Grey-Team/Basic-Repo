@@ -1,5 +1,7 @@
 package edu.rice.rbox.Networking;
 
+import edu.rice.rbox.Protos.Generated.ConnectionServiceGrpc;
+import edu.rice.rbox.Protos.Generated.Network;
 import io.grpc.stub.StreamObserver;
 import network.ConnectionServiceGrpc;
 import network.Network;
