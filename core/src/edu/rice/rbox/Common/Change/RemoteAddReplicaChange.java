@@ -1,15 +1,19 @@
 package edu.rice.rbox.Common.Change;
 
+<<<<<<< HEAD:core/src/edu/rice/rbox/Common/Change/RemoteAddReplicaChange.java
 import edu.rice.rbox.Common.GameObjectUUID;
+=======
+import edu.rice.comp413fall2020grey.Common.GameField;
+import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
+>>>>>>> ce7c210... getting all changes from master:core/src/edu/rice/comp413fall2020grey/Common/Change/RemoteAddReplicaChange.java
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 
 public class RemoteAddReplicaChange extends AddReplicaChange implements RemoteChange {
   private final Date timestamp;
 
-  public RemoteAddReplicaChange(GameObjectUUID target, HashMap<String, Serializable> object, Date timestamp) {
+  public RemoteAddReplicaChange(GameObjectUUID target, HashMap<String, GameField> object, Date timestamp) {
     super(target, object);
     this.timestamp = timestamp;
   }
