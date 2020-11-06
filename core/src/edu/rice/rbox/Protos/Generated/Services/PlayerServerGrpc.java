@@ -1,6 +1,3 @@
-package edu.rice.rbox.Protos.Generated;
-
-
 import static io.grpc.stub.ClientCalls.asyncUnaryCall;
 import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
@@ -21,11 +18,11 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
 @javax.annotation.Generated(
     value = "by gRPC proto compiler (version 1.7.0)",
     comments = "Source: gameserver.proto")
-public final class GameServerGrpc {
+public final class PlayerServerGrpc {
 
-  private GameServerGrpc() {}
+  private PlayerServerGrpc() {}
 
-  public static final String SERVICE_NAME = "GameServer";
+  public static final String SERVICE_NAME = "PlayerServer";
 
   // Static method descriptors that strictly reflect the proto.
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
@@ -34,12 +31,12 @@ public final class GameServerGrpc {
       io.grpc.MethodDescriptor.<GameNetworkProto.UpdateFromClient, GameNetworkProto.UpdateFromServer>newBuilder()
           .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
           .setFullMethodName(generateFullMethodName(
-              "GameServer", "publishUpdate"))
+              "PlayerServer", "publishUpdate"))
           .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               GameNetworkProto.UpdateFromClient.getDefaultInstance()))
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               GameNetworkProto.UpdateFromServer.getDefaultInstance()))
-          .setSchemaDescriptor(new GameServerMethodDescriptorSupplier("publishUpdate"))
+          .setSchemaDescriptor(new PlayerServerMethodDescriptorSupplier("publishUpdate"))
           .build();
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<GameNetworkProto.Empty,
@@ -47,12 +44,12 @@ public final class GameServerGrpc {
       io.grpc.MethodDescriptor.<GameNetworkProto.Empty, GameNetworkProto.SuperPeerInfo>newBuilder()
           .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
           .setFullMethodName(generateFullMethodName(
-              "GameServer", "getAssignedSuperPeer"))
+              "PlayerServer", "getAssignedSuperPeer"))
           .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               GameNetworkProto.Empty.getDefaultInstance()))
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               GameNetworkProto.SuperPeerInfo.getDefaultInstance()))
-          .setSchemaDescriptor(new GameServerMethodDescriptorSupplier("getAssignedSuperPeer"))
+          .setSchemaDescriptor(new PlayerServerMethodDescriptorSupplier("getAssignedSuperPeer"))
           .build();
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<GameNetworkProto.InitialPlayerState,
@@ -60,12 +57,12 @@ public final class GameServerGrpc {
       io.grpc.MethodDescriptor.<GameNetworkProto.InitialPlayerState, GameNetworkProto.UpdateFromServer>newBuilder()
           .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
           .setFullMethodName(generateFullMethodName(
-              "GameServer", "initPlayer"))
+              "PlayerServer", "initPlayer"))
           .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               GameNetworkProto.InitialPlayerState.getDefaultInstance()))
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               GameNetworkProto.UpdateFromServer.getDefaultInstance()))
-          .setSchemaDescriptor(new GameServerMethodDescriptorSupplier("initPlayer"))
+          .setSchemaDescriptor(new PlayerServerMethodDescriptorSupplier("initPlayer"))
           .build();
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static final io.grpc.MethodDescriptor<GameNetworkProto.PlayerID,
@@ -73,40 +70,40 @@ public final class GameServerGrpc {
       io.grpc.MethodDescriptor.<GameNetworkProto.PlayerID, GameNetworkProto.Empty>newBuilder()
           .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
           .setFullMethodName(generateFullMethodName(
-              "GameServer", "removeMe"))
+              "PlayerServer", "removeMe"))
           .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               GameNetworkProto.PlayerID.getDefaultInstance()))
           .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
               GameNetworkProto.Empty.getDefaultInstance()))
-          .setSchemaDescriptor(new GameServerMethodDescriptorSupplier("removeMe"))
+          .setSchemaDescriptor(new PlayerServerMethodDescriptorSupplier("removeMe"))
           .build();
 
   /**
    * Creates a new async stub that supports all call types for the service
    */
-  public static GameServerStub newStub(io.grpc.Channel channel) {
-    return new GameServerStub(channel);
+  public static PlayerServerStub newStub(io.grpc.Channel channel) {
+    return new PlayerServerStub(channel);
   }
 
   /**
    * Creates a new blocking-style stub that supports unary and streaming output calls on the service
    */
-  public static GameServerBlockingStub newBlockingStub(
+  public static PlayerServerBlockingStub newBlockingStub(
       io.grpc.Channel channel) {
-    return new GameServerBlockingStub(channel);
+    return new PlayerServerBlockingStub(channel);
   }
 
   /**
    * Creates a new ListenableFuture-style stub that supports unary calls on the service
    */
-  public static GameServerFutureStub newFutureStub(
+  public static PlayerServerFutureStub newFutureStub(
       io.grpc.Channel channel) {
-    return new GameServerFutureStub(channel);
+    return new PlayerServerFutureStub(channel);
   }
 
   /**
    */
-  public static abstract class GameServerImplBase implements io.grpc.BindableService {
+  public static abstract class PlayerServerImplBase implements io.grpc.BindableService {
 
     /**
      */
@@ -172,20 +169,20 @@ public final class GameServerGrpc {
 
   /**
    */
-  public static final class GameServerStub extends io.grpc.stub.AbstractStub<GameServerStub> {
-    private GameServerStub(io.grpc.Channel channel) {
+  public static final class PlayerServerStub extends io.grpc.stub.AbstractStub<PlayerServerStub> {
+    private PlayerServerStub(io.grpc.Channel channel) {
       super(channel);
     }
 
-    private GameServerStub(io.grpc.Channel channel,
+    private PlayerServerStub(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected GameServerStub build(io.grpc.Channel channel,
+    protected PlayerServerStub build(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
-      return new GameServerStub(channel, callOptions);
+      return new PlayerServerStub(channel, callOptions);
     }
 
     /**
@@ -223,20 +220,20 @@ public final class GameServerGrpc {
 
   /**
    */
-  public static final class GameServerBlockingStub extends io.grpc.stub.AbstractStub<GameServerBlockingStub> {
-    private GameServerBlockingStub(io.grpc.Channel channel) {
+  public static final class PlayerServerBlockingStub extends io.grpc.stub.AbstractStub<PlayerServerBlockingStub> {
+    private PlayerServerBlockingStub(io.grpc.Channel channel) {
       super(channel);
     }
 
-    private GameServerBlockingStub(io.grpc.Channel channel,
+    private PlayerServerBlockingStub(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected GameServerBlockingStub build(io.grpc.Channel channel,
+    protected PlayerServerBlockingStub build(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
-      return new GameServerBlockingStub(channel, callOptions);
+      return new PlayerServerBlockingStub(channel, callOptions);
     }
 
     /**
@@ -270,20 +267,20 @@ public final class GameServerGrpc {
 
   /**
    */
-  public static final class GameServerFutureStub extends io.grpc.stub.AbstractStub<GameServerFutureStub> {
-    private GameServerFutureStub(io.grpc.Channel channel) {
+  public static final class PlayerServerFutureStub extends io.grpc.stub.AbstractStub<PlayerServerFutureStub> {
+    private PlayerServerFutureStub(io.grpc.Channel channel) {
       super(channel);
     }
 
-    private GameServerFutureStub(io.grpc.Channel channel,
+    private PlayerServerFutureStub(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected GameServerFutureStub build(io.grpc.Channel channel,
+    protected PlayerServerFutureStub build(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
-      return new GameServerFutureStub(channel, callOptions);
+      return new PlayerServerFutureStub(channel, callOptions);
     }
 
     /**
@@ -329,10 +326,10 @@ public final class GameServerGrpc {
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final GameServerImplBase serviceImpl;
+    private final PlayerServerImplBase serviceImpl;
     private final int methodId;
 
-    MethodHandlers(GameServerImplBase serviceImpl, int methodId) {
+    MethodHandlers(PlayerServerImplBase serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -373,9 +370,9 @@ public final class GameServerGrpc {
     }
   }
 
-  private static abstract class GameServerBaseDescriptorSupplier
+  private static abstract class PlayerServerBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoFileDescriptorSupplier, io.grpc.protobuf.ProtoServiceDescriptorSupplier {
-    GameServerBaseDescriptorSupplier() {}
+    PlayerServerBaseDescriptorSupplier() {}
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.FileDescriptor getFileDescriptor() {
@@ -384,21 +381,21 @@ public final class GameServerGrpc {
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.ServiceDescriptor getServiceDescriptor() {
-      return getFileDescriptor().findServiceByName("GameServer");
+      return getFileDescriptor().findServiceByName("PlayerServer");
     }
   }
 
-  private static final class GameServerFileDescriptorSupplier
-      extends GameServerBaseDescriptorSupplier {
-    GameServerFileDescriptorSupplier() {}
+  private static final class PlayerServerFileDescriptorSupplier
+      extends PlayerServerBaseDescriptorSupplier {
+    PlayerServerFileDescriptorSupplier() {}
   }
 
-  private static final class GameServerMethodDescriptorSupplier
-      extends GameServerBaseDescriptorSupplier
+  private static final class PlayerServerMethodDescriptorSupplier
+      extends PlayerServerBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoMethodDescriptorSupplier {
     private final String methodName;
 
-    GameServerMethodDescriptorSupplier(String methodName) {
+    PlayerServerMethodDescriptorSupplier(String methodName) {
       this.methodName = methodName;
     }
 
@@ -413,11 +410,11 @@ public final class GameServerGrpc {
   public static io.grpc.ServiceDescriptor getServiceDescriptor() {
     io.grpc.ServiceDescriptor result = serviceDescriptor;
     if (result == null) {
-      synchronized (GameServerGrpc.class) {
+      synchronized (PlayerServerGrpc.class) {
         result = serviceDescriptor;
         if (result == null) {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
-              .setSchemaDescriptor(new GameServerFileDescriptorSupplier())
+              .setSchemaDescriptor(new PlayerServerFileDescriptorSupplier())
               .addMethod(METHOD_PUBLISH_UPDATE)
               .addMethod(METHOD_GET_ASSIGNED_SUPER_PEER)
               .addMethod(METHOD_INIT_PLAYER)
