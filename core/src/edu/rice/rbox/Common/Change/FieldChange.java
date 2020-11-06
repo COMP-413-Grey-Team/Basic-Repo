@@ -1,5 +1,6 @@
 package edu.rice.rbox.Common.Change;
 
+import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
 import java.io.Serializable;
@@ -7,9 +8,9 @@ import java.io.Serializable;
 public abstract class FieldChange extends Change {
 
   private final String field;
-  private final Serializable value;
+  private final GameField value;
 
-  public FieldChange(GameObjectUUID target, String field, Serializable value) {
+  public FieldChange(GameObjectUUID target, String field, GameField value) {
     super(target);
     this.field = field;
     this.value = value;
@@ -19,7 +20,7 @@ public abstract class FieldChange extends Change {
     return field;
   }
 
-  public Serializable getValue() {
+  public GameField getValue() {
     return value;
   }
 

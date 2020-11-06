@@ -1,4 +1,4 @@
-package edu.rice.comp413fall2020grey.Common;
+package edu.rice.rbox.Common;
 
 import java.io.Serializable;
 
