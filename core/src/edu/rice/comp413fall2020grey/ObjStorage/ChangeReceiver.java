@@ -1,11 +1,29 @@
 package edu.rice.comp413fall2020grey.ObjStorage;
 
-import edu.rice.comp413fall2020grey.Common.Change.Change;
 import edu.rice.comp413fall2020grey.Common.Change.RemoteChange;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
-public interface ChangeReceiver {
+import java.util.Date;
 
+/**
+ * Interface from object replication to object storage.
+ */
+public interface ChangeReceiver {
+  /**
+   * Receives a change and updates the store.
+   */
   void receiveChange(RemoteChange change);
+
+  /**
+   * Deletes the specified replica.
+   * Right now it deletes it from the entire buffer, this might need to change.
+   * TODO: Discuss this.
+   */
+  void deleteReplica(GameObjectUUID id, Date timestamp);
+
+  /**
+   * Returns a replica of the specified object.
+   */
   RemoteChange getReplica(GameObjectUUID id);
+  void promoteSecondary(GameObjectUUID id);
 }

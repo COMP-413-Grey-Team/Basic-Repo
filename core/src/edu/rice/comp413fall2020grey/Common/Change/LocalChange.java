@@ -7,4 +7,6 @@ public interface LocalChange {
   int getBufferIndex();
   GameObjectUUID getTarget();
 
+  LocalChange copyWithIndex(int i);
+
 }

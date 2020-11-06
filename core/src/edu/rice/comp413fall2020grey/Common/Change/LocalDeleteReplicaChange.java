@@ -15,4 +15,9 @@ public class LocalDeleteReplicaChange extends DeleteReplicaChange implements Loc
   public int getBufferIndex() {
     return bufferIndex;
   }
+
+  @Override
+  public LocalDeleteReplicaChange copyWithIndex(int i) {
+      return new LocalDeleteReplicaChange(this.getTarget(), i);
+  }
 }

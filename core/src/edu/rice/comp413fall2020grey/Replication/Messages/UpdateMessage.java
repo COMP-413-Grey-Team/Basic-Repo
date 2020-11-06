@@ -1,5 +1,6 @@
 package edu.rice.comp413fall2020grey.Replication.Messages;
 
+import edu.rice.comp413fall2020grey.Common.GameField;
 import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 import edu.rice.comp413fall2020grey.Common.ServerUUID;
 
@@ -22,7 +23,7 @@ public class UpdateMessage extends ReplicaMessage {
   /**
    * A new value for the field being changed.
    */
-  private final Serializable value;
+  private final GameField value;
 
   /**
    * Constructor for update message.
@@ -35,7 +36,7 @@ public class UpdateMessage extends ReplicaMessage {
                           ServerUUID originSuperpeer,
                           GameObjectUUID targetObject,
                           String field,
-                          Serializable value) {
+                          GameField value) {
     super(timestamp, originSuperpeer, targetObject, "update");
     this.field = field;
     this.value = value;
@@ -51,7 +52,7 @@ public class UpdateMessage extends ReplicaMessage {
   /**
    * @return The value for the changed field.
    */
-  public Serializable getValue() {
+  public GameField getValue() {
     return value;
   }
 }

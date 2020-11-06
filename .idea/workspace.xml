@@ -30,16 +30,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/comp413.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/comp413.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/Common/Change/LocalChange.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/Common/Change/LocalChange.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/Common/Change/RemoteChange.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/Common/Change/RemoteChange.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ChangeReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ChangeReceiver.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStorageReplicationInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStorageReplicationInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/edu.rice.comp413fall2020grey.ObjStorage/DummyReplicaManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/edu.rice.comp413fall2020grey.ObjStorage/DummyReplicaManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/test/edu.rice.comp413fall2020grey.ObjStorage/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/test/edu.rice.comp413fall2020grey.ObjStorage/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,11 +47,15 @@
       </map>
     </option>
   </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Concept" />
         <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -83,6 +81,9 @@
         <option name="mavenHome" value="$APPLICATION_HOME_DIR$/plugins/maven/lib/maven3" />
       </MavenGeneralSettings>
     </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
   </component>
   <component name="ProjectId" id="1iFbEq2rjv95SduSBkEuPFxZUgx" />
   <component name="ProjectLevelVcsManager">
@@ -111,26 +112,18 @@
     <property name="settings.editor.selected.configurable" value="fileTemplates" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/config" />
-      <recent name="$PROJECT_DIR$/../comp 413/basic-repo" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="edu.rice.comp413fall2020grey.ObjStorage" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/config" />
+      <recent name="$PROJECT_DIR$/../comp 413/basic-repo" />
+    </key>
   </component>
   <component name="RunManager" selected="JUnit.Test">
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="comp413" />
       <extension name="coverage">
@@ -157,6 +150,22 @@
       <option name="PACKAGE_NAME" value="edu.rice.comp413fall2020grey.ObjStorage" />
       <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.ObjStorage.Test" />
       <option name="METHOD_NAME" value="testBuffer" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test.testDeep" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="comp413" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.rice.comp413fall2020grey.ObjStorage.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.rice.comp413fall2020grey.ObjStorage" />
+      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.ObjStorage.Test" />
+      <option name="METHOD_NAME" value="testDeep" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -194,33 +203,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test.testWrite" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="comp413" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.rice.comp413fall2020grey.ObjStorage.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.rice.comp413fall2020grey.ObjStorage" />
-      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.ObjStorage.Test" />
-      <option name="METHOD_NAME" value="testWrite" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.Test" />
+        <item itemvalue="JUnit.Test.testDeep" />
         <item itemvalue="JUnit.Test.testReplicas" />
         <item itemvalue="JUnit.Test.testSynchronize" />
         <item itemvalue="JUnit.Test.testBuffer" />
-        <item itemvalue="JUnit.Test.testWrite" />
       </list>
     </recent_temporary>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="false" />
   <component name="SvnConfiguration">
     <configuration>$USER_HOME$/.subversion</configuration>
     <option name="runUnderTerminal" value="true" />
@@ -246,7 +239,10 @@
       <workItem from="1602710458819" duration="258000" />
       <workItem from="1602878474341" duration="4109000" />
       <workItem from="1603576855702" duration="209000" />
-      <workItem from="1603745831096" duration="5750000" />
+      <workItem from="1603745831096" duration="6106000" />
+      <workItem from="1603821438149" duration="1464000" />
+      <workItem from="1603823076073" duration="4000" />
+      <workItem from="1603917008323" duration="5274000" />
     </task>
     <task id="LOCAL-00001" summary="Added pom.xml with a dependency">
       <created>1601602054767</created>
@@ -255,7 +251,28 @@
       <option name="project" value="LOCAL" />
       <updated>1601602054767</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Adds InterestingFields class.">
+      <created>1603989897903</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1603989897903</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Adds InterestingFields class.">
+      <created>1603989994480</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1603989994480</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Separates interesting fields.">
+      <created>1604094609970</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1604094609970</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -287,17 +304,19 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added pom.xml with a dependency" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added pom.xml with a dependency" />
+    <MESSAGE value="Adds InterestingFields class." />
+    <MESSAGE value="Separates interesting fields." />
+    <option name="LAST_COMMIT_MESSAGE" value="Separates interesting fields." />
   </component>
   <component name="WindowStateProjectService">
     <state x="384" y="126" key="#Project_Structure" timestamp="1601507476999">
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="384" y="126" key="#Project_Structure/0.23.1792.1044@0.23.1792.1044" timestamp="1601507476999" />
-    <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser" timestamp="1603751515848">
+    <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser" timestamp="1603922540475">
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
-    <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1200@0.0.1920.1200" timestamp="1603751515848" />
+    <state x="773" y="314" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1200@0.0.1920.1200" timestamp="1603922540474" />
     <state x="648" y="344" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1602536206642">
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
@@ -306,25 +325,29 @@
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="473" y="120" key="CommitChangelistDialog2/0.23.1792.1044@0.23.1792.1044" timestamp="1601602054576" />
-    <state width="1878" height="344" key="GridCell.Tab.0.bottom" timestamp="1603752391685">
+    <state x="747" y="362" key="FileChooserDialogImpl" timestamp="1603922366367">
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
-    <state width="1878" height="344" key="GridCell.Tab.0.bottom/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391685" />
+    <state x="747" y="362" key="FileChooserDialogImpl/0.0.1920.1200@0.0.1920.1200" timestamp="1603922366367" />
+    <state width="1878" height="344" key="GridCell.Tab.0.bottom" timestamp="1603919160969">
+      <screen x="0" y="0" width="1920" height="1200" />
+    </state>
+    <state width="1878" height="344" key="GridCell.Tab.0.bottom/0.0.1920.1200@0.0.1920.1200" timestamp="1603919160969" />
     <state width="1750" height="286" key="GridCell.Tab.0.bottom/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636832" />
-    <state width="1878" height="344" key="GridCell.Tab.0.center" timestamp="1603752391683">
+    <state width="1878" height="344" key="GridCell.Tab.0.center" timestamp="1603919160968">
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
-    <state width="1878" height="344" key="GridCell.Tab.0.center/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391683" />
+    <state width="1878" height="344" key="GridCell.Tab.0.center/0.0.1920.1200@0.0.1920.1200" timestamp="1603919160968" />
     <state width="1750" height="286" key="GridCell.Tab.0.center/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
-    <state width="1878" height="344" key="GridCell.Tab.0.left" timestamp="1603752391682">
+    <state width="1878" height="344" key="GridCell.Tab.0.left" timestamp="1603919160967">
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
-    <state width="1878" height="344" key="GridCell.Tab.0.left/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391682" />
+    <state width="1878" height="344" key="GridCell.Tab.0.left/0.0.1920.1200@0.0.1920.1200" timestamp="1603919160967" />
     <state width="1750" height="286" key="GridCell.Tab.0.left/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
-    <state width="1878" height="344" key="GridCell.Tab.0.right" timestamp="1603752391684">
+    <state width="1878" height="344" key="GridCell.Tab.0.right" timestamp="1603919160969">
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
-    <state width="1878" height="344" key="GridCell.Tab.0.right/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391684" />
+    <state width="1878" height="344" key="GridCell.Tab.0.right/0.0.1920.1200@0.0.1920.1200" timestamp="1603919160969" />
     <state width="1750" height="286" key="GridCell.Tab.0.right/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
     <state x="482" y="21" key="SettingsEditor" timestamp="1603489036397">
       <screen x="0" y="0" width="1920" height="1200" />
@@ -335,6 +358,10 @@
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="593" y="444" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/0.23.1792.1044@0.23.1792.1044" timestamp="1601507272007" />
+    <state x="644" y="243" width="632" height="714" key="find.popup" timestamp="1603922368679">
+      <screen x="0" y="0" width="1920" height="1200" />
+    </state>
+    <state x="644" y="243" width="632" height="714" key="find.popup/0.0.1920.1200@0.0.1920.1200" timestamp="1603922368679" />
     <state x="609" y="397" key="git4idea.merge.GitPullDialog" timestamp="1602102813497">
       <screen x="0" y="0" width="1920" height="1200" />
     </state>
