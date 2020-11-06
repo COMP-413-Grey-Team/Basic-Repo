@@ -3,6 +3,9 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
+option java_outer_classname = "RBoxProto";
+option java_package = "network";
+
 // add in messages here
 message ReplicationMessage {
 	google.protobuf.Timestamp timestamp = 1;

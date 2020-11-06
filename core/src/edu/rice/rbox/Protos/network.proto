@@ -1,8 +1,7 @@
 syntax = "proto3";
 //option java_multiple_files = true;
 
-//package Generated;
-//option java_package = "edu.rice.rbox.Protos.Generated";
+option java_package = "network";
 
 // Request payload
 message ServerInformation {
