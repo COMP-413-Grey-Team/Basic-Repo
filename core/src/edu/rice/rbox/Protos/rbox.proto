@@ -31,7 +31,6 @@ message UpdateMessage {
 	bytes remoteChange = 2;
 }
 
-// this is the ONLY service defined (all RPCs go here)
 service RBoxService {
   rpc handleSubscribe(SubscribeRequest) returns (UpdateMessage);
   rpc handleUpdate(UpdateMessage) returns (google.protobuf.Empty);
@@ -86,7 +85,7 @@ message ConnectMessage {
   string connectionIP = 2;
 }
 
-service Connection {
+service Registrar {
   rpc Alert(NewRegistrarMessage) returns (google.protobuf.Empty);
   rpc Promote(PromoteSecondaryMessage) returns (google.protobuf.Empty);
   rpc Connect(ConnectMessage) returns (google.protobuf.Empty);
