@@ -18,12 +18,6 @@ public class GameStateManager {
 
   private ObjectStore objectStore;
 
-  private HashMap<GameObjectUUID, HashSet<GameObjectUUID>> roomToPlayers;
-  private HashMap<GameObjectUUID, GameObjectUUID> playerToRoom;
-
-  private HashMap<GameObjectUUID, HashSet<GameObjectUUID>> roomToCoins;
-  private HashMap<GameObjectUUID, GameObjectUUID> roomToCoinSpawner;
-
   // This class will be responsible for taking in changes from the clients, resolving them, interacting with Object Storage, and returning a snapshot to send back to the game client.
   public void handleUpdateFromPlayer(GameStateDelta update) {
     final GameObjectUUID playerUUID = update.playerUUID;
