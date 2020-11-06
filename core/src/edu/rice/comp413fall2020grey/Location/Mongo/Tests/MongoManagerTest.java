@@ -70,7 +70,7 @@ public class MongoManagerTest {
         MongoCollection<Document> collection =
             mongoClient.getDatabase(AIRBNB_DB).getCollection("listingsAndReviews");
 
-        EqualityStringPredicate equalityPred = new EqualityStringPredicate("_id", "10009999");
+        EqualityStringPredicate equalityPred = new EqualityStringPredicate("_id", "10009999", false);
         Bson bsonQuery = equalityPred.toMongoQuery(null);
         FindIterable<Document> expected = collection.find(eq("_id", "10009999"));
         FindIterable<Document> actual  = collection.find(bsonQuery);
@@ -102,7 +102,7 @@ public class MongoManagerTest {
         MongoCollection<Document> collection =
             mongoClient.getDatabase(AIRBNB_DB).getCollection("listingsAndReviews");
 
-        EqualityStringPredicate equalityPred = new EqualityStringPredicate("_id", "10009999");
+        EqualityStringPredicate equalityPred = new EqualityStringPredicate("_id", "10009999", false);
 
         String toJson = equalityPred
                     .toMongoQuery(null)

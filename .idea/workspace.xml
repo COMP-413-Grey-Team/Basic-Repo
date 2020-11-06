@@ -19,20 +19,13 @@
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="BRANCH:origin/master" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-    </select>
+    <select />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="625a4b22-cf12-40be-9077-074387fe1e9a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/comp413.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/comp413.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/Location/Mongo/Tests/MongoManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/Location/Mongo/Tests/MongoManagerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/Location/interest/EqualityStringPredicate.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/edu/rice/comp413fall2020grey/Location/interest/EqualityStringPredicate.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,13 +105,28 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.Test">
+  <component name="RunManager" selected="JUnit.MongoManagerTest">
     <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MongoManagerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="basic-repo" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.rice.comp413fall2020grey.Location.Mongo.Tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.rice.comp413fall2020grey.Location.Mongo.Tests" />
+      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.Location.Mongo.Tests.MongoManagerTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -187,29 +195,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test.testWrite" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="comp413" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.rice.comp413fall2020grey.ObjStorage.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.rice.comp413fall2020grey.ObjStorage" />
-      <option name="MAIN_CLASS_NAME" value="edu.rice.comp413fall2020grey.ObjStorage.Test" />
-      <option name="METHOD_NAME" value="testWrite" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.MongoManagerTest" />
         <item itemvalue="JUnit.Test" />
         <item itemvalue="JUnit.Test.testReplicas" />
         <item itemvalue="JUnit.Test.testSynchronize" />
         <item itemvalue="JUnit.Test.testBuffer" />
-        <item itemvalue="JUnit.Test.testWrite" />
       </list>
     </recent_temporary>
   </component>
@@ -299,24 +291,28 @@
       <screen x="0" y="23" width="1792" height="1044" />
     </state>
     <state x="473" y="120" key="CommitChangelistDialog2/0.23.1792.1044@0.23.1792.1044" timestamp="1601602054576" />
-    <state width="1878" height="344" key="GridCell.Tab.0.bottom" timestamp="1603752391685">
-      <screen x="0" y="0" width="1920" height="1200" />
+    <state width="770" height="224" key="GridCell.Tab.0.bottom" timestamp="1604701339252">
+      <screen x="0" y="0" width="1600" height="860" />
     </state>
+    <state width="770" height="224" key="GridCell.Tab.0.bottom/0.0.1600.860@0.0.1600.860" timestamp="1604701339252" />
     <state width="1878" height="344" key="GridCell.Tab.0.bottom/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391685" />
     <state width="1750" height="286" key="GridCell.Tab.0.bottom/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636832" />
-    <state width="1878" height="344" key="GridCell.Tab.0.center" timestamp="1603752391683">
-      <screen x="0" y="0" width="1920" height="1200" />
+    <state width="770" height="224" key="GridCell.Tab.0.center" timestamp="1604701339252">
+      <screen x="0" y="0" width="1600" height="860" />
     </state>
+    <state width="770" height="224" key="GridCell.Tab.0.center/0.0.1600.860@0.0.1600.860" timestamp="1604701339252" />
     <state width="1878" height="344" key="GridCell.Tab.0.center/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391683" />
     <state width="1750" height="286" key="GridCell.Tab.0.center/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
-    <state width="1878" height="344" key="GridCell.Tab.0.left" timestamp="1603752391682">
-      <screen x="0" y="0" width="1920" height="1200" />
+    <state width="770" height="224" key="GridCell.Tab.0.left" timestamp="1604701339252">
+      <screen x="0" y="0" width="1600" height="860" />
     </state>
+    <state width="770" height="224" key="GridCell.Tab.0.left/0.0.1600.860@0.0.1600.860" timestamp="1604701339252" />
     <state width="1878" height="344" key="GridCell.Tab.0.left/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391682" />
     <state width="1750" height="286" key="GridCell.Tab.0.left/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
-    <state width="1878" height="344" key="GridCell.Tab.0.right" timestamp="1603752391684">
-      <screen x="0" y="0" width="1920" height="1200" />
+    <state width="770" height="224" key="GridCell.Tab.0.right" timestamp="1604701339252">
+      <screen x="0" y="0" width="1600" height="860" />
     </state>
+    <state width="770" height="224" key="GridCell.Tab.0.right/0.0.1600.860@0.0.1600.860" timestamp="1604701339252" />
     <state width="1878" height="344" key="GridCell.Tab.0.right/0.0.1920.1200@0.0.1920.1200" timestamp="1603752391684" />
     <state width="1750" height="286" key="GridCell.Tab.0.right/0.23.1792.1044@0.23.1792.1044" timestamp="1601601636831" />
     <state x="482" y="21" key="SettingsEditor" timestamp="1603489036397">
