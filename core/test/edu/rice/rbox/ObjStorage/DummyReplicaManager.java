@@ -7,7 +7,6 @@ import edu.rice.rbox.Common.GameObjectUUID;
 import java.util.HashMap;
 
 public class DummyReplicaManager implements ObjectStorageReplicationInterface {
-
     @Override
     public void updatePrimary(RemoteChange change) {
 
