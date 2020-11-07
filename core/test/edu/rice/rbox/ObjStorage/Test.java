@@ -1,5 +1,6 @@
 package edu.rice.rbox.ObjStorage;
 import edu.rice.rbox.Common.Change.*;
+import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 import junit.framework.TestCase;
 
