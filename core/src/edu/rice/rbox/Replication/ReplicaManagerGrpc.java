@@ -4,9 +4,11 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import edu.rice.rbox.Common.Change.RemoteChange;
+import edu.rice.rbox.Common.Change.RemoteDeleteReplicaChange;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
 import edu.rice.rbox.ObjStorage.ChangeReceiver;
+import edu.rice.rbox.Protos.Generated.GameNetworkProto;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import edu.rice.rbox.Protos.Generated.RBoxServiceGrpc;
@@ -14,10 +16,8 @@ import edu.rice.rbox.Protos.Generated.Rbox;
 import org.apache.commons.lang3.SerializationUtils;
 
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.time.Instant;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -111,9 +111,29 @@ public class ReplicaManagerGrpc {
 
 
     void unsubscribe(GameObjectUUID replicaObjectUUID) {
-        // TODO: Build request
-        // TODO: Remove from publishers
-        // TODO: deleteReplica via changeReceiver (delete replica)
+        logger.info("Sending unsubscribe request...");
+
+        // Construct Unsubscribe Request
+        Rbox.ReplicationMessage msg = generateReplicationMessage(replicaObjectUUID);
+        Rbox.UnsubscribeRequest request = Rbox.UnsubscribeRequest.newBuilder().setMsg(msg).build();
+
+        try {
+            getStub(serverUUID).handleUnsubscribe(request, null);
+            Timestamp timestamp = msg.getTimestamp();
+            RemoteChange remoteChange = new RemoteDeleteReplicaChange(
+                                                replicaObjectUUID,
+                                                // convert timestamp from message to Date
+                                                Date.from(Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos())));
+
+            // Remove from publishers
+            publishers.remove(replicaObjectUUID);
+
+            // Delete replica via changeReceiver (send remote change to storage)
+            changeReceiver.receiveChange(remoteChange);
+
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed when sending unsubscribe request {0}", e.getStatus());
+        }
     }
 
 
@@ -151,7 +171,20 @@ public class ReplicaManagerGrpc {
 
         @Override
         public void handleUnsubscribe(Rbox.UnsubscribeRequest request, StreamObserver<Empty> responseObserver) {
-            // TODO: Remove from subscribers
+            logger.info("Handling unsubscribe request...");
+
+            GameObjectUUID replicaObjectUUID = getGameObjectUUIDFromMessage(request.getMsg());
+            GameObjectUUID primaryObjectUUID = publishers.get(replicaObjectUUID).getGameObjectUUID();
+
+            // Remove from subscribers
+            List<HolderInfo> updatedReplicas = subscribers.get(primaryObjectUUID);
+            for (HolderInfo holder : subscribers.get(primaryObjectUUID)) {
+                if (holder.getGameObjectUUID() == replicaObjectUUID) {
+                    updatedReplicas.remove(holder);
+                }
+            }
+            subscribers.put(primaryObjectUUID, updatedReplicas);
+
         }
 
         @Override
