@@ -15,6 +15,7 @@ import org.apache.commons.lang3.SerializationUtils;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -30,17 +31,21 @@ public class ReplicaManagerGrpc {
     private ServerUUID serverUUID;
 
     private HashMap<GameObjectUUID, List<HolderInfo>> subscribers;      // Primary => Replica
-    private HashMap<GameObjectUUID, ServerUUID> publishers;             // Replica => Primary
+    private HashMap<GameObjectUUID, HolderInfo> publishers;             // Replica => Primary
+
+    private HashSet<GameObjectUUID> secondaries;
 
 
-    /*
-     * Constructor
-     */
+    /* Constructor */
     public ReplicaManagerGrpc(ChangeReceiver changeReceiver, ServerUUID serverUUID) {
         this.changeReceiver = changeReceiver;
         this.serverUUID = serverUUID;
+        this.subscribers = new HashMap<>();
+        this.publishers = new HashMap<>();
+        this.secondaries = new HashSet<>();
     }
 
+    /* Helper functions */
     private RBoxServiceGrpc.RBoxServiceBlockingStub getBlockingStub(ServerUUID serverUUID) {
         // TODO
         return null;
@@ -49,6 +54,22 @@ public class ReplicaManagerGrpc {
     private RBoxServiceGrpc.RBoxServiceStub getStub(ServerUUID serverUUID) {
         // TODO
         return null;
+    }
+
+    private ByteString getByteStringFromRemoteChange(RemoteChange remoteChange) {
+        return ByteString.copyFrom(SerializationUtils.serialize(remoteChange));
+    }
+
+    private RemoteChange getRemoteChangeFromUpdateMessage(Rbox.UpdateMessage msg) {
+        return SerializationUtils.deserialize(msg.getRemoteChange().toByteArray());
+    }
+
+    private GameObjectUUID getGameObjectUUIDFromMessage(Rbox.ReplicationMessage msg) {
+        return new GameObjectUUID(UUID.fromString(msg.getTargetObjectUUID()));
+    }
+
+    private ServerUUID getServerUUIDFromMessage(Rbox.ReplicationMessage msg) {
+        return new ServerUUID(UUID.fromString(msg.getOriginSuperpeerUUID()));
     }
 
     private Rbox.ReplicationMessage generateReplicationMessage(GameObjectUUID gameObjectUUID) {
@@ -62,20 +83,26 @@ public class ReplicaManagerGrpc {
                    .build();
     }
 
-
+    /* Replica Manager functions */
     void subscribe(GameObjectUUID primaryObjectUUID, ServerUUID serverUUID) {
+        logger.log(Level.INFO, "Sending subscribe request...");
 
-
-        // TODO: Build request => get response via blockingStub.handleSubscribe()
+        // Construct Subscribe Request
         Rbox.ReplicationMessage msg = generateReplicationMessage(primaryObjectUUID);
         Rbox.SubscribeRequest request = Rbox.SubscribeRequest.newBuilder().setMsg(msg).build();
         Rbox.UpdateMessage response;
 
         try {
             response = getBlockingStub(serverUUID).handleSubscribe(request);
-            // TODO: ================================
-            // TODO: Add into publishers (Replication)
-            // TODO: Get the replica from response and pass replica via changeReceiver(Storage)
+            RemoteChange remoteChange = getRemoteChangeFromUpdateMessage(response);
+
+            // Add into publishers
+            HolderInfo primaryHolderInfo = new HolderInfo(primaryObjectUUID, serverUUID);
+            publishers.put(remoteChange.getTarget(), primaryHolderInfo);
+
+            // Send remote change to storage
+            changeReceiver.receiveChange(remoteChange);
+
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "failure when sending subscribe request");
         }
@@ -94,16 +121,26 @@ public class ReplicaManagerGrpc {
         @Override
         public void handleSubscribe(Rbox.SubscribeRequest request,
                                     StreamObserver<Rbox.UpdateMessage> responseObserver) {
-            // TODO
-            GameObjectUUID primaryUUID = new GameObjectUUID(UUID.fromString(request.getMsg().getTargetObjectUUID()));
-            RemoteChange replica = changeReceiver.getReplica(primaryUUID);
+            logger.log(Level.INFO, "Handling subscribe request...");
 
-            // TODO: Add to subscirbers
+            // Get replica from storage
+            GameObjectUUID primaryObjectUUID = getGameObjectUUIDFromMessage(request.getMsg());
+            ServerUUID senderServerUUID = getServerUUIDFromMessage(request.getMsg());
+            RemoteChange replica = changeReceiver.getReplica(primaryObjectUUID);
 
+            // Add to subscribers
+            List<HolderInfo> maybeSubscribers = subscribers.get(primaryObjectUUID);
+            HolderInfo replicaHolderInfo = new HolderInfo(replica.getTarget(), senderServerUUID);
+
+            if (maybeSubscribers != null) {
+                maybeSubscribers.add(replicaHolderInfo);
+            } else {
+                subscribers.put(primaryObjectUUID, List.of(replicaHolderInfo));
+            }
 
             // Send the response
-            Rbox.ReplicationMessage message = generateReplicationMessage(primaryUUID);
-            ByteString replicaByteString = ByteString.copyFrom(SerializationUtils.serialize(replica));
+            Rbox.ReplicationMessage message = generateReplicationMessage(primaryObjectUUID);
+            ByteString replicaByteString = getByteStringFromRemoteChange(replica);
             Rbox.UpdateMessage response = Rbox.UpdateMessage.newBuilder()
                                              .setMsg(message)
                                              .setRemoteChange(replicaByteString)
@@ -147,7 +184,7 @@ public class ReplicaManagerGrpc {
         // TODO: ??????????
     }
 
-    void deletePrimary(GameObjectUUID id) {
+    void deletePrimary(GameObjectUUID id, RemoteChange remoteChange) {
         // TODO: send Message to all replica holders
     }
 }
