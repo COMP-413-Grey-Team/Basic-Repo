@@ -33,7 +33,8 @@ public class ReplicaManagerGrpc {
     private HashMap<GameObjectUUID, List<HolderInfo>> subscribers;      // Primary => Replica
     private HashMap<GameObjectUUID, HolderInfo> publishers;             // Replica => Primary
 
-    private HashSet<GameObjectUUID> secondaries;
+    private HashSet<GameObjectUUID> secondaries;                        // Secondary Replicas
+    private HashMap<GameObjectUUID, Integer> timeout;                   // Primary => timeout
 
 
     /* Constructor */
@@ -47,11 +48,6 @@ public class ReplicaManagerGrpc {
 
     /* Helper functions */
     private RBoxServiceGrpc.RBoxServiceBlockingStub getBlockingStub(ServerUUID serverUUID) {
-        // TODO
-        return null;
-    }
-
-    private RBoxServiceGrpc.RBoxServiceStub getStub(ServerUUID serverUUID) {
         // TODO
         return null;
     }
@@ -74,6 +70,10 @@ public class ReplicaManagerGrpc {
 
     private Rbox.ReplicationMessage generateReplicationMessage(GameObjectUUID gameObjectUUID) {
         long millis = System.currentTimeMillis();
+        return generateReplicationMessage(gameObjectUUID, millis);
+    }
+
+    private Rbox.ReplicationMessage generateReplicationMessage(GameObjectUUID gameObjectUUID, long millis) {
         Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
                                   .setNanos((int) ((millis % 1000) * 1000000)).build();
         return Rbox.ReplicationMessage.newBuilder()
@@ -160,31 +160,40 @@ public class ReplicaManagerGrpc {
         }
     }
 
-
-
-    //TODO: need a function to get stub based on server UUID
-
-    /*
-     * Function for Object Locator
-     */
     void handleQueryResult(GameObjectUUID primaryObjectUUID, List<HolderInfo> interestedObjects) {
         // TODO: Subscribe & Unsubscribe when necessary
     }
 
+    /* Functions for Object Storgae */
     void updatePrimary(RemoteChange change) {
         // TODO: Send change to primary holder
     }
 
     void broadcastUpdate(RemoteChange change, Boolean interesting) {
         // TODO: Send change to all replica holders
-        // TODO: If involves interesting fields change, send to registrar
+        // TODO: If involves interesting fields change, also send to registrar
     }
 
-    void createPrimary(GameObjectUUID id) {
-        // TODO: ??????????
+    void createPrimary(GameObjectUUID primaryObjectUUID) {
+        // No-Op
     }
 
-    void deletePrimary(GameObjectUUID id, RemoteChange remoteChange) {
-        // TODO: send Message to all replica holders
+    void deletePrimary(GameObjectUUID primaryObjectUUID, RemoteChange remoteChange) {
+        sendToReplicaHolders(primaryObjectUUID, remoteChange);
+        subscribers.remove(primaryObjectUUID);
+    }
+
+    /* Helper function for update */
+    void sendToReplicaHolders(GameObjectUUID primaryObjectUUID, RemoteChange remoteChange) {
+        // Send Update Message to all replica holders
+        long millis = System.currentTimeMillis();
+        subscribers.get(primaryObjectUUID).forEach(holderInfo -> {
+            Rbox.ReplicationMessage msg = generateReplicationMessage(holderInfo.getGameObjectUUID(), millis);
+            Rbox.UpdateMessage updateMessage = Rbox.UpdateMessage.newBuilder()
+                                                   .setRemoteChange(getByteStringFromRemoteChange(remoteChange))
+                                                   .setMsg(msg)
+                                                   .build();
+            getBlockingStub(holderInfo.getServerUUID()).handleUpdate(updateMessage);
+        });
     }
 }
