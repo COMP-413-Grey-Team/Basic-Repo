@@ -39,6 +39,17 @@ public class ReplicaManagerGrpc {
     private HashSet<GameObjectUUID> secondaries;                        // Secondary Replicas
     private HashMap<GameObjectUUID, Integer> timeout;                   // Primary => timeout
 
+    private static StreamObserver<Empty> emptyResponseObserver = new StreamObserver<>() {
+        @Override
+        public void onNext(Empty empty) { }
+
+        @Override
+        public void onError(Throwable throwable) { }
+
+        @Override
+        public void onCompleted() { }
+    };
+
 
     /* Constructor */
     public ReplicaManagerGrpc(ChangeReceiver changeReceiver, ServerUUID serverUUID) {
@@ -51,6 +62,11 @@ public class ReplicaManagerGrpc {
 
     /* Helper functions */
     private RBoxServiceGrpc.RBoxServiceBlockingStub getBlockingStub(ServerUUID serverUUID) {
+        // TODO
+        return null;
+    }
+
+    private RBoxServiceGrpc.RBoxServiceStub getStub(ServerUUID serverUUID) {
         // TODO
         return null;
     }
@@ -229,7 +245,7 @@ public class ReplicaManagerGrpc {
                                                    .setRemoteChange(getByteStringFromRemoteChange(remoteChange))
                                                    .setMsg(msg)
                                                    .build();
-            getBlockingStub(holderInfo.getServerUUID()).handleUpdate(updateMessage);
+            getStub(holderInfo.getServerUUID()).handleUpdate(updateMessage, emptyResponseObserver);
         });
     }
 }
