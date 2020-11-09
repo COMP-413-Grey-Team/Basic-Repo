@@ -2,9 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
-
 package grpc.health.v1;
-import "google/protobuf/timestamp.proto";
 
 // add in messages here
 message BasicInfo {
