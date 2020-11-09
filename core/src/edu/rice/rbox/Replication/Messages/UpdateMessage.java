@@ -1,7 +1,16 @@
 package edu.rice.rbox.Replication.Messages;
 
+<<<<<<< HEAD:core/src/edu/rice/rbox/Replication/Messages/UpdateMessage.java
+<<<<<<< HEAD:core/src/edu/rice/rbox/Replication/Messages/UpdateMessage.java
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
+=======
+=======
+>>>>>>> ce7c210141f92f16e84a6a67b4ab90cc620f71bf:core/src/edu/rice/comp413fall2020grey/Replication/Messages/UpdateMessage.java
+import edu.rice.comp413fall2020grey.Common.GameField;
+import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
+import edu.rice.comp413fall2020grey.Common.ServerUUID;
+>>>>>>> ce7c210... getting all changes from master:core/src/edu/rice/comp413fall2020grey/Replication/Messages/UpdateMessage.java
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,7 +29,7 @@ public class UpdateMessage extends ReplicaMessage {
   /**
    * A new value for the field being changed.
    */
-  private final Serializable value;
+  private final GameField value;
 
   /**
    * Constructor for update message.
@@ -33,7 +42,7 @@ public class UpdateMessage extends ReplicaMessage {
                           ServerUUID originSuperpeer,
                           GameObjectUUID targetObject,
                           String field,
-                          Serializable value) {
+                          GameField value) {
     super(timestamp, originSuperpeer, targetObject, "update");
     this.field = field;
     this.value = value;
@@ -49,7 +58,7 @@ public class UpdateMessage extends ReplicaMessage {
   /**
    * @return The value for the changed field.
    */
-  public Serializable getValue() {
+  public GameField getValue() {
     return value;
   }
 }
