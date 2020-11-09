@@ -3,6 +3,7 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
+
 option java_outer_classname = "RBoxProto";
 option java_package = "network";
 package grpc.health.v1;
