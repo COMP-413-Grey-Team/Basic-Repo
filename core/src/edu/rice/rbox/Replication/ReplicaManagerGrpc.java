@@ -33,8 +33,8 @@ public class ReplicaManagerGrpc {
     private ChangeReceiver changeReceiver;
     private ServerUUID serverUUID;
 
-    private HashMap<GameObjectUUID, List<HolderInfo>> subscribers;      // Primary => Replica
-    private HashMap<GameObjectUUID, HolderInfo> publishers;             // Replica => Primary
+    private HashMap<GameObjectUUID, List<ServerUUID>> subscribers;      // Primary => Replica
+    private HashMap<GameObjectUUID, ServerUUID> publishers;             // Replica => Primary
 
     private HashSet<GameObjectUUID> secondaries;                        // Secondary Replicas
     private HashMap<GameObjectUUID, Integer> timeout;                   // Primary => timeout
@@ -116,8 +116,7 @@ public class ReplicaManagerGrpc {
             RemoteChange remoteChange = getRemoteChangeFromUpdateMessage(response);
 
             // Add into publishers
-            HolderInfo primaryHolderInfo = new HolderInfo(primaryObjectUUID, serverUUID);
-            publishers.put(remoteChange.getTarget(), primaryHolderInfo);
+            publishers.put(remoteChange.getTarget(), serverUUID);
 
             // Send remote change to storage
             changeReceiver.receiveChange(remoteChange);
@@ -168,13 +167,12 @@ public class ReplicaManagerGrpc {
             RemoteChange replica = changeReceiver.getReplica(primaryObjectUUID);
 
             // Add to subscribers
-            List<HolderInfo> maybeSubscribers = subscribers.get(primaryObjectUUID);
-            HolderInfo replicaHolderInfo = new HolderInfo(replica.getTarget(), senderServerUUID);
+            List<ServerUUID> maybeSubscribers = subscribers.get(primaryObjectUUID);
 
             if (maybeSubscribers != null) {
-                maybeSubscribers.add(replicaHolderInfo);
+                maybeSubscribers.add(senderServerUUID);
             } else {
-                subscribers.put(primaryObjectUUID, List.of(replicaHolderInfo));
+                subscribers.put(primaryObjectUUID, List.of(senderServerUUID));
             }
 
             // Send the response
@@ -239,13 +237,13 @@ public class ReplicaManagerGrpc {
     void sendToReplicaHolders(GameObjectUUID primaryObjectUUID, RemoteChange remoteChange) {
         // Send Update Message to all replica holders
         long millis = System.currentTimeMillis();
-        subscribers.get(primaryObjectUUID).forEach(holderInfo -> {
-            Rbox.ReplicationMessage msg = generateReplicationMessage(holderInfo.getGameObjectUUID(), millis);
+        subscribers.get(primaryObjectUUID).forEach(serverUUID -> {
+            Rbox.ReplicationMessage msg = generateReplicationMessage(primaryObjectUUID, millis);
             Rbox.UpdateMessage updateMessage = Rbox.UpdateMessage.newBuilder()
                                                    .setRemoteChange(getByteStringFromRemoteChange(remoteChange))
                                                    .setMsg(msg)
                                                    .build();
-            getStub(holderInfo.getServerUUID()).handleUpdate(updateMessage, emptyResponseObserver);
+            getStub(serverUUID).handleUpdate(updateMessage, emptyResponseObserver);
         });
     }
 }
