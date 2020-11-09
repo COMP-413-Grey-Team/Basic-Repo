@@ -142,9 +142,9 @@ public class ReplicaManagerGrpc {
             Rbox.ReplicationMessage message = generateReplicationMessage(primaryObjectUUID);
             ByteString replicaByteString = getByteStringFromRemoteChange(replica);
             Rbox.UpdateMessage response = Rbox.UpdateMessage.newBuilder()
-                                             .setMsg(message)
-                                             .setRemoteChange(replicaByteString)
-                                             .build();
+                                              .setMsg(message)
+                                              .setRemoteChange(replicaByteString)
+                                              .build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
@@ -156,17 +156,46 @@ public class ReplicaManagerGrpc {
 
         @Override
         public void handleUpdate(Rbox.UpdateMessage request, StreamObserver<Empty> responseObserver) {
-            // TODO: Call ChangeReceiver
+            logger.log(Level.INFO, "Handling update...");
+
+            // Call ChangeReceiver
+            // TODO: Cannot reference receiveChange from static context?
+            ChangeReceiver.receiveChange(request.getRemoteChange());
+
+            sendToReplicaHolders(request.getTargetObject(), request.getRemoteChange());
+
+            // TODO: Do we need to send a response?
         }
     }
 
-    void handleQueryResult(GameObjectUUID primaryObjectUUID, List<HolderInfo> interestedObjects) {
+    void handleQueryResult(GameObjectUUID primaryObjectUUID, List<edu.rice.rbox.Replication.HolderInfo> interestedObjects) {
         // TODO: Subscribe & Unsubscribe when necessary
     }
 
-    /* Functions for Object Storgae */
+    /* Functions for Object Storage */
     void updatePrimary(RemoteChange change) {
-        // TODO: Send change to primary holder
+        // Send the response
+        logger.log(Level.INFO, "Sending change to primary...");
+
+        // Get primary
+        // TODO: What if we're the primary?
+        GameObjectUUID targetUuid = change.getTarget();
+        HolderInfo info = publishers.get(targetUuid);
+
+        ByteString changeByteString = getByteStringFromRemoteChange(change);
+
+        Rbox.UpdateMessage request = Rbox.UpdateMessage.newBuilder()
+                                               .setRemoteChange(changeByteString)
+                                               .setTargetObject(info.getGameObjectUUID())
+                                               .build();
+        Rbox.UpdateMessage response;
+        try {
+            getBlockingStub(info.getServerUUID()).handleUpdate(request);
+
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "failure when sending update");
+        }
+
     }
 
     void broadcastUpdate(RemoteChange change, Boolean interesting) {
