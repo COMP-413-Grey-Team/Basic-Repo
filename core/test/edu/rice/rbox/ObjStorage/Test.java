@@ -1,20 +1,14 @@
-<<<<<<< HEAD
 package edu.rice.rbox.ObjStorage;
+
 import edu.rice.rbox.Common.Change.*;
+import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
-=======
-package edu.rice.comp413fall2020grey.ObjStorage;
-import edu.rice.comp413fall2020grey.Common.Change.*;
-import edu.rice.comp413fall2020grey.Common.GameField;
-import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
->>>>>>> ce7c210... getting all changes from master
 import junit.framework.TestCase;
 
-import java.rmi.server.ExportException;
 import java.util.*;
 import java.time.Instant;
 
-public class Test extends TestCase{
+public class Test extends TestCase {
     private static class GameInteger implements GameField {
         int value;
         GameInteger(int i) {
