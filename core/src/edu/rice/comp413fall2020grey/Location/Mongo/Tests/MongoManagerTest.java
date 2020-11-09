@@ -33,7 +33,7 @@ public class MongoManagerTest {
 
     @BeforeAll
     public static void setupDBConnection() {
-        mongoManager = new MongoManager(password);
+        mongoManager = new MongoManager();
         mongoManager.connect();
         mongoClient = mongoManager.getMongoClient();
     }

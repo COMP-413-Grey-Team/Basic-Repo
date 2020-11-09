@@ -8,15 +8,14 @@ import java.util.ArrayList;
 
 public class MongoManager {
 
-    private final String PASSWORD;
+    private final String PASSWORD = "UwBNkGQwtdyRBbNf";
     private MongoClient mongoClient;
 
     public MongoClient getMongoClient() {
         return mongoClient;
     }
 
-    public MongoManager(String password) {
-        PASSWORD = password;
+    public MongoManager() {
     }
 
     public void connect() {

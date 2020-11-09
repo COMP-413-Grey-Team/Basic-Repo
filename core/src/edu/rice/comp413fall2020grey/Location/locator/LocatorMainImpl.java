@@ -1,17 +1,22 @@
 package edu.rice.comp413fall2020grey.Location.locator;
 
+import com.mongodb.client.MongoClient;
+import edu.rice.comp413fall2020grey.Location.Mongo.MongoManager;
 import org.bson.conversions.Bson;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class LocatorMainImpl implements LocatorMain {
+    private final MongoClient mongoClient;
 
     /*
      Init MongoManager and store instance.
      */
     public LocatorMainImpl() {
-
+        MongoManager mongoManager = new MongoManager();
+        mongoManager.connect();
+        mongoClient = mongoManager.getMongoClient();
     }
 
     /*
