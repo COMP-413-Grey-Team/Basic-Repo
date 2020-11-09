@@ -2,7 +2,6 @@ package edu.rice.rbox.Common.Change;
 
 import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
-import java.io.Serializable;
 
 public class LocalFieldChange extends FieldChange implements LocalChange {
 
@@ -18,7 +17,7 @@ public class LocalFieldChange extends FieldChange implements LocalChange {
   }
 
   @Override
-  public LocalChange copyWithBufferIndex(int i) {
+  public LocalFieldChange copyWithIndex(int i) {
     return new LocalFieldChange(this.getTarget(), this.getField(), this.getValue(), i);
   }
 

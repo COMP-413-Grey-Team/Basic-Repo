@@ -1,7 +1,12 @@
 package edu.rice.rbox.ObjStorage;
 
 import edu.rice.rbox.Common.Change.RemoteChange;
+import edu.rice.rbox.Common.Change.RemoteDeleteReplicaChange;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Common.Mode;
+
+import java.time.Instant;
+import java.util.Date;
 
 import java.util.Date;
 
@@ -25,5 +30,10 @@ public interface ChangeReceiver {
    * Returns a replica of the specified object.
    */
   RemoteChange getReplica(GameObjectUUID id);
+
+  /**
+   * Changes a Secondary to a Primary
+   * @param id
+   */
   void promoteSecondary(GameObjectUUID id);
 }

@@ -4,8 +4,6 @@ import edu.rice.rbox.Common.Change.LocalChange;
 import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
-import edu.rice.rbox.Common.Change.LocalFieldChange;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;

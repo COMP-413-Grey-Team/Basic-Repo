@@ -3,7 +3,6 @@ package edu.rice.rbox.Common.Change;
 import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
-import java.io.Serializable;
 
 public abstract class FieldChange extends Change {
 

@@ -2,7 +2,7 @@ package edu.rice.rbox.Common.Change;
 
 import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
-import java.io.Serializable;
+
 import java.util.Date;
 
 public class RemoteFieldChange extends FieldChange implements RemoteChange {

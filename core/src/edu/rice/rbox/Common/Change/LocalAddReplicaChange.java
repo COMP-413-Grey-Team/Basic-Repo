@@ -3,7 +3,6 @@ package edu.rice.rbox.Common.Change;
 import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 public class LocalAddReplicaChange extends AddReplicaChange implements LocalChange {
@@ -21,7 +20,7 @@ public class LocalAddReplicaChange extends AddReplicaChange implements LocalChan
   }
 
   @Override
-  public LocalChange copyWithBufferIndex(int i) {
+  public LocalAddReplicaChange copyWithIndex(int i) {
     return new LocalAddReplicaChange(this.getTarget(), this.getObject(), i);
   }
 }

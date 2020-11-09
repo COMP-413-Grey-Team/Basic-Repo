@@ -4,7 +4,6 @@ import edu.rice.rbox.Common.Change.RemoteChange;
 import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 public class DummyReplicaManager implements ObjectStorageReplicationInterface {
@@ -19,7 +18,7 @@ public class DummyReplicaManager implements ObjectStorageReplicationInterface {
     }
 
     @Override
-    public void createPrimary(GameObjectUUID id, HashMap<String, GameField> interestingField, String predicate) {
+    public void createPrimary(GameObjectUUID id, HashMap<String, GameField> interestingFields, String predicate) {
 
     }
 

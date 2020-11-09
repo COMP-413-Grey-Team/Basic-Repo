@@ -5,7 +5,7 @@ import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
 import edu.rice.rbox.Common.Mode;
-import java.io.Serializable;
+
 import java.time.Instant;
 import java.util.*;
 
