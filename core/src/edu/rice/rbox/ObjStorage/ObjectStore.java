@@ -1,19 +1,11 @@
 package edu.rice.rbox.ObjStorage;
 
-<<<<<<< HEAD:core/src/edu/rice/rbox/ObjStorage/ObjectStore.java
 import edu.rice.rbox.Common.Change.*;
+import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
 import edu.rice.rbox.Common.Mode;
-import java.io.Serializable;
-=======
-import edu.rice.comp413fall2020grey.Common.Change.*;
-import edu.rice.comp413fall2020grey.Common.GameField;
-import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
 
-import edu.rice.comp413fall2020grey.Common.Mode;
-
->>>>>>> ce7c210... getting all changes from master:core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStore.java
 import java.time.Instant;
 import java.util.*;
 

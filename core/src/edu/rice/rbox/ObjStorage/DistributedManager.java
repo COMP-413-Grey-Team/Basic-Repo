@@ -1,20 +1,9 @@
 package edu.rice.rbox.ObjStorage;
 
 import edu.rice.rbox.Common.Change.LocalChange;
+import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
-<<<<<<< HEAD:core/src/edu/rice/rbox/ObjStorage/DistributedManager.java
-<<<<<<< HEAD:core/src/edu/rice/rbox/ObjStorage/DistributedManager.java
-import edu.rice.rbox.Common.Change.LocalFieldChange;
-import java.io.Serializable;
-=======
-import edu.rice.comp413fall2020grey.Common.Change.LocalFieldChange;
-import edu.rice.comp413fall2020grey.Common.GameField;
->>>>>>> ce7c210... getting all changes from master:core/src/edu/rice/comp413fall2020grey/ObjStorage/DistributedManager.java
-=======
-import edu.rice.comp413fall2020grey.Common.Change.LocalFieldChange;
-import edu.rice.comp413fall2020grey.Common.GameField;
->>>>>>> ce7c210141f92f16e84a6a67b4ab90cc620f71bf:core/src/edu/rice/comp413fall2020grey/ObjStorage/DistributedManager.java
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,15 +1,14 @@
 package edu.rice.rbox.ObjStorage;
 
-<<<<<<< HEAD:core/src/edu/rice/rbox/ObjStorage/ObjectStorageReplicationInterface.java
 import edu.rice.rbox.Common.Change.RemoteChange;
+import edu.rice.rbox.Common.Change.RemoteDeleteReplicaChange;
+import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
-=======
-import edu.rice.comp413fall2020grey.Common.Change.RemoteChange;
-import edu.rice.comp413fall2020grey.Common.GameField;
-import edu.rice.comp413fall2020grey.Common.GameObjectUUID;
->>>>>>> ce7c210... getting all changes from master:core/src/edu/rice/comp413fall2020grey/ObjStorage/ObjectStorageReplicationInterface.java
+import edu.rice.rbox.Common.Mode;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
