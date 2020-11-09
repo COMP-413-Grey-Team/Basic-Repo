@@ -113,15 +113,9 @@
                     <protocArtifact>com.google.protobuf:protoc:3.4.0:exe:${os.detected.classifier}</protocArtifact>
                     <pluginId>grpc-java</pluginId>
                     <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.7.0:exe:${os.detected.classifier}</pluginArtifact>
-                    <!-- This line sets the location for the proto files -->
+<!--                    &lt;!&ndash; This line sets the location for the proto files &ndash;&gt;-->
                     <protoSourceRoot> src/edu/rice/rbox/Protos </protoSourceRoot>
-                    <!--  Specifies where to put the generated files
-                          WARNING: The target folder will be cleared before files are generated
-                                    if you choose an existing folder make sure it's empty
-                          1. Run either compiler (I use compile not custom)
-                          2. After the file is generated, add the package to the top of the generated file
-                    -->
-                    <outputDirectory> src/edu/rice/rbox/Protos/Generated </outputDirectory>
+<!--                    <outputDirectory> src/edu/rice/rbox/Protos/Generated </outputDirectory>-->
                 </configuration>
                 <executions>
                     <execution>
@@ -134,8 +128,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-
-
 </project>

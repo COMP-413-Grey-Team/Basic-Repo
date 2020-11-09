@@ -1,6 +1,6 @@
 package edu.rice.rbox.Game.Common.Utils;
 
-import edu.rice.rbox.Protos.Generated.GameNetworkProto.InitialPlayerState;
+import network.GameNetworkProto.InitialPlayerState;
 
 public class InitialPlayerStateMessage {
 

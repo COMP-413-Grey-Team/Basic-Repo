@@ -1,6 +1,8 @@
 package edu.rice.rbox.Networking;
 
 import io.grpc.stub.StreamObserver;
+import network.ConnectionServiceGrpc;
+import network.Network;
 
 public class NetworkImpl extends ConnectionServiceGrpc.ConnectionServiceImplBase {
 

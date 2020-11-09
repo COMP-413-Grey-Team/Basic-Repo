@@ -1,10 +1,9 @@
 package edu.rice.rbox.ObjStorage;
 
 import edu.rice.rbox.Common.Change.LocalChange;
+import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
-import edu.rice.rbox.Common.Change.LocalFieldChange;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,22 +30,31 @@ public interface DistributedManager {
    * Returns object from storage using some provided object information (relevant keys to be decided)
    * This method can be used at game server/game startup to obtain all the necessary objects to begin rendering the game on the client
    */
-  Serializable read(final GameObjectUUID gameObjectID, final String field, final int bufferIndex);
+  GameField read(final GameObjectUUID gameObjectID, final String field, final int bufferIndex);
 
   /**
    * Sends request from authorObject to change the state of targetObject – state changes reflected in local non-canonical cache.
    *
    * @return if the write was accepted
    */
-  boolean write(LocalFieldChange change, GameObjectUUID author);
+  boolean write(LocalChange change, GameObjectUUID author);
 
+  /**
+   * Gets the buffer index for the given date.
+   */
   int getBufferIndex(Date now);
 
   /**
    * Initializes a new GameObject in the store
    * interesting_fields is automatically populated with MODE, PREDICATE, and INTERESTING_FIELDS
    */
-  GameObjectUUID create(HashMap<String, Serializable> fields, HashSet<String> interesting_fields, GameObjectUUID author, int bufferIndex);
+  GameObjectUUID create(HashMap<String, GameField> fields, HashSet<String> interesting_fields,
+                        String predicate, GameObjectUUID author, int bufferIndex);
 
+  /**
+   * Deletes the specified object.
+   *
+   * @return Whether the delete was accepted.
+   */
   boolean delete(GameObjectUUID uuid, GameObjectUUID author, int bufferIndex);
 }

@@ -1,6 +1,8 @@
 package edu.rice.rbox.Networking;
 
 import io.grpc.*;
+import network.ConnectionServiceGrpc;
+import network.Network;
 
 public class ConnectionClient {
   public static void main( String[] args ) throws Exception {

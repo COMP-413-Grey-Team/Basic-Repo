@@ -1,6 +1,8 @@
 syntax = "proto3";
 //option java_multiple_files = true;
 
+option java_package = "network";
+
 // Request payload
 message ServerInformation {
   // Each message attribute is strongly typed.
