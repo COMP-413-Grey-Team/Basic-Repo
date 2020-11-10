@@ -193,10 +193,13 @@ public class ReplicaManagerGrpc {
         public void handleUnsubscribe(Rbox.UnsubscribeRequest request, StreamObserver<Empty> responseObserver) {
             logger.info("Handling unsubscribe request...");
 
-            GameObjectUUID targetObjectUUID = getGameObjectUUIDFromMessage(request.getMsg());
+            GameObjectUUID primaryObjectUUID = getGameObjectUUIDFromMessage(request.getMsg());
+            ServerUUID senderUUID = getServerUUIDFromMessage(request.getMsg());
 
             // Remove from subscribers
-            subscribers.remove(targetObjectUUID);
+            List<ServerUUID> updatedReplicas = subscribers.get(primaryObjectUUID);
+            updatedReplicas.remove(senderUUID);
+            subscribers.put(primaryObjectUUID, updatedReplicas);
 
             // No response expected, send empty response
             responseObserver.onNext(emptyResponse);
