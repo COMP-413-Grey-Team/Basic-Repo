@@ -38,6 +38,16 @@ public class GameClientGrpc {
     return response;
   }
 
+  public GameNetworkProto.UpdateFromServer init(String name, String color) {
+
+    InitialPlayerStateMessage initMessage = new InitialPlayerStateMessage(name, color);
+
+    GameNetworkProto.UpdateFromServer response =
+        serverStub.initPlayer(initMessage.getInitialPlayerStateMessage());
+
+    return response;
+  }
+
   public static void main(String args[]) {
     GameClientGrpc client = new GameClientGrpc();
     client.connect(args[0]);
