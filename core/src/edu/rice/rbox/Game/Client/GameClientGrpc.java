@@ -1,8 +1,9 @@
-package edu.rice.rbox.Game.Common.Utils;
+package edu.rice.rbox.Game.Client;
 
 import com.google.protobuf.Empty;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
+import edu.rice.rbox.Game.Common.Utils.UpdateFromClientMessage;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import java.util.HashSet;
