@@ -158,13 +158,18 @@ public class ReplicaManagerGrpc {
         public void handleUpdate(Rbox.UpdateMessage request, StreamObserver<Empty> responseObserver) {
             logger.log(Level.INFO, "Handling update...");
 
+            RemoteChange change = getRemoteChangeFromUpdateMessage(request);
+
             // Call ChangeReceiver
-            // TODO: Cannot reference receiveChange from static context?
-            ChangeReceiver.receiveChange(request.getRemoteChange());
+            changeReceiver.receiveChange(change);
 
-            sendToReplicaHolders(request.getTargetObject(), request.getRemoteChange());
+            // Check if secondary, and if so notify registrar
+            if (secondaries.contains(change.getTarget())) {
+                // TODO: Implement once registrar interface exists
+            }
 
-            // TODO: Do we need to send a response?
+            // Check if deleting replica and if so update publishers
+            // TODO: How do we check if change is DeleteReplicaChange?
         }
     }
 
@@ -178,19 +183,19 @@ public class ReplicaManagerGrpc {
         logger.log(Level.INFO, "Sending change to primary...");
 
         // Get primary
-        // TODO: What if we're the primary?
         GameObjectUUID targetUuid = change.getTarget();
-        HolderInfo info = publishers.get(targetUuid);
-
+        ServerUUID info = publishers.get(targetUuid);
         ByteString changeByteString = getByteStringFromRemoteChange(change);
+        long millis = System.currentTimeMillis();
+        Rbox.ReplicationMessage msg = generateReplicationMessage(targetUuid, millis);
 
         Rbox.UpdateMessage request = Rbox.UpdateMessage.newBuilder()
                                                .setRemoteChange(changeByteString)
-                                               .setTargetObject(info.getGameObjectUUID())
+                                               .setMsg(msg)
                                                .build();
         Rbox.UpdateMessage response;
         try {
-            getBlockingStub(info.getServerUUID()).handleUpdate(request);
+            getStub(targetUuid).handleUpdate(request);
 
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "failure when sending update");
@@ -199,8 +204,13 @@ public class ReplicaManagerGrpc {
     }
 
     void broadcastUpdate(RemoteChange change, Boolean interesting) {
-        // TODO: Send change to all replica holders
+        // Send change to all replica holders
+        sendToReplicaHolders(change.getTarget(), change);
+
         // TODO: If involves interesting fields change, also send to registrar
+        if (interesting) {
+
+        }
     }
 
     void createPrimary(GameObjectUUID primaryObjectUUID) {
