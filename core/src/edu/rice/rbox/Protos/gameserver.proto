@@ -3,6 +3,8 @@ syntax = "proto3";
 option java_outer_classname = "GameNetworkProto";
 option java_package = "network";
 
+import "google/protobuf/empty.proto";
+
 message PlayerID {
     string playerID = 1;
 }
@@ -51,25 +53,18 @@ message UpdateFromServer {
     string worldColor = 4;
 }
 
-message Empty {
-
-}
-
-
 message SuperPeerInfo {
     string hostname = 1;
 }
-
 
 message InitPlayerResponse {
     string playerUUID = 1;
     UpdateFromServer initialState = 2;
 }
 
-
 service GameService {
    rpc publishUpdate(UpdateFromClient) returns (UpdateFromServer);
-   rpc getAssignedSuperPeer(Empty) returns (SuperPeerInfo);
+   rpc getAssignedSuperPeer(google.protobuf.Empty) returns (SuperPeerInfo);
    rpc initPlayer(InitialPlayerState) returns (UpdateFromServer);
-   rpc removeMe(PlayerID) returns (Empty);
+   rpc removeMe(PlayerID) returns (google.protobuf.Empty);
 }
