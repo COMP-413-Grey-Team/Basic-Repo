@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option java_outer_classname = "FaultToleranceGrpc";
+option java_package = "network";
+
+message Info {
+  string senderUUID = 1;
+  google.protobuf.Timestamp time = 2;
+}
+
+message CheckConnection {
+  Info sender = 1;
+  string checkUUID = 2;
+}
+
+message ConnectionResult {
+  Info sender = 1;
+  bool result = 2;
+}
+
+message CheckIn {
+  Info sender = 1;
+}
+
+message LeaderDown {
+  Info sender = 1;
+}
+
+service Election {
+  rpc Connection(CheckConnection) returns (ConnectionResult);
+  rpc Check(CheckIn) returns (Info);
+  rpc DownedLeader(LeaderDown) returns (google.protobuf.Empty);
+}
