@@ -3,6 +3,7 @@ package edu.rice.rbox.Game.Common.Utils;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
 import network.GameNetworkProto.UpdateFromClient;
+import network.GameNetworkProto.PlayerMessage;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -19,9 +20,13 @@ public class UpdateFromClientMessage {
   }
 
   private void constructPlayerMessage(PlayerState playerState) {
-    PlayerStateMessage player = new PlayerStateMessage(playerState.color.toString(), playerState.name,
-        playerState.score, playerState.x, playerState.y);
-    update.setPlayerState(player.getPlayerMessageMessage());
+    PlayerMessage.Builder player = PlayerMessage.newBuilder();
+
+    update.setPlayerState(player.setColor(playerState.color.toString())
+                              .setName(playerState.name)
+                              .setScore(((Integer) playerState.score).toString())
+                              .setX(playerState.x)
+                              .setY(playerState.y).build());
   }
 
   private void constructDeletedCoins(HashSet<GameObjectUUID> deletedCoins) {

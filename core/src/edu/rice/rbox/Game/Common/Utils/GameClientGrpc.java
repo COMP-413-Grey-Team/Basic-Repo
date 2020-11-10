@@ -41,10 +41,11 @@ public class GameClientGrpc {
 
   public GameNetworkProto.UpdateFromServer init(String name, String color) {
 
-    InitialPlayerStateMessage initMessage = new InitialPlayerStateMessage(name, color);
+    GameNetworkProto.InitialPlayerState.Builder initMessage =
+        GameNetworkProto.InitialPlayerState.newBuilder();
 
     GameNetworkProto.UpdateFromServer response =
-        serverStub.initPlayer(initMessage.getInitialPlayerStateMessage());
+        serverStub.initPlayer(initMessage.setName(name).setColor(color).build());
 
     return response;
   }
