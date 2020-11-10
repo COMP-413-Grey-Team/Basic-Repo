@@ -10,9 +10,9 @@ public class UpdateFromClientMessage {
 
   private final UpdateFromClient.Builder update = UpdateFromClient.newBuilder();
 
-  public UpdateFromClientMessage(String objectID, PlayerState playerState,
+  public UpdateFromClientMessage(GameObjectUUID objectID, PlayerState playerState,
                                  HashSet<GameObjectUUID> deletedCoins, Integer movingRooms) {
-    update.setGameObjectUUID(objectID);
+    update.setGameObjectUUID(objectID.toString());
     update.setMovingRoomsValue(movingRooms);
     this.constructPlayerMessage(playerState);
     this.constructDeletedCoins(deletedCoins);

@@ -8,7 +8,7 @@ public class ConnectionClient {
   public static void main( String[] args ) throws Exception {
     // Channel is the abstraction to connect to a service endpoint
     // Let's use plaintext communication because we don't have certs
-    final ManagedChannel channel = ManagedChannelBuilder.forTarget("52.15.213.157:8080")
+    final ManagedChannel channel = ManagedChannelBuilder.forTarget("3.129.207.214:8080")
                                        .usePlaintext(true)
                                        .build();
 
