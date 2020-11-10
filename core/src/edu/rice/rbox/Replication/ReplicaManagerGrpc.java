@@ -50,6 +50,8 @@ public class ReplicaManagerGrpc {
         public void onCompleted() { }
     };
 
+    private static Empty emptyResponse = Empty.newBuilder().build();
+
 
     /* Constructor */
     public ReplicaManagerGrpc(ChangeReceiver changeReceiver, ServerUUID serverUUID) {
@@ -136,18 +138,19 @@ public class ReplicaManagerGrpc {
         Rbox.UnsubscribeRequest request = Rbox.UnsubscribeRequest.newBuilder().setMsg(msg).build();
 
         try {
-            getStub(serverUUID).handleUnsubscribe(request, null);
+            getStub(serverUUID).handleUnsubscribe(request, emptyResponseObserver);
             Timestamp timestamp = msg.getTimestamp();
-            RemoteChange remoteChange = new RemoteDeleteReplicaChange(
-                                                replicaObjectUUID,
-                                                // convert timestamp from message to Date
-                                                Date.from(Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos())));
+            // TODO: call delete replica function from Object Storage (currently doesn't exist)
+//            RemoteChange remoteChange = new RemoteDeleteReplicaChange(
+//                                                replicaObjectUUID,
+//                                                // convert timestamp from message to Date
+//                                                Date.from(Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos())));
 
             // Remove from publishers
             publishers.remove(replicaObjectUUID);
 
             // Delete replica via changeReceiver (send remote change to storage)
-            changeReceiver.receiveChange(remoteChange);
+//            changeReceiver.receiveChange(remoteChange);
 
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed when sending unsubscribe request {0}", e.getStatus());
@@ -190,18 +193,14 @@ public class ReplicaManagerGrpc {
         public void handleUnsubscribe(Rbox.UnsubscribeRequest request, StreamObserver<Empty> responseObserver) {
             logger.info("Handling unsubscribe request...");
 
-            GameObjectUUID replicaObjectUUID = getGameObjectUUIDFromMessage(request.getMsg());
-            GameObjectUUID primaryObjectUUID = publishers.get(replicaObjectUUID).getGameObjectUUID();
+            GameObjectUUID targetObjectUUID = getGameObjectUUIDFromMessage(request.getMsg());
 
             // Remove from subscribers
-            List<HolderInfo> updatedReplicas = subscribers.get(primaryObjectUUID);
-            for (HolderInfo holder : subscribers.get(primaryObjectUUID)) {
-                if (holder.getGameObjectUUID() == replicaObjectUUID) {
-                    updatedReplicas.remove(holder);
-                }
-            }
-            subscribers.put(primaryObjectUUID, updatedReplicas);
+            subscribers.remove(targetObjectUUID);
 
+            // No response expected, send empty response
+            responseObserver.onNext(emptyResponse);
+            responseObserver.onCompleted();
         }
 
         @Override
