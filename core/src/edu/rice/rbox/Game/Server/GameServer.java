@@ -1,15 +1,34 @@
 package edu.rice.rbox.Game.Server;
 
+import edu.rice.rbox.Common.Change.LocalAddReplicaChange;
+import edu.rice.rbox.Common.Change.LocalChange;
+import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Game.Common.SyncState.GameStateDelta;
+import edu.rice.rbox.ObjStorage.ObjectStore;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public class GameServer extends Thread {
 
+  private static final String KEY_TYPE = "RESERVED_TYPE";
+  private static final String KEY_TYPE_PLAYER = "RESERVED_TYPE_PLAYER";
+  private static final String KEY_TYPE_COIN = "RESERVED_TYPE_COIN";
+  private static final String KEY_TYPE_ROOM = "RESERVED_TYPE_ROOM";
+
   private final ServerSocket serverSocket;
   ClientConnectionManager clientConnectionManager;
+  private ObjectStore objectStore;
+  private GameStateManager manager = new GameStateManager();
+
+  private ArrayList<GameStateDelta> clientUpdates;
 
   public GameServer(int port) throws IOException {
     serverSocket = new ServerSocket(port);
@@ -18,26 +37,24 @@ public class GameServer extends Thread {
 
   public void run() {
     while (true) {
-      try {
-        // TODO: this is all sample code from a tutorial, likely to be replaced by ConnectionServer.
-        // The ClientConnectionManager will be responsible for mapping each connection to a client to the GameObjectUUID
-        // corresponding to the player that client corresponds to.
 
-        System.out.println("Waiting for client on port " +
-                               serverSocket.getLocalPort() + "...");
-        Socket server = serverSocket.accept();
+      final Set<LocalChange> localChanges = objectStore.synchronize();
+      localChanges.forEach(change -> {
+        for (int i = change.getBufferIndex(); i >= 0; i--) {
+          objectStore.write(change.copyWithIndex(i), change.getTarget());
+        }
+      });
+      objectStore.advanceBuffer();
 
-        System.out.println("Just connected to " + server.getRemoteSocketAddress());
-        DataInputStream in = new DataInputStream(server.getInputStream());
+      // TODO: read in changes from clients.
+      for (final GameStateDelta delta : clientUpdates) {
+        final GameObjectUUID playerUUID = delta.playerUUID;
 
-        System.out.println(in.readUTF());
-        DataOutputStream out = new DataOutputStream(server.getOutputStream());
-        out.writeUTF("Thank you for connecting to " + server.getLocalSocketAddress()
-                         + "\nGoodbye!");
-        server.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-        break;
+      }
+
+      // TODO: send out game state to clients
+      for (GameObjectUUID playerUUID : clientConnectionManager.playersThisServerIsResponsibleFor) {
+
       }
     }
   }

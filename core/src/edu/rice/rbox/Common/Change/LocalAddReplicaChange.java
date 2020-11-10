@@ -19,6 +19,7 @@ public class LocalAddReplicaChange extends AddReplicaChange implements LocalChan
     return bufferIndex;
   }
 
+  @Override
   public LocalAddReplicaChange copyWithIndex(int i) {
     return new LocalAddReplicaChange(this.getTarget(), this.getObject(), i);
   }
