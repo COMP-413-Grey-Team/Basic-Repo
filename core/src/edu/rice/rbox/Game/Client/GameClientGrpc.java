@@ -3,7 +3,7 @@ package edu.rice.rbox.Game.Client;
 import com.google.protobuf.Empty;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
-import edu.rice.rbox.Game.Common.Utils.UpdateFromClientMessage;
+import edu.rice.rbox.Game.Client.Messages.UpdateFromClientMessage;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import java.util.HashSet;
@@ -51,6 +51,7 @@ public class GameClientGrpc {
     return response;
   }
 
+  // TODO: This message should be sent to the registrar, not the game server.
   public GameNetworkProto.SuperPeerInfo getSuperPeer() {
     GameNetworkProto.SuperPeerInfo response =
         serverStub.getAssignedSuperPeer(Empty.newBuilder().build());

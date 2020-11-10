@@ -1,9 +1,11 @@
 package edu.rice.rbox.Game.Server;
 
 import com.google.protobuf.Empty;
+import edu.rice.rbox.Game.Common.SyncState.PlayerState;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
+import java.awt.*;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -22,11 +24,18 @@ public class GameServerGrpc extends GameServiceImplBase {
   public void publishUpdate(GameNetworkProto.UpdateFromClient request,
                             StreamObserver<GameNetworkProto.UpdateFromServer> responseObserver) {
     System.out.println("Game Object ID: " + request.getGameObjectUUID());
+    System.out.println("Deleted Coins: " + request.getDeletedCoinsList().toString());
+    System.out.println("Player State: " + this.reconstructPlayerState(request).toString());
+    System.out.println("Moved Rooms?: " + (((Integer) request.getMovingRoomsValue())).toString());
+
+    responseObserver.onNext(GameNetworkProto.UpdateFromServer.newBuilder().build());
+    responseObserver.onCompleted();
   }
 
-  @Override
-  public void getAssignedSuperPeer(Empty request,
-                                   StreamObserver<GameNetworkProto.SuperPeerInfo> responseObserver) {
+  private PlayerState reconstructPlayerState(GameNetworkProto.UpdateFromClient request) {
+    return new PlayerState(request.getPlayerState().getX(), request.getPlayerState().getY(),
+        request.getPlayerState().getName(), Color.getColor(request.getPlayerState().getColor()),
+        Integer.parseInt(request.getPlayerState().getScore()));
   }
 
   @Override
@@ -34,10 +43,17 @@ public class GameServerGrpc extends GameServiceImplBase {
                          StreamObserver<GameNetworkProto.UpdateFromServer> responseObserver) {
     System.out.println("Name: " + request.getName());
     System.out.println("Color: " + request.getColor());
+
+    responseObserver.onNext(GameNetworkProto.UpdateFromServer.newBuilder().build());
+    responseObserver.onCompleted();
   }
 
   @Override
   public void removeMe(GameNetworkProto.PlayerID request, StreamObserver<Empty> responseObserver) {
+    System.out.println("Player ID: " + request.getPlayerID());
+
+    responseObserver.onNext(Empty.newBuilder().build());
+    responseObserver.onCompleted();
   }
 
   public static void main(String args[]) throws IOException, InterruptedException {

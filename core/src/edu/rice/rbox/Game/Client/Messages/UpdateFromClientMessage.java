@@ -1,4 +1,4 @@
-package edu.rice.rbox.Game.Common.Utils;
+package edu.rice.rbox.Game.Client.Messages;
 
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
