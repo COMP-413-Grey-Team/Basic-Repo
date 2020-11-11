@@ -54,7 +54,7 @@ public class ReplicaManagerGrpc {
 
 
     /* Constructor */
-    public ReplicaManagerGrpc(ChangeReceiver changeReceiver, ServerUUID serverUUID) {
+    public ReplicaManagerGrpc(ChangeReceiver changeReceiver, ServerUUID serverUUID, ServerUUID registrarUUID) {
         this.changeReceiver = changeReceiver;
         this.serverUUID = serverUUID;
         this.subscribers = new HashMap<>();
@@ -145,12 +145,10 @@ public class ReplicaManagerGrpc {
 //                                                replicaObjectUUID,
 //                                                // convert timestamp from message to Date
 //                                                Date.from(Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos())));
+//            changeReceiver.receiveChange(remoteChange);
 
             // Remove from publishers
             publishers.remove(replicaObjectUUID);
-
-            // Delete replica via changeReceiver (send remote change to storage)
-//            changeReceiver.receiveChange(remoteChange);
 
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed when sending unsubscribe request {0}", e.getStatus());
@@ -212,16 +210,14 @@ public class ReplicaManagerGrpc {
 
             RemoteChange change = getRemoteChangeFromUpdateMessage(request);
 
-            // Call ChangeReceiver
+            // Pass change to storage
             changeReceiver.receiveChange(change);
 
             // Check if secondary, and if so notify registrar
             if (secondaries.contains(change.getTarget())) {
-                // TODO: Implement once registrar interface exists
+                // TODO: Notify registrar
             }
 
-            // Check if deleting replica and if so update publishers
-            // TODO: How do we check if change is DeleteReplicaChange?
         }
     }
 
@@ -231,23 +227,19 @@ public class ReplicaManagerGrpc {
 
     /* Functions for Object Storage */
     void updatePrimary(RemoteChange change) {
-        // Send the response
         logger.log(Level.INFO, "Sending change to primary...");
 
-        // Get primary
+        // Construct Update Request
         GameObjectUUID targetUuid = change.getTarget();
-        ServerUUID info = publishers.get(targetUuid);
+        ServerUUID serverUUID = publishers.get(targetUuid);
         ByteString changeByteString = getByteStringFromRemoteChange(change);
-        long millis = System.currentTimeMillis();
-        Rbox.ReplicationMessage msg = generateReplicationMessage(targetUuid, millis);
-
+        Rbox.ReplicationMessage msg = generateReplicationMessage(targetUuid);
         Rbox.UpdateMessage request = Rbox.UpdateMessage.newBuilder()
                                                .setRemoteChange(changeByteString)
                                                .setMsg(msg)
                                                .build();
-        Rbox.UpdateMessage response;
         try {
-            getStub(targetUuid).handleUpdate(request);
+            getStub(serverUUID).handleUpdate(request, emptyResponseObserver);
 
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "failure when sending update");
@@ -259,9 +251,8 @@ public class ReplicaManagerGrpc {
         // Send change to all replica holders
         sendToReplicaHolders(change.getTarget(), change);
 
-        // TODO: If involves interesting fields change, also send to registrar
         if (interesting) {
-
+            // TODO: If involves interesting fields change, notify location?
         }
     }
 
