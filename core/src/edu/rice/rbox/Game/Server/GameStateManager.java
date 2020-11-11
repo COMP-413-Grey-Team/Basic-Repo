@@ -1,15 +1,13 @@
 package edu.rice.rbox.Game.Server;
 
 import edu.rice.rbox.Common.Change.LocalFieldChange;
+import edu.rice.rbox.Common.GameField.*;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.GameStateDelta;
+import edu.rice.rbox.Game.Common.SyncState.PlayerState;
 import edu.rice.rbox.ObjStorage.ObjectStore;
 
-import java.util.Date;
 import static edu.rice.rbox.Game.Common.SyncState.GameStateDelta.MovingRooms.NOT;
-import static edu.rice.rbox.Game.Server.ObjectStorageKeys.Coin.HAS_BEEN_COLLECTED;
-import static edu.rice.rbox.Game.Server.ObjectStorageKeys.Player.ROOM_ID;
-import static edu.rice.rbox.Game.Server.ObjectStorageKeys.Room.PLAYERS_IN_ROOM;
 
 public class GameStateManager {
 
@@ -22,35 +20,27 @@ public class GameStateManager {
     final int bufferIndex = 0;
 
     if (update.movingRooms != NOT) {
-      // Remove from old room, add to new room, and give them a new position
-//      final GameObjectUUID oldRoomUUID = roomForPlayer(player);
-//
-//      roomToPlayers.get(oldRoomUUID).remove(playerUUID);
       removePlayerFromRoom(playerUUID, roomForPlayer(playerUUID));
 
       final GameObjectUUID newRoomUUID = GameObjectUUID.randomUUID(); // TODO: calculate correct room UUID
       addPlayerToRoom(playerUUID, newRoomUUID);
     }
-    // Update player position and score
+
+    // Update player score
     // Remove coins they have collected
     int coinsCollected = 0;
     for (GameObjectUUID coin : update.deletedCoins) {
-      if (!((GameFieldBoolean) objectStore.read(coin, HAS_BEEN_COLLECTED, 0)).value) {
+      if (!((GameFieldBoolean) objectStore.read(coin, ObjectStorageKeys.Coin.HAS_BEEN_COLLECTED, 0)).getValue()) {
         coinsCollected++;
-        objectStore.write(new LocalFieldChange(coin, HAS_BEEN_COLLECTED, new GameFieldBoolean(true), 0), coin);
+        objectStore.write(new LocalFieldChange(coin, ObjectStorageKeys.Coin.HAS_BEEN_COLLECTED, new GameFieldBoolean(true), 0), coin);
        }
     }
-//    update.updatedPlayerState.updateObjectStore(objectStore, bufferIndex);
-
-    for (final GameObjectUUID collectedCoin : update.deletedCoins) {
-      // TODO(Object Storage): do we need an "exists" method?
-      // delete currently returns false only when a replica tries to delete something
-      // There needs to be a way to check if the coin exists to be deleted.
-      if (objectStore.delete(collectedCoin, playerUUID, bufferIndex)) {
-//          final int score = objectStore.read(playerUUID, "score", bufferIndex);
-//          objectStore.write(new LocalFieldChange(playerUUID, "score", score + 1, bufferIndex), playerUUID);
-      }
-    }
+    final GameFieldInteger score = (GameFieldInteger) objectStore.read(playerUUID, ObjectStorageKeys.Player.SCORE, 0);
+    final GameFieldInteger newScore = new GameFieldInteger(score.getValue() + coinsCollected);
+    objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.SCORE, newScore, 0), playerUUID);
+    // Update position
+    objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.X_POS, new GameFieldDouble(update.updatedPlayerState.x), 0), playerUUID);
+    objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.Y_POS, new GameFieldDouble(update.updatedPlayerState.y), 0), playerUUID);
   }
 
   public void handlePlayerQuitting(GameObjectUUID player) {
@@ -60,11 +50,11 @@ public class GameStateManager {
   }
 
   public GameFieldSet<GameObjectUUID> playersInRoom(GameObjectUUID roomUUID) {
-    return (GameFieldSet<GameObjectUUID>) objectStore.read(roomUUID, PLAYERS_IN_ROOM, 0);
+    return (GameFieldSet<GameObjectUUID>) objectStore.read(roomUUID, ObjectStorageKeys.Room.PLAYERS_IN_ROOM, 0);
   }
 
   public GameObjectUUID roomForPlayer(GameObjectUUID playerUUID) {
-    return (GameObjectUUID) objectStore.read(playerUUID, ROOM_ID, 0);
+    return (GameObjectUUID) objectStore.read(playerUUID, ObjectStorageKeys.Player.ROOM_ID, 0);
   }
 
   public void addPlayerToRoom(GameObjectUUID playerUUID, GameObjectUUID roomUUID) {
@@ -75,22 +65,31 @@ public class GameStateManager {
     // Add player to room
     final GameFieldSet<GameObjectUUID> playersInRoom = playersInRoom(roomUUID);
     playersInRoom.add(playerUUID);
-    objectStore.write(new LocalFieldChange(roomUUID, PLAYERS_IN_ROOM, playersInRoom, 0), roomUUID); // TODO: HashMap -> GameField
+    objectStore.write(new LocalFieldChange(roomUUID, ObjectStorageKeys.Room.PLAYERS_IN_ROOM, playersInRoom, 0), roomUUID); // TODO: HashMap -> GameField
     // Set room in player
-    objectStore.write(new LocalFieldChange(playerUUID, ROOM_ID, roomUUID, 0), playerUUID);
+    objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.ROOM_ID, roomUUID, 0), playerUUID);
   }
 
   public void removePlayerFromRoom(GameObjectUUID playerUUID, GameObjectUUID roomUUID) {
     final GameFieldSet<GameObjectUUID> playersInRoom = playersInRoom(roomUUID);
-    if (!objectStore.read(playerUUID, ROOM_ID, 0).equals(roomUUID) || !playersInRoom.contains(playerUUID)) {
+    if (!objectStore.read(playerUUID, ObjectStorageKeys.Player.ROOM_ID, 0).equals(roomUUID) || !playersInRoom.contains(playerUUID)) {
       throw new IllegalStateException("The player is not in this room, so cannot remove them.");
     }
     // Update room's player list
     playersInRoom.remove(playerUUID);
-    objectStore.write(new LocalFieldChange(playerUUID, PLAYERS_IN_ROOM, playersInRoom, 0), playerUUID); // TODO: HashMap -> GameField
+    objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Room.PLAYERS_IN_ROOM, playersInRoom, 0), playerUUID); // TODO: HashMap -> GameField
 
     // NOTE: we will not update the player's room field, because this call is expected to be followed by adding the player to a new room,
     // or removing the player entirely.
   }
 
+  public PlayerState playerStateForPlayer(GameObjectUUID player) {
+    return new PlayerState(
+        ((GameFieldInteger) objectStore.read(player, ObjectStorageKeys.Player.X_POS, 0)).getValue(),
+        ((GameFieldInteger) objectStore.read(player, ObjectStorageKeys.Player.Y_POS, 0)).getValue(),
+        ((GameFieldString) objectStore.read(player, ObjectStorageKeys.Player.NAME, 0)).getValue(),
+        ((GameFieldColor) objectStore.read(player, ObjectStorageKeys.Player.COLOR, 0)).getValue(),
+        ((GameFieldInteger) objectStore.read(player, ObjectStorageKeys.Player.SCORE, 0)).getValue()
+    );
+  }
 }

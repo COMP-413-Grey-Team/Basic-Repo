@@ -1,5 +1,7 @@
 package edu.rice.rbox.Common;
 
+import edu.rice.rbox.Common.GameField.GameField;
+
 import java.io.Serializable;
 import java.util.UUID;
 

@@ -1,6 +1,4 @@
-package edu.rice.rbox.Game.Server;
-
-import edu.rice.rbox.Common.GameField;
+package edu.rice.rbox.Common.GameField;
 
 import java.util.Collection;
 import java.util.HashSet;

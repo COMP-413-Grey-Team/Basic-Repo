@@ -1,18 +1,18 @@
-package edu.rice.rbox.Game.Server;
-
-import edu.rice.rbox.Common.GameField;
+package edu.rice.rbox.Common.GameField;
 
 public class GameFieldBoolean implements GameField {
 
-  boolean value;
+  private boolean value;
 
   public GameFieldBoolean(boolean value) {
     this.value = value;
   }
 
   @Override
-  public GameField copy() {
+  public GameFieldBoolean copy() {
     return new GameFieldBoolean(value);
   }
+
+  public boolean getValue() { return value; }
 
 }

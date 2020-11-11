@@ -1,4 +1,4 @@
-package edu.rice.rbox.Common;
+package edu.rice.rbox.Common.GameField;
 
 import java.io.Serializable;
 

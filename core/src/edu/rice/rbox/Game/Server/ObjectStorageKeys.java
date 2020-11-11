@@ -12,6 +12,8 @@ public class ObjectStorageKeys {
     public static final String X_POS = "X_POS";
     public static final String Y_POS = "Y_POS";
     public static final String SCORE = "SCORE";
+    public static final String NAME = "NAME";
+    public static final String COLOR = "COLOR";
   }
 
   public static class Coin {

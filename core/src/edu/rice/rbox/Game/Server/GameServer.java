@@ -3,9 +3,12 @@ package edu.rice.rbox.Game.Server;
 import edu.rice.rbox.Common.Change.LocalAddReplicaChange;
 import edu.rice.rbox.Common.Change.LocalChange;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Game.Common.SyncState.GameState;
 import edu.rice.rbox.Game.Common.SyncState.GameStateDelta;
+import edu.rice.rbox.Game.Common.SyncState.PlayerState;
 import edu.rice.rbox.ObjStorage.ObjectStore;
 
+import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,7 +17,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GameServer extends Thread {
 
@@ -36,27 +41,33 @@ public class GameServer extends Thread {
   }
 
   public void run() {
-    while (true) {
-
-      final Set<LocalChange> localChanges = objectStore.synchronize();
-      localChanges.forEach(change -> {
-        for (int i = change.getBufferIndex(); i >= 0; i--) {
-          objectStore.write(change.copyWithIndex(i), change.getTarget());
-        }
-      });
-      objectStore.advanceBuffer();
-
-      // TODO: read in changes from clients.
-      for (final GameStateDelta delta : clientUpdates) {
-        final GameObjectUUID playerUUID = delta.playerUUID;
-
-      }
-
-      // TODO: send out game state to clients
-      for (GameObjectUUID playerUUID : clientConnectionManager.playersThisServerIsResponsibleFor) {
-
-      }
-    }
+//    while (true) {
+//
+//      final Set<LocalChange> localChanges = objectStore.synchronize();
+//      localChanges.forEach(change -> {
+//        for (int i = change.getBufferIndex(); i >= 0; i--) {
+//          objectStore.write(change.copyWithIndex(i), change.getTarget());
+//        }
+//      });
+//      objectStore.advanceBuffer();
+//
+//      // Process all game updates deltas
+//      clientUpdates.forEach(manager::handleUpdateFromPlayer);
+//
+//      // TODO: send out game state to clients
+//      HashMap<GameObjectUUID, GameState> roomToGameStateMemoizer = new HashMap<>();
+//      for (GameObjectUUID playerUUID : clientConnectionManager.playersThisServerIsResponsibleFor) {
+//        GameObjectUUID roomUUID = manager.roomForPlayer(playerUUID);
+//        if (!roomToGameStateMemoizer.containsKey(roomUUID)) {
+//          final Map<GameObjectUUID, PlayerState> playerStates =
+//              manager.playersInRoom(roomUUID).stream().collect(Collectors.toMap(
+//                 player -> player,
+//                 player -> manager.playerStateForPlayer(player)
+//              ));
+//          new GameState()
+//        }
+//      }
+//    }
   }
 
   public static void main(String[] args) {
