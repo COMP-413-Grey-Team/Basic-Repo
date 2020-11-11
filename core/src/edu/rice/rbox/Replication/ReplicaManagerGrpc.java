@@ -4,23 +4,19 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import edu.rice.rbox.Common.Change.RemoteChange;
-import edu.rice.rbox.Common.Change.RemoteDeleteReplicaChange;
+import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
 import edu.rice.rbox.ObjStorage.ChangeReceiver;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
-import edu.rice.rbox.Protos.Generated.RBoxServiceGrpc;
-import edu.rice.rbox.Protos.Generated.Rbox;
+import network.RBoxProto;
+import network.RBoxServiceGrpc;
 import org.apache.commons.lang3.SerializationUtils;
 
+import network.*;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,29 +73,32 @@ public class ReplicaManagerGrpc {
         return ByteString.copyFrom(SerializationUtils.serialize(remoteChange));
     }
 
-    private RemoteChange getRemoteChangeFromUpdateMessage(Rbox.UpdateMessage msg) {
+    private RemoteChange getRemoteChangeFromUpdateMessage(RBoxProto.UpdateMessage msg) {
         return SerializationUtils.deserialize(msg.getRemoteChange().toByteArray());
     }
 
-    private GameObjectUUID getGameObjectUUIDFromMessage(Rbox.ReplicationMessage msg) {
+    private GameObjectUUID getGameObjectUUIDFromMessage(RBoxProto.ReplicationMessage msg) {
         return new GameObjectUUID(UUID.fromString(msg.getTargetObjectUUID()));
     }
 
-    private ServerUUID getServerUUIDFromMessage(Rbox.ReplicationMessage msg) {
-        return new ServerUUID(UUID.fromString(msg.getOriginSuperpeerUUID()));
+    private ServerUUID getServerUUIDFromMessage(RBoxProto.ReplicationMessage msg) {
+        return new ServerUUID(UUID.fromString(msg.getSenderInfo().getSenderUUID()));
     }
 
-    private Rbox.ReplicationMessage generateReplicationMessage(GameObjectUUID gameObjectUUID) {
+    private RBoxProto.ReplicationMessage generateReplicationMessage(GameObjectUUID gameObjectUUID) {
         long millis = System.currentTimeMillis();
         return generateReplicationMessage(gameObjectUUID, millis);
     }
 
-    private Rbox.ReplicationMessage generateReplicationMessage(GameObjectUUID gameObjectUUID, long millis) {
+    private RBoxProto.ReplicationMessage generateReplicationMessage(GameObjectUUID gameObjectUUID, long millis) {
         Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
                                   .setNanos((int) ((millis % 1000) * 1000000)).build();
-        return Rbox.ReplicationMessage.newBuilder()
-                   .setOriginSuperpeerUUID(this.serverUUID.toString())
-                   .setTimestamp(timestamp)
+        RBoxProto.BasicInfo senderInfo = RBoxProto.BasicInfo.newBuilder()
+                                             .setSenderUUID(this.serverUUID.toString())
+                                             .setTime(timestamp)
+                                             .build();
+        return RBoxProto.ReplicationMessage.newBuilder()
+                   .setSenderInfo(senderInfo)
                    .setTargetObjectUUID(gameObjectUUID.toString())
                    .build();
     }
@@ -109,9 +108,9 @@ public class ReplicaManagerGrpc {
         logger.log(Level.INFO, "Sending subscribe request...");
 
         // Construct Subscribe Request
-        Rbox.ReplicationMessage msg = generateReplicationMessage(primaryObjectUUID);
-        Rbox.SubscribeRequest request = Rbox.SubscribeRequest.newBuilder().setMsg(msg).build();
-        Rbox.UpdateMessage response;
+        RBoxProto.ReplicationMessage msg = generateReplicationMessage(primaryObjectUUID);
+        RBoxProto.SubscribeRequest request = RBoxProto.SubscribeRequest.newBuilder().setMsg(msg).build();
+        RBoxProto.UpdateMessage response;
 
         try {
             response = getBlockingStub(serverUUID).handleSubscribe(request);
@@ -134,18 +133,13 @@ public class ReplicaManagerGrpc {
         logger.info("Sending unsubscribe request...");
 
         // Construct Unsubscribe Request
-        Rbox.ReplicationMessage msg = generateReplicationMessage(replicaObjectUUID);
-        Rbox.UnsubscribeRequest request = Rbox.UnsubscribeRequest.newBuilder().setMsg(msg).build();
+        long millis = System.currentTimeMillis();
+        RBoxProto.ReplicationMessage msg = generateReplicationMessage(replicaObjectUUID, millis);
+        RBoxProto.UnsubscribeRequest request = RBoxProto.UnsubscribeRequest.newBuilder().setMsg(msg).build();
 
         try {
             getStub(serverUUID).handleUnsubscribe(request, emptyResponseObserver);
-            Timestamp timestamp = msg.getTimestamp();
-            // TODO: call delete replica function from Object Storage (currently doesn't exist)
-//            RemoteChange remoteChange = new RemoteDeleteReplicaChange(
-//                                                replicaObjectUUID,
-//                                                // convert timestamp from message to Date
-//                                                Date.from(Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos())));
-//            changeReceiver.receiveChange(remoteChange);
+            changeReceiver.deleteReplica(replicaObjectUUID, new Date(millis));
 
             // Remove from publishers
             publishers.remove(replicaObjectUUID);
@@ -158,8 +152,8 @@ public class ReplicaManagerGrpc {
 
     class ReplicaManagerImpl extends RBoxServiceGrpc.RBoxServiceImplBase {
         @Override
-        public void handleSubscribe(Rbox.SubscribeRequest request,
-                                    StreamObserver<Rbox.UpdateMessage> responseObserver) {
+        public void handleSubscribe(RBoxProto.SubscribeRequest request,
+                                    StreamObserver<RBoxProto.UpdateMessage> responseObserver) {
             logger.log(Level.INFO, "Handling subscribe request...");
 
             // Get replica from storage
@@ -177,9 +171,9 @@ public class ReplicaManagerGrpc {
             }
 
             // Send the response
-            Rbox.ReplicationMessage message = generateReplicationMessage(primaryObjectUUID);
+            RBoxProto.ReplicationMessage message = generateReplicationMessage(primaryObjectUUID);
             ByteString replicaByteString = getByteStringFromRemoteChange(replica);
-            Rbox.UpdateMessage response = Rbox.UpdateMessage.newBuilder()
+            RBoxProto.UpdateMessage response = RBoxProto.UpdateMessage.newBuilder()
                                               .setMsg(message)
                                               .setRemoteChange(replicaByteString)
                                               .build();
@@ -188,7 +182,7 @@ public class ReplicaManagerGrpc {
         }
 
         @Override
-        public void handleUnsubscribe(Rbox.UnsubscribeRequest request, StreamObserver<Empty> responseObserver) {
+        public void handleUnsubscribe(RBoxProto.UnsubscribeRequest request, StreamObserver<Empty> responseObserver) {
             logger.info("Handling unsubscribe request...");
 
             GameObjectUUID primaryObjectUUID = getGameObjectUUIDFromMessage(request.getMsg());
@@ -205,7 +199,7 @@ public class ReplicaManagerGrpc {
         }
 
         @Override
-        public void handleUpdate(Rbox.UpdateMessage request, StreamObserver<Empty> responseObserver) {
+        public void handleUpdate(RBoxProto.UpdateMessage request, StreamObserver<Empty> responseObserver) {
             logger.log(Level.INFO, "Handling update...");
 
             RemoteChange change = getRemoteChangeFromUpdateMessage(request);
@@ -233,8 +227,8 @@ public class ReplicaManagerGrpc {
         GameObjectUUID targetUuid = change.getTarget();
         ServerUUID serverUUID = publishers.get(targetUuid);
         ByteString changeByteString = getByteStringFromRemoteChange(change);
-        Rbox.ReplicationMessage msg = generateReplicationMessage(targetUuid);
-        Rbox.UpdateMessage request = Rbox.UpdateMessage.newBuilder()
+        RBoxProto.ReplicationMessage msg = generateReplicationMessage(targetUuid);
+        RBoxProto.UpdateMessage request = RBoxProto.UpdateMessage.newBuilder()
                                                .setRemoteChange(changeByteString)
                                                .setMsg(msg)
                                                .build();
@@ -256,7 +250,7 @@ public class ReplicaManagerGrpc {
         }
     }
 
-    void createPrimary(GameObjectUUID primaryObjectUUID) {
+    void createPrimary(GameObjectUUID id, HashMap<String, GameField> interestingField, String predicate) {
         // No-Op
     }
 
@@ -270,8 +264,8 @@ public class ReplicaManagerGrpc {
         // Send Update Message to all replica holders
         long millis = System.currentTimeMillis();
         subscribers.get(primaryObjectUUID).forEach(serverUUID -> {
-            Rbox.ReplicationMessage msg = generateReplicationMessage(primaryObjectUUID, millis);
-            Rbox.UpdateMessage updateMessage = Rbox.UpdateMessage.newBuilder()
+            RBoxProto.ReplicationMessage msg = generateReplicationMessage(primaryObjectUUID, millis);
+            RBoxProto.UpdateMessage updateMessage = RBoxProto.UpdateMessage.newBuilder()
                                                    .setRemoteChange(getByteStringFromRemoteChange(remoteChange))
                                                    .setMsg(msg)
                                                    .build();
