@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import edu.rice.rbox.Common.Change.RemoteChange;
+import edu.rice.rbox.Common.Change.RemoteDeleteReplicaChange;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
 import edu.rice.rbox.ObjStorage.ChangeReceiver;
@@ -14,6 +15,8 @@ import edu.rice.rbox.Protos.Generated.Rbox;
 import org.apache.commons.lang3.SerializationUtils;
 
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +49,8 @@ public class ReplicaManagerGrpc {
         @Override
         public void onCompleted() { }
     };
+
+    private static Empty emptyResponse = Empty.newBuilder().build();
 
 
     /* Constructor */
@@ -126,9 +131,30 @@ public class ReplicaManagerGrpc {
 
 
     void unsubscribe(GameObjectUUID replicaObjectUUID) {
-        // TODO: Build request
-        // TODO: Remove from publishers
-        // TODO: deleteReplica via changeReceiver (delete replica)
+        logger.info("Sending unsubscribe request...");
+
+        // Construct Unsubscribe Request
+        Rbox.ReplicationMessage msg = generateReplicationMessage(replicaObjectUUID);
+        Rbox.UnsubscribeRequest request = Rbox.UnsubscribeRequest.newBuilder().setMsg(msg).build();
+
+        try {
+            getStub(serverUUID).handleUnsubscribe(request, emptyResponseObserver);
+            Timestamp timestamp = msg.getTimestamp();
+            // TODO: call delete replica function from Object Storage (currently doesn't exist)
+//            RemoteChange remoteChange = new RemoteDeleteReplicaChange(
+//                                                replicaObjectUUID,
+//                                                // convert timestamp from message to Date
+//                                                Date.from(Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos())));
+
+            // Remove from publishers
+            publishers.remove(replicaObjectUUID);
+
+            // Delete replica via changeReceiver (send remote change to storage)
+//            changeReceiver.receiveChange(remoteChange);
+
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed when sending unsubscribe request {0}", e.getStatus());
+        }
     }
 
 
@@ -165,7 +191,19 @@ public class ReplicaManagerGrpc {
 
         @Override
         public void handleUnsubscribe(Rbox.UnsubscribeRequest request, StreamObserver<Empty> responseObserver) {
-            // TODO: Remove from subscribers
+            logger.info("Handling unsubscribe request...");
+
+            GameObjectUUID primaryObjectUUID = getGameObjectUUIDFromMessage(request.getMsg());
+            ServerUUID senderUUID = getServerUUIDFromMessage(request.getMsg());
+
+            // Remove from subscribers
+            List<ServerUUID> updatedReplicas = subscribers.get(primaryObjectUUID);
+            updatedReplicas.remove(senderUUID);
+            subscribers.put(primaryObjectUUID, updatedReplicas);
+
+            // No response expected, send empty response
+            responseObserver.onNext(emptyResponse);
+            responseObserver.onCompleted();
         }
 
         @Override
