@@ -5,10 +5,11 @@ import edu.rice.rbox.Common.GameField.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 import junit.framework.TestCase;
 
-import java.util.*;
 import java.time.Instant;
+import java.util.*;
 
 public class Test extends TestCase {
+
     private static class GameInteger implements GameField {
         int value;
         GameInteger(int i) {
