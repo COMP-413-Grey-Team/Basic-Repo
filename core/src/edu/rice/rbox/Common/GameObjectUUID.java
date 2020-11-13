@@ -9,7 +9,7 @@ public class GameObjectUUID implements Serializable, GameField {
 
   private final UUID uuid;
 
-  private GameObjectUUID(UUID uuid) {
+  public GameObjectUUID(UUID uuid) {
     super();
     this.uuid = uuid;
   }

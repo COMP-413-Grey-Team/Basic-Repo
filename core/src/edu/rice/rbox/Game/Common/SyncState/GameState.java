@@ -4,19 +4,21 @@ import edu.rice.rbox.Common.GameObjectUUID;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.Map;
 
 // Sent from server to client each update
 public class GameState implements Serializable {
 
-  public final HashMap<GameObjectUUID, PlayerState> playerStates;
-  public final HashMap<GameObjectUUID, CoinState> coinStates;
+  public final GameObjectUUID clientUUID;
+  public final Map<GameObjectUUID, PlayerState> playerStates;
+  public final Map<GameObjectUUID, CoinState> coinStates;
   public final Color backgroundColor;
 
-  public GameState(HashMap<GameObjectUUID, PlayerState> playerStates,
-                   HashMap<GameObjectUUID, CoinState> coinStates,
+  public GameState(GameObjectUUID clientUUID,
+                   Map<GameObjectUUID, PlayerState> playerStates,
+                   Map<GameObjectUUID, CoinState> coinStates,
                    Color backgroundColor) {
+    this.clientUUID = clientUUID;
     this.playerStates = playerStates;
     this.coinStates = coinStates;
     this.backgroundColor = backgroundColor;
