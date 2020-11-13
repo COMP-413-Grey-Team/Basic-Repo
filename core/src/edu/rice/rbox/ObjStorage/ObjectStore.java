@@ -16,7 +16,7 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
     private HashMap<GameObjectUUID, Mode> objectModes;
     private HashMap<GameObjectUUID, HashSet<String>> objectInterestingFields;
 
-    private int bufferStart = 0; // to be replaced by a circular buffer
+    private int bufferStart = 0;
     private ArrayList<Date> bufferLag;
     private ArrayList<RemoteChange> remoteChangeBuffer = new ArrayList<>();
 
@@ -26,7 +26,6 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
 
     public int getBufferIndex(Date now) {
         for (int i = 0; i < bufferLag.size(); i++) {
-            //System.out.println(bufferLag.get(circ(i)).toInstant());
             if (bufferLag.get(circ(i)).compareTo(now) >= 0) {
                 return i;
             }
@@ -65,7 +64,14 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
             objectModes.put(localChange.getTarget(), Mode.REPLICA);
             return localChange;
         } else if (change instanceof RemoteDeleteReplicaChange) {
-            if (objectModes.get(change.getTarget()) == Mode.REPLICA) {
+            /*
+             * This deletes a replica from the entire buffer
+             * (should not be needed, because system is trusted)
+             * This deletes secondaries from the entire buffer if the primary was deleted
+             * Does not delete secondaries if message was due to not being interested anymore
+             */
+            if (objectModes.get(change.getTarget()) == Mode.REPLICA ||
+                    (objectModes.get(change.getTarget()) == Mode.SECONDARY && ((RemoteDeleteReplicaChange) change).getPrimaryDeleted())) {
                 final LocalDeleteReplicaChange
                         localChange =
                         new LocalDeleteReplicaChange(change.getTarget(), bufferIndex);
@@ -145,11 +151,7 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
             objectModes.put(addReplicaChange.getTarget(), Mode.REPLICA);
             return true;
         } else if (change instanceof LocalDeleteReplicaChange && objectModes.get(change.getTarget()) == Mode.REPLICA) {
-            for (int i = 0; i < store.size(); i++) {
-                store.get(i).remove(change.getTarget());
-            }
-            objectModes.remove(change.getTarget());
-            objectInterestingFields.remove(change.getTarget());
+            store.get(circ(change.getBufferIndex())).remove(change.getTarget());
             return true;
         } else {
             return false;
@@ -179,15 +181,17 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
     }
 
     @Override
-    public boolean delete(GameObjectUUID uuid, GameObjectUUID author, int bufferIndex) {
+    public boolean delete(GameObjectUUID uuid, GameObjectUUID author) {
         if (objectModes.get(author) == Mode.PRIMARY) {
             for (int i = 0; i < store.size(); i++) {
                 store.get(i).remove(uuid);
             }
             objectInterestingFields.remove(uuid);
             objectModes.remove(uuid);
-            RemoteDeleteReplicaChange change = new RemoteDeleteReplicaChange(uuid, Date.from(Instant.now()));
-            replicaManager.deletePrimary(uuid, change);
+            if (objectModes.get(uuid) == Mode.PRIMARY) {
+                RemoteDeleteReplicaChange change = new RemoteDeleteReplicaChange(uuid, Date.from(Instant.now()), true);
+                replicaManager.deletePrimary(uuid, change);
+            }
             return true;
         } else {
             return false;
@@ -201,7 +205,7 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
 
     @Override
     public void deleteReplica(GameObjectUUID id, Date timestamp) {
-        remoteChangeBuffer.add(new RemoteDeleteReplicaChange(id, Date.from(Instant.now())));
+        remoteChangeBuffer.add(new RemoteDeleteReplicaChange(id, Date.from(Instant.now()), false));
     }
 
     @Override

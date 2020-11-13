@@ -52,9 +52,9 @@ public interface DistributedManager {
                         String predicate, GameObjectUUID author, int bufferIndex);
 
   /**
-   * Deletes the specified object.
+   * Deletes the specified object from the entire buffer.
    *
    * @return Whether the delete was accepted.
    */
-  boolean delete(GameObjectUUID uuid, GameObjectUUID author, int bufferIndex);
+  boolean delete(GameObjectUUID uuid, GameObjectUUID author);
 }

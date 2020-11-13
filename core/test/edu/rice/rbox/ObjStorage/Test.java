@@ -141,7 +141,7 @@ public class Test extends TestCase {
         } catch (Exception E) {
         }
 
-        asdf.receiveChange(new RemoteDeleteReplicaChange(remote_id, Date.from(Instant.now())));
+        asdf.receiveChange(new RemoteDeleteReplicaChange(remote_id, Date.from(Instant.now()), true));
         asdf.advanceBuffer();
         assertEquals(new GameInteger(40), asdf.read(remote_id, "x", 2));
         assertEquals(new GameInteger(50), asdf.read(remote_id, "y", 2));
