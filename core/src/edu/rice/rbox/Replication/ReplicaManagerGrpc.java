@@ -210,6 +210,27 @@ public class ReplicaManagerGrpc {
         }
     }
 
+    class RegistrarImpl extends RegistrarGrpc.RegistrarImplBase {
+        @Override
+        public void alert(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
+            // TODO: Implement alert
+        }
+
+        @Override
+        public void promote(RBoxProto.PromoteSecondaryMessage request, StreamObserver<Empty> responseObserver) {
+            request.getPromotedUUIDsList().forEach(uuidStr -> {
+                GameObjectUUID gameObjectUUID = new GameObjectUUID(UUID.fromString(uuidStr));
+                changeReceiver.promoteSecondary(gameObjectUUID);
+            });
+            responseObserver.onCompleted();
+        }
+
+        @Override
+        public void connect(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
+            // No-op
+        }
+    }
+
     void handleQueryResult(GameObjectUUID primaryObjectUUID, List<edu.rice.rbox.Replication.HolderInfo> interestedObjects) {
         // TODO: Subscribe & Unsubscribe when necessary
     }
