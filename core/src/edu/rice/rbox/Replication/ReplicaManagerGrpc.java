@@ -34,6 +34,7 @@ public class ReplicaManagerGrpc {
 
     private HashSet<GameObjectUUID> secondaries;                        // Secondary Replicas
     private HashMap<GameObjectUUID, Integer> timeout;                   // Primary => timeout
+    private Integer initial_value = 50;
 
     private static StreamObserver<Empty> emptyResponseObserver = new StreamObserver<>() {
         @Override
@@ -56,6 +57,7 @@ public class ReplicaManagerGrpc {
         this.subscribers = new HashMap<>();
         this.publishers = new HashMap<>();
         this.secondaries = new HashSet<>();
+        this.timeout = new Hashmap<>();
     }
 
     /* Helper functions */
@@ -118,6 +120,7 @@ public class ReplicaManagerGrpc {
 
             // Add into publishers
             publishers.put(remoteChange.getTarget(), serverUUID);
+            timeout.put(remoteChange.getTarget(), initial_value);
 
             // Send remote change to storage
             changeReceiver.receiveChange(remoteChange);
@@ -143,6 +146,7 @@ public class ReplicaManagerGrpc {
 
             // Remove from publishers
             publishers.remove(replicaObjectUUID);
+            timeout.remove(replicaObjectUUID);
 
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed when sending unsubscribe request {0}", e.getStatus());
@@ -216,7 +220,21 @@ public class ReplicaManagerGrpc {
     }
 
     void handleQueryResult(GameObjectUUID primaryObjectUUID, List<edu.rice.rbox.Replication.HolderInfo> interestedObjects) {
-        // TODO: Subscribe & Unsubscribe when necessary
+        // Subscribe
+        interestedObjects.stream()
+            .filter(x -> !publishers.containsKey(x.getGameObjectUUID()))
+            .forEach(x -> subscribe(x.getGameObjectUUID(), x.getServerUUID()));
+
+        // Unsubscribe
+        interestedObjects.stream()
+            .filter(x -> publishers.containsKey(x.getGameObjectUUID()))
+            .forEach(x -> timeout.put(x.getGameObjectUUID(), initial_value));
+        timeout.replaceAll((x, y) -> y - 1);
+        timeout.forEach((x, y) -> {
+            if (y == 0) {
+                unsubscribe(x);
+            }
+        });
     }
 
     /* Functions for Object Storage */
