@@ -244,14 +244,6 @@ public class ReplicaManagerGrpc {
     void broadcastUpdate(RemoteChange change, Boolean interesting) {
         // Send change to all replica holders
         sendToReplicaHolders(change.getTarget(), change);
-
-        if (interesting) {
-            // TODO: If involves interesting fields change, notify location?
-        }
-    }
-
-    void createPrimary(GameObjectUUID id, HashMap<String, GameField> interestingField, String predicate) {
-        // No-Op
     }
 
     void deletePrimary(GameObjectUUID primaryObjectUUID, RemoteChange remoteChange) {
