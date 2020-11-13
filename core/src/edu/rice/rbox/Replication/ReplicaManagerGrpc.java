@@ -7,6 +7,7 @@ import edu.rice.rbox.Common.Change.RemoteChange;
 import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
+import edu.rice.rbox.Game.Client.Game;
 import edu.rice.rbox.ObjStorage.ChangeReceiver;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -206,12 +207,6 @@ public class ReplicaManagerGrpc {
 
             // Pass change to storage
             changeReceiver.receiveChange(change);
-
-            // Check if secondary, and if so notify registrar
-            if (secondaries.contains(change.getTarget())) {
-                // TODO: Notify registrar
-            }
-
         }
     }
 
