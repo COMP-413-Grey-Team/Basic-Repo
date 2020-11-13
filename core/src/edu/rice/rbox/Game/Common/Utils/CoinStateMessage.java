@@ -1,11 +1,11 @@
 package edu.rice.rbox.Game.Common.Utils;
 
-import edu.rice.rbox.Protos.Generated.GameNetworkProto.CoinMessage;
+import network.GameNetworkProto.CoinMessage;
 
-public class CoinMessageMessage {
+public class CoinStateMessage {
   private CoinMessage.Builder coin = CoinMessage.newBuilder();
 
-  public CoinMessageMessage(double x, double y) {
+  public CoinStateMessage(double x, double y) {
     coin.setX(x);
     coin.setY(y);
   }

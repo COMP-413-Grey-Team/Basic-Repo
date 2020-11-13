@@ -2,7 +2,7 @@ package edu.rice.rbox.Game.Common.Utils;
 
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
-import edu.rice.rbox.Protos.Generated.GameNetworkProto.UpdateFromClient;
+import network.GameNetworkProto.UpdateFromClient;
 import java.util.HashSet;
 import java.util.Iterator;
 

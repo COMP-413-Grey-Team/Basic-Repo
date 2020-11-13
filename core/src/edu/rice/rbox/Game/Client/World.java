@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import static edu.rice.rbox.Game.Common.SyncState.GameStateDelta.MovingRooms.NOT;
+
 public class World extends JPanel {
 
   private final int WORLD_WIDTH = 1000;
@@ -126,7 +128,7 @@ public class World extends JPanel {
 
   private void sendUpdatesToServerAsynchronously() {
     // TODO: send this to the server
-    new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins);
+    new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT);
 
     deletedCoins = new HashSet<>();
   }

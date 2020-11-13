@@ -1,12 +1,14 @@
 package edu.rice.rbox.Networking;
 
 import io.grpc.*;
+import network.ConnectionServiceGrpc;
+import network.Network;
 
 public class ConnectionClient {
   public static void main( String[] args ) throws Exception {
     // Channel is the abstraction to connect to a service endpoint
     // Let's use plaintext communication because we don't have certs
-    final ManagedChannel channel = ManagedChannelBuilder.forTarget("2600:1700:1112:c190:f5fb:979c:d162:d827")
+    final ManagedChannel channel = ManagedChannelBuilder.forTarget("52.15.213.157:8080")
                                        .usePlaintext(true)
                                        .build();
 

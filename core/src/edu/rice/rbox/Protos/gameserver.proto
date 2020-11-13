@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 option java_outer_classname = "GameNetworkProto";
+option java_package = "network";
 
 message PlayerID {
     string playerID = 1;
@@ -66,7 +67,7 @@ message InitPlayerResponse {
 }
 
 
-service GameServer {
+service GameService {
    rpc publishUpdate(UpdateFromClient) returns (UpdateFromServer);
    rpc getAssignedSuperPeer(Empty) returns (SuperPeerInfo);
    rpc initPlayer(InitialPlayerState) returns (UpdateFromServer);
