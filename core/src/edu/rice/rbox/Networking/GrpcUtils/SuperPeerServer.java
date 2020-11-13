@@ -75,7 +75,7 @@ public class SuperPeerServer {
 
     RBoxProto.ConnectMessage request =
         RBoxProto.ConnectMessage.newBuilder()
-            .setConnectionIP(systemipaddress)
+            .setConnectionIP(systemipaddress + ":8080")
             .setSender(info)
             .build();
 
