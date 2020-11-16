@@ -3,6 +3,8 @@ package edu.rice.rbox.ObjStorage;
 import edu.rice.rbox.Common.Change.RemoteChange;
 import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Common.InterestingGameField;
+import edu.rice.rbox.Location.interest.InterestPredicate;
 
 import java.util.HashMap;
 
@@ -11,19 +13,11 @@ import java.util.HashMap;
  */
 public interface ObjectStorageLocationInterface {
 
-  /**
-   * Notifies replication .
-   */
-  void updatePrimary(RemoteChange change);
+  void add(GameObjectUUID id, InterestPredicate predicate, HashMap<String, InterestingGameField> value);
 
+  void update(GameObjectUUID id, String field, InterestingGameField value);
 
-  /**
-   * Notifies replication that a new primary has been created and should notify the registrar.
-   */
-  void createPrimary(GameObjectUUID id, HashMap<String, GameField> interestingField, String predicate);
+  void delete(GameObjectUUID id);
 
-  /**
-   * Notifies replication that a new primary has been created and should notify the registrar and all the replicas.
-   */
-  void deletePrimary(GameObjectUUID id, RemoteChange change);
+  void queryInterest();
 }

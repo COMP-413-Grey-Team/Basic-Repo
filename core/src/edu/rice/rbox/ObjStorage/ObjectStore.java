@@ -4,14 +4,17 @@ import edu.rice.rbox.Common.Change.*;
 import edu.rice.rbox.Common.GameField.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
+import edu.rice.rbox.Common.InterestingGameField;
 import edu.rice.rbox.Common.Mode;
+import edu.rice.rbox.Location.interest.InterestPredicate;
 
 import java.time.Instant;
 import java.util.*;
 
-public class ObjectStore implements DistributedManager, ChangeReceiver {
+public class ObjectStore implements DistributedManager, ChangeReceiver, ObjectLocationStorageInterface {
 
     private ObjectStorageReplicationInterface replicaManager;
+    private ObjectStorageLocationInterface locationManager;
     private ArrayList<HashMap<GameObjectUUID, HashMap<String, GameField>>> store;
     private HashMap<GameObjectUUID, Mode> objectModes;
     private HashMap<GameObjectUUID, HashSet<String>> objectInterestingFields;
@@ -33,8 +36,10 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
         return -1;
     }
 
-    public ObjectStore(ObjectStorageReplicationInterface replicaManager, int size) {
+    public ObjectStore(ObjectStorageReplicationInterface replicaManager, ObjectStorageLocationInterface locationManager,
+                       int size) {
         this.replicaManager = replicaManager;
+        this.locationManager = locationManager;
         this.store = new ArrayList<>(size);
         this.objectModes = new HashMap<>();
         this.objectInterestingFields = new HashMap<>();
@@ -92,6 +97,13 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
                             ((RemoteFieldChange) change).getValue(),
                             bufferIndex);
             store.get(bufferIndex).get(localChange.getTarget()).put(localChange.getField(), localChange.getValue());
+            final RemoteFieldChange castedChange = (RemoteFieldChange) change;
+            if (objectModes.get(change.getTarget()) == Mode.PRIMARY) {
+                replicaManager.broadcastUpdate(change);
+                if (objectInterestingFields.get(change.getTarget()).contains((castedChange.getField()))) {
+                    locationManager.update(change.getTarget(), castedChange.getField(), (InterestingGameField) castedChange.getValue());
+                }
+            }
             return localChange;
         } else {
             throw new IllegalStateException("Unknown change of type " + change.getClass());
@@ -117,6 +129,16 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
     }
 
     @Override
+    public InterestingGameField queryOneField(GameObjectUUID id, String field) {
+        GameField value = read(id, field, 0);
+        if (objectInterestingFields.get(id).contains(field)) {
+            return (InterestingGameField) value;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     public RemoteChange getReplica(GameObjectUUID id) {
         return new RemoteAddReplicaChange(id, store.get(circ(0)).get(id), Date.from(Instant.now()));
     }
@@ -132,7 +154,10 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
                 Boolean interesting = objectInterestingFields.get(fieldChange.getTarget()).contains(fieldChange.getField());
                 // Propagate update
                 if (objectModes.get(fieldChange.getTarget()) == Mode.PRIMARY) {
-                    replicaManager.broadcastUpdate(new RemoteFieldChange(fieldChange.getTarget(), fieldChange.getField(), fieldChange.getValue(), Date.from(Instant.now())), interesting);
+                    replicaManager.broadcastUpdate(new RemoteFieldChange(fieldChange.getTarget(), fieldChange.getField(), fieldChange.getValue(), Date.from(Instant.now())));
+                    if (interesting) {
+                        locationManager.update(fieldChange.getTarget(), fieldChange.getField(), (InterestingGameField) fieldChange.getValue());
+                    }
                 } else {
                     replicaManager.updatePrimary(new RemoteFieldChange(fieldChange.getTarget(), fieldChange.getField(), fieldChange.getValue(), Date.from(Instant.now())));
                 }
@@ -160,20 +185,22 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
 
     @Override
     public GameObjectUUID create(HashMap<String, GameField> fields, HashSet<String> interesting_fields,
-                                 String predicate, GameObjectUUID author, int bufferIndex) {
+                                 InterestPredicate predicate, GameObjectUUID author, int bufferIndex) {
         HashMap<GameObjectUUID, HashMap<String, GameField>> state = store.get(circ(bufferIndex));
         if (author == null || objectModes.get(author) == Mode.PRIMARY) {
             GameObjectUUID uuid = GameObjectUUID.randomUUID();
             objectInterestingFields.put(uuid, interesting_fields);
             objectModes.put(uuid, Mode.PRIMARY);
             state.put(uuid, fields);
-            HashMap<String, GameField> interesting_state = new HashMap<>();
+            replicaManager.createPrimary(uuid);
+
+            HashMap<String, InterestingGameField> interesting_state = new HashMap<>();
             fields.forEach((key, value) -> {
                 if (interesting_fields.contains(key)) {
-                    interesting_state.put(key, value);
+                    interesting_state.put(key, (InterestingGameField) value);
                 }
             });
-            replicaManager.createPrimary(uuid, interesting_state, predicate);
+            locationManager.add(uuid, predicate, interesting_state);
             return uuid;
         } else {
             return null;
@@ -191,11 +218,17 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
             if (objectModes.get(uuid) == Mode.PRIMARY) {
                 RemoteDeleteReplicaChange change = new RemoteDeleteReplicaChange(uuid, Date.from(Instant.now()), true);
                 replicaManager.deletePrimary(uuid, change);
+                locationManager.delete(uuid);
             }
             return true;
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void queryInterest() {
+        locationManager.queryInterest();
     }
 
     @Override
@@ -210,6 +243,7 @@ public class ObjectStore implements DistributedManager, ChangeReceiver {
 
     @Override
     public void promoteSecondary(GameObjectUUID id) {
+        // TODO: Maybe send something to location?
         objectModes.put(id, Mode.PRIMARY);
     }
 }

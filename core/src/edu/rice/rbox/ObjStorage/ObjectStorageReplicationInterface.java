@@ -20,14 +20,13 @@ public interface ObjectStorageReplicationInterface {
 
   /**
    * Send an update to all of the replicas.
-   * @param interesting Whether the change is interesting and should be sent to the registrar.
    */
-  void broadcastUpdate(RemoteChange change, Boolean interesting);
+  void broadcastUpdate(RemoteChange change);
 
   /**
    * Notifies replication that a new primary has been created and should notify the registrar.
    */
-  void createPrimary(GameObjectUUID id, HashMap<String, GameField> interestingField, String predicate);
+  void createPrimary(GameObjectUUID id);
 
   /**
    * Notifies replication that a new primary has been created and should notify the registrar and all the replicas.
