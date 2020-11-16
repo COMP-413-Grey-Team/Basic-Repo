@@ -51,15 +51,11 @@ message UpdateFromServer {
     map<string, CoinMessage> coinStates = 2;
     string timestamp = 3;
     string worldColor = 4;
+    string playerUUID = 5;
 }
 
 message SuperPeerInfo {
     string hostname = 1;
-}
-
-message InitPlayerResponse {
-    string playerUUID = 1;
-    UpdateFromServer initialState = 2;
 }
 
 service GameService {
