@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+
+option java_outer_classname = "RBoxProto";
+option java_package = "network";
+package grpc.health.v1;
+
+// add in messages here
+message BasicInfo {
+  string senderUUID = 1;
+  google.protobuf.Timestamp time = 2;
+}
+
+message ReplicationMessage {
+  BasicInfo senderInfo = 1;
+	string targetObjectUUID = 2;
+}
+
+message SubscribeRequest {
+	ReplicationMessage msg = 1;
+}
+
+message UnsubscribeRequest {
+	ReplicationMessage msg  = 1;
+}
+
+message UpdateMessage {
+	ReplicationMessage msg  = 1;
+	bytes remoteChange = 2;
+}
+
+service RBoxService {
+  rpc handleSubscribe(SubscribeRequest) returns (UpdateMessage);
+  rpc handleUpdate(UpdateMessage) returns (google.protobuf.Empty);
+  rpc handleUnsubscribe(UnsubscribeRequest) returns (google.protobuf.Empty);
+}
+
+message HealthCheckRequest {
+  BasicInfo sender = 1;
+  string service = 2;
+}
+
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;  // Used only by the Watch method.
+  }
+  BasicInfo sender = 1;
+  ServingStatus status = 2;
+}
+
+service Health {
+  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
+
+  rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
+}
+
+message NewRegistrarMessage {
+  BasicInfo sender = 1;
+  string newRegistrarIP = 2;
+}
+
+message querySecondaryMessage {
+  BasicInfo sender = 1;
+  repeated string primaryUUIDs = 2;
+}
+
+message secondaryTimestampsMessage {
+  BasicInfo sender = 1;
+  repeated string primaryUUIDs = 2;
+  repeated string secondaryTimestamps = 3;
+}
+
+message PromoteSecondaryMessage {
+  BasicInfo sender = 1;
+  repeated string promotedUUIDs = 2;
+}
+
+message ConnectMessage {
+  BasicInfo sender = 1;
+  string connectionIP = 2;
+}
+
+service Registrar {
+  rpc Alert(NewRegistrarMessage) returns (google.protobuf.Empty);
+  rpc Promote(PromoteSecondaryMessage) returns (google.protobuf.Empty);
+  rpc Connect(ConnectMessage) returns (google.protobuf.Empty);
+  rpc QuerySecondary(querySecondaryMessage) returns (secondaryTimestampsMessage);
+}
