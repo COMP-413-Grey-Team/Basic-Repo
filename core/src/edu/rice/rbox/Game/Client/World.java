@@ -2,6 +2,7 @@ package edu.rice.rbox.Game.Client;
 
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Client.Sprites.CoinSprite;
+import edu.rice.rbox.Game.Client.Sprites.DoorSprite;
 import edu.rice.rbox.Game.Client.Sprites.Players.LocalPlayerSprite;
 import edu.rice.rbox.Game.Client.Sprites.Players.RemotePlayerSprite;
 import edu.rice.rbox.Game.Common.SyncState.CoinState;
@@ -39,6 +40,10 @@ public class World extends JPanel {
   private LocalPlayerSprite player;
   private Map<GameObjectUUID, RemotePlayerSprite> otherPlayers = new HashMap<>();
   private Map<GameObjectUUID, CoinSprite> coins = new HashMap<>();
+  private final DoorSprite leftDoor = new DoorSprite(DoorSprite.DoorSide.LEFT, WORLD_WIDTH, WORLD_HEIGHT);
+  private final DoorSprite rightDoor = new DoorSprite(DoorSprite.DoorSide.RIGHT, WORLD_WIDTH, WORLD_HEIGHT);
+
+  private DoorSprite.DoorSide shouldMoveRooms = null;
 
   // Local changes that need to be synced to the server
   private HashSet<GameObjectUUID> deletedCoins = new HashSet<>();
@@ -94,6 +99,8 @@ public class World extends JPanel {
     g.setColor(backgroundColor);
     g.fillRect(0, 0, getWidth(), getHeight());
 
+    leftDoor.paint(g);
+    rightDoor.paint(g);
     coins.values().forEach(c -> c.paint(g));
     otherPlayers.values().forEach(p -> p.paint(g));
     player.paint(g);
@@ -126,11 +133,25 @@ public class World extends JPanel {
     ));
   }
 
+  private void trySwitchingRooms() {
+    // Check collision with door
+    DoorSprite[] doors = { leftDoor, rightDoor };
+    for (DoorSprite door : doors) {
+      if (door.containsPoint(player.getX(), player.getY())) {
+        shouldMoveRooms = door.doorSide;
+        System.out.println("DOOR " + door.doorSide);
+        break;
+      }
+    }
+  }
+
   private void sendUpdatesToServerAsynchronously() {
     // TODO: send this to the server
     new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT);
 
     deletedCoins = new HashSet<>();
+
+    // TODO: include the direction we're switching to
   }
 
   private void handleServerUpdatesAsynchronously(HashMap<GameObjectUUID, PlayerState> playerStates, HashMap<GameObjectUUID, CoinState> coinStates) {
@@ -155,6 +176,9 @@ public class World extends JPanel {
           break;
         case KeyEvent.VK_S:
           keyState.tapped(KeyState.Key.S);
+          break;
+        case KeyEvent.VK_SPACE:
+          trySwitchingRooms();
           break;
         default:
           break;

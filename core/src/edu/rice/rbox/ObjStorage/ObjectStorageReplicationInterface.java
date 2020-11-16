@@ -1,14 +1,9 @@
 package edu.rice.rbox.ObjStorage;
 
 import edu.rice.rbox.Common.Change.RemoteChange;
-import edu.rice.rbox.Common.Change.RemoteDeleteReplicaChange;
-import edu.rice.rbox.Common.GameField;
+import edu.rice.rbox.Common.GameField.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
-import edu.rice.rbox.Common.Mode;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
