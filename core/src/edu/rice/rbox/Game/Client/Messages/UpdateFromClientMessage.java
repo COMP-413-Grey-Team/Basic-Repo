@@ -1,8 +1,9 @@
-package edu.rice.rbox.Game.Common.Utils;
+package edu.rice.rbox.Game.Client.Messages;
 
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
 import network.GameNetworkProto.UpdateFromClient;
+import network.GameNetworkProto.PlayerMessage;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -10,18 +11,22 @@ public class UpdateFromClientMessage {
 
   private final UpdateFromClient.Builder update = UpdateFromClient.newBuilder();
 
-  public UpdateFromClientMessage(String objectID, PlayerState playerState,
+  public UpdateFromClientMessage(GameObjectUUID objectID, PlayerState playerState,
                                  HashSet<GameObjectUUID> deletedCoins, Integer movingRooms) {
-    update.setGameObjectUUID(objectID);
+    update.setGameObjectUUID(objectID.toString());
     update.setMovingRoomsValue(movingRooms);
     this.constructPlayerMessage(playerState);
     this.constructDeletedCoins(deletedCoins);
   }
 
   private void constructPlayerMessage(PlayerState playerState) {
-    PlayerStateMessage player = new PlayerStateMessage(playerState.color.toString(), playerState.name,
-        playerState.score, playerState.x, playerState.y);
-    update.setPlayerState(player.getPlayerMessageMessage());
+    PlayerMessage.Builder player = PlayerMessage.newBuilder();
+
+    update.setPlayerState(player.setColor(playerState.color.toString())
+                              .setName(playerState.name)
+                              .setScore(((Integer) playerState.score).toString())
+                              .setX(playerState.x)
+                              .setY(playerState.y).build());
   }
 
   private void constructDeletedCoins(HashSet<GameObjectUUID> deletedCoins) {
