@@ -20,7 +20,8 @@ public class LocalAddReplicaChange extends AddReplicaChange implements LocalChan
   }
 
   @Override
-  public LocalAddReplicaChange copyWithIndex(int i) {
+  public LocalChange copyWithBufferIndex(int i) {
     return new LocalAddReplicaChange(this.getTarget(), this.getObject(), i);
   }
 }
+
