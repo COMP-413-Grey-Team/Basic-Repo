@@ -4,18 +4,14 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import edu.rice.rbox.Common.Change.RemoteChange;
-import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
-import edu.rice.rbox.Game.Client.Game;
 import edu.rice.rbox.ObjStorage.ChangeReceiver;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import network.RBoxProto;
 import network.RBoxServiceGrpc;
 import org.apache.commons.lang3.SerializationUtils;
-
-import network.*;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -30,11 +26,9 @@ public class ReplicaManagerGrpc {
     private ChangeReceiver changeReceiver;
     private ServerUUID serverUUID;
 
-    private HashMap<GameObjectUUID, List<ServerUUID>> subscribers;      // Primary => Replica
-    private HashMap<GameObjectUUID, ServerUUID> publishers;             // Replica => Primary
-
-    private HashSet<GameObjectUUID> secondaries;                        // Secondary Replicas
-    private HashMap<GameObjectUUID, Integer> timeout;                   // Primary => timeout
+    private HashMap<GameObjectUUID, List<ServerUUID>> subscribers = new HashMap<>();      // Primary => Replica
+    private HashMap<GameObjectUUID, ServerUUID> publishers = new HashMap<>();             // Replica => Primary
+    private HashMap<GameObjectUUID, Integer> timeout = new HashMap<>();                   // Primary => timeout
     private Integer initial_value = 50;
 
     private static StreamObserver<Empty> emptyResponseObserver = new StreamObserver<>() {
@@ -55,10 +49,6 @@ public class ReplicaManagerGrpc {
     public ReplicaManagerGrpc(ChangeReceiver changeReceiver, ServerUUID serverUUID, ServerUUID registrarUUID) {
         this.changeReceiver = changeReceiver;
         this.serverUUID = serverUUID;
-        this.subscribers = new HashMap<>();
-        this.publishers = new HashMap<>();
-        this.secondaries = new HashSet<>();
-        this.timeout = new Hashmap<>();
     }
 
     /* Helper functions */
@@ -207,27 +197,29 @@ public class ReplicaManagerGrpc {
         public void handleUpdate(RBoxProto.UpdateMessage request, StreamObserver<Empty> responseObserver) {
             logger.log(Level.INFO, "Handling update...");
 
-            RemoteChange change = getRemoteChangeFromUpdateMessage(request);
-
             // Pass change to storage
+            RemoteChange change = getRemoteChangeFromUpdateMessage(request);
             changeReceiver.receiveChange(change);
+
+            responseObserver.onCompleted();
         }
     }
 
+    /* Functions for Object Location */
     void handleQueryResult(GameObjectUUID primaryObjectUUID, List<edu.rice.rbox.Replication.HolderInfo> interestedObjects) {
         // Subscribe
         interestedObjects.stream()
-            .filter(x -> !publishers.containsKey(x.getGameObjectUUID()))
-            .forEach(x -> subscribe(x.getGameObjectUUID(), x.getServerUUID()));
+            .filter(holderInfo -> !publishers.containsKey(holderInfo.getGameObjectUUID()))
+            .forEach(holderInfo -> subscribe(holderInfo.getGameObjectUUID(), holderInfo.getServerUUID()));
 
         // Unsubscribe
         interestedObjects.stream()
-            .filter(x -> publishers.containsKey(x.getGameObjectUUID()))
-            .forEach(x -> timeout.put(x.getGameObjectUUID(), initial_value));
-        timeout.replaceAll((x, y) -> y - 1);
-        timeout.forEach((x, y) -> {
-            if (y == 0) {
-                unsubscribe(x);
+            .filter(holderInfo -> publishers.containsKey(holderInfo.getGameObjectUUID()))
+            .forEach(holderInfo -> timeout.put(holderInfo.getGameObjectUUID(), initial_value));
+        timeout.replaceAll((gameObjectUUID, time) -> time - 1);
+        timeout.forEach((gameObjectUUID, time) -> {
+            if (time == 0) {
+                unsubscribe(gameObjectUUID);
             }
         });
     }
@@ -249,7 +241,7 @@ public class ReplicaManagerGrpc {
             getStub(serverUUID).handleUpdate(request, emptyResponseObserver);
 
         } catch (StatusRuntimeException e) {
-            logger.log(Level.WARNING, "failure when sending update");
+            logger.log(Level.WARNING, "failure when sending update to primary");
         }
 
     }
@@ -274,7 +266,12 @@ public class ReplicaManagerGrpc {
                                                    .setRemoteChange(getByteStringFromRemoteChange(remoteChange))
                                                    .setMsg(msg)
                                                    .build();
-            getStub(serverUUID).handleUpdate(updateMessage, emptyResponseObserver);
+            try {
+                getStub(serverUUID).handleUpdate(updateMessage, emptyResponseObserver);
+
+            } catch (StatusRuntimeException e) {
+                logger.log(Level.WARNING, "failure when sending update to replica holders");
+            }
         });
     }
 }
