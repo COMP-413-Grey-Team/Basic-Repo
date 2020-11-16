@@ -1,7 +1,7 @@
 package edu.rice.rbox.ObjStorage;
 
 import edu.rice.rbox.Common.Change.RemoteChange;
-import edu.rice.rbox.Common.GameField;
+import edu.rice.rbox.Common.GameField.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.InterestingGameField;
 import edu.rice.rbox.Location.interest.InterestPredicate;

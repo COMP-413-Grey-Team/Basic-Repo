@@ -44,45 +44,45 @@ public class Test extends TestCase {
 
     public void testConstructor() {
         try {
-            ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), 10);
+            ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), new DummyLocationManager(), 10);
         } catch(Exception error) {
             fail("does not construct");
         }
     }
 
     public void testRead() {
-        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), 10);
+        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), new DummyLocationManager(), 10);
 
         HashMap<String, GameField> gameObject = new HashMap<>();
         gameObject.put("x", new GameInteger(0));
         gameObject.put("y", new GameInteger(1));
 
-        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), "", null, 0);
+        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), null, null, 0);
         assertEquals(new GameInteger(0), asdf.read(id, "x", 0));
         assertEquals(new GameInteger(1), asdf.read(id, "y", 0));
     }
 
     public void testWrite() {
-        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), 10);
+        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), new DummyLocationManager(), 10);
 
         HashMap<String, GameField> gameObject = new HashMap<>();
         gameObject.put("x", new GameInteger(0));
         gameObject.put("y", new GameInteger(1));
 
-        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), "", null, 0);
+        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), null, null, 0);
         asdf.write(new LocalFieldChange(id, "x", new GameInteger(100), 0), id);
         assertEquals(new GameInteger(100), asdf.read(id, "x", 0));
         assertEquals(new GameInteger(1), asdf.read(id, "y", 0));
     }
 
     public void testBuffer() {
-        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), 10);
+        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), new DummyLocationManager(), 10);
 
         HashMap<String, GameField> gameObject = new HashMap<>();
         gameObject.put("x", new GameInteger(0));
         gameObject.put("y", new GameInteger(1));
 
-        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), "", null, 0);
+        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), null, null, 0);
         asdf.advanceBuffer();
         asdf.write(new LocalFieldChange(id, "x", new GameInteger(100), 0), id);
         assertEquals(new GameInteger(0), asdf.read(id, "x", 1));
@@ -92,13 +92,13 @@ public class Test extends TestCase {
     }
 
     public void testSynchronize() {
-        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), 10);
+        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), new DummyLocationManager(), 10);
 
         HashMap<String, GameField> gameObject = new HashMap<>();
         gameObject.put("x", new GameInteger(0));
         gameObject.put("y", new GameInteger(1));
 
-        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), "", null, 0);
+        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), null, null, 0);
         Date changeTime = Date.from(Instant.now());
         asdf.advanceBuffer();
         asdf.receiveChange(new RemoteFieldChange(id, "x", new GameInteger(100), changeTime));
@@ -110,12 +110,12 @@ public class Test extends TestCase {
     }
 
     public void testReplicas() {
-        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), 10);
+        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), new DummyLocationManager(), 10);
 
         HashMap<String, GameField> gameObject = new HashMap<>();
         gameObject.put("x", new GameInteger(0));
         gameObject.put("y", new GameInteger(1));
-        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), "", null, 0);
+        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), null, null, 0);
 
         HashMap<String, GameField> remoteObject = new HashMap<>();
         remoteObject.put("x", new GameInteger(40));
@@ -165,14 +165,14 @@ public class Test extends TestCase {
     }
 
     public void testDeep() {
-        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), 10);
+        ObjectStore asdf = new ObjectStore(new DummyReplicaManager(), new DummyLocationManager(), 10);
 
         HashMap<String, GameField> gameObject = new HashMap<>();
         ArrayList<Integer> pos = new ArrayList<>(2);
         pos.add(0, 0);
         pos.add(1, 1);
         gameObject.put("pos", new GameList(pos));
-        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), "", null, 0);
+        GameObjectUUID id = asdf.create(gameObject, new HashSet<>(), null, null, 0);
 
         assertEquals(0, ((GameList)asdf.read(id, "pos", 0)).value.get(0).intValue());
         assertEquals(1, ((GameList)asdf.read(id, "pos", 0)).value.get(1).intValue());
