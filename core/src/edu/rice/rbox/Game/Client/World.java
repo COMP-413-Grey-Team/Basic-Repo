@@ -24,8 +24,8 @@ import static network.GameNetworkProto.UpdateFromClient.MovingRooms.NOT;
 
 public class World extends JPanel {
 
-  private final int WORLD_WIDTH = 1000;
-  private final int WORLD_HEIGHT = 660;
+  public static final int WORLD_WIDTH = 1000;
+  public static final int WORLD_HEIGHT = 660;
   private final int DELTA_T = 17;
 
   private final Timer timer = new Timer(DELTA_T, (event) -> {

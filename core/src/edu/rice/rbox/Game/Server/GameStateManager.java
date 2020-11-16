@@ -3,21 +3,32 @@ package edu.rice.rbox.Game.Server;
 import edu.rice.rbox.Common.Change.LocalFieldChange;
 import edu.rice.rbox.Common.GameField.*;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Game.Client.Sprites.CoinSprite;
 import edu.rice.rbox.Game.Common.SyncState.CoinState;
 import edu.rice.rbox.Game.Common.SyncState.GameState;
 import edu.rice.rbox.Game.Common.SyncState.GameStateDelta;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
+import edu.rice.rbox.Location.interest.InterestPredicate;
 import edu.rice.rbox.ObjStorage.ObjectStore;
+import org.bson.conversions.Bson;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 import static network.GameNetworkProto.UpdateFromClient.MovingRooms.NOT;
+import static edu.rice.rbox.Game.Client.World.WORLD_HEIGHT;
+import static edu.rice.rbox.Game.Client.World.WORLD_WIDTH;
+import static edu.rice.rbox.Game.Server.ObjectStorageKeys.*;
 
 public class GameStateManager {
 
   private ObjectStore objectStore;
+
+  private final ReentrantLock lock = new ReentrantLock();
 
   public GameState handlePlayerJoining(PlayerState newPlayerInfo) {
     GameFieldList<GameObjectUUID> roomOrder =
@@ -41,34 +52,76 @@ public class GameStateManager {
     final GameObjectUUID playerUUID = update.playerUUID;
 //    final int bufferIndex = objectStore.getBufferIndex(update.timestamp);
     final int bufferIndex = 0;
+    final GameObjectUUID roomUUID = roomForPlayer(playerUUID);
 
     if (update.movingRooms != NOT) {
-      removePlayerFromRoom(playerUUID, roomForPlayer(playerUUID));
+      removePlayerFromRoom(playerUUID, roomUUID);
 
       final GameObjectUUID newRoomUUID = GameObjectUUID.randomUUID(); // TODO: calculate correct room UUID
       addPlayerToRoom(playerUUID, newRoomUUID);
     }
 
-    // Update player score
     // Remove coins they have collected
     int coinsCollected = 0;
-    for (GameObjectUUID coin : update.deletedCoins) {
-      if (!((GameFieldBoolean) objectStore.read(coin, ObjectStorageKeys.Coin.HAS_BEEN_COLLECTED, 0)).getValue()) {
-        coinsCollected++;
-        objectStore.write(new LocalFieldChange(coin, ObjectStorageKeys.Coin.HAS_BEEN_COLLECTED, new GameFieldBoolean(true), 0), coin);
-       }
+    if (!update.deletedCoins.isEmpty()) {
+      lock.lock();
+      final GameFieldSet<GameObjectUUID> coinsInRoom = coinsInRoom(roomUUID);
+
+      for (GameObjectUUID coin : update.deletedCoins) {
+        if (!((GameFieldBoolean) objectStore.read(coin, ObjectStorageKeys.Coin.HAS_BEEN_COLLECTED, 0)).getValue()) {
+          coinsCollected++;
+          objectStore.write(new LocalFieldChange(coin,
+              ObjectStorageKeys.Coin.HAS_BEEN_COLLECTED,
+              new GameFieldBoolean(true),
+              0), coin);
+          coinsInRoom.remove(coin);
+        }
+      }
+      objectStore.write(new LocalFieldChange(roomUUID, Room.COINS_IN_ROOM, coinsInRoom, 0), roomUUID);
+      lock.unlock();
     }
-    if (coinsCollected != 0) {
-      final GameFieldInteger score = (GameFieldInteger) objectStore.read(playerUUID, ObjectStorageKeys.Player.SCORE, 0);
-      final GameFieldInteger newScore = new GameFieldInteger(score.getValue() + coinsCollected);
-      objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.SCORE, newScore, 0), playerUUID);
-    }
+
+    // Updating player score
+    final GameFieldInteger
+        score =
+        (GameFieldInteger) objectStore.read(playerUUID, ObjectStorageKeys.Player.SCORE, 0);
+    final GameFieldInteger newScore = new GameFieldInteger(score.getValue() + coinsCollected);
+    objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.SCORE, newScore, 0), playerUUID);
 
     // Update position
     objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.X_POS, new GameFieldDouble(update.updatedPlayerState.x), 0), playerUUID);
     objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.Y_POS, new GameFieldDouble(update.updatedPlayerState.y), 0), playerUUID);
 
-    return gameStateForRoom(roomForPlayer(playerUUID), playerUUID);
+    return gameStateForRoom(roomUUID, playerUUID);
+  }
+
+  public void createRandomCoin(GameObjectUUID roomUUID) {
+    final int x =
+        ThreadLocalRandom.current().nextInt(CoinSprite.CIRCLE_RADIUS, WORLD_WIDTH - 2 * CoinSprite.CIRCLE_RADIUS);
+    final int y =
+        ThreadLocalRandom.current().nextInt(CoinSprite.CIRCLE_RADIUS, WORLD_HEIGHT - 2 * CoinSprite.CIRCLE_RADIUS);
+    HashMap<String, GameField> coinValues = new HashMap<>() {{
+      put(Coin.ROOM_ID, roomUUID);
+      put(Coin.X_POS, new GameFieldInteger(x));
+      put(Coin.Y_POS, new GameFieldInteger(y));
+      put(Coin.HAS_BEEN_COLLECTED, new GameFieldBoolean(false));
+    }};
+
+    lock.lock();
+    final GameObjectUUID
+        coinUUID =
+        objectStore.create(coinValues, Coin.IMPORTANT_FIELDS, new InterestPredicate() {
+          @Override
+          public Bson toMongoQuery(HashMap<String, Serializable> map) {
+            return null; // TODO
+          }
+        }, roomUUID, 0);
+
+    final GameFieldSet<GameObjectUUID> coinsInRoom = coinsInRoom(roomUUID);
+    coinsInRoom.add(coinUUID);
+    objectStore.write(new LocalFieldChange(roomUUID, Room.COINS_IN_ROOM, coinsInRoom, 0), roomUUID);
+
+    lock.unlock();
   }
 
   public void handlePlayerQuitting(GameObjectUUID player) {
