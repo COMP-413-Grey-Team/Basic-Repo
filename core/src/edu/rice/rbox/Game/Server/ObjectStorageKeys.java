@@ -20,6 +20,7 @@ public class ObjectStorageKeys {
     public static final String COINS_IN_ROOM = "COINS_IN_ROOM";
     public static final String BACKGROUND_COLOR = "BACKGROUND_COLOR";
     public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>();
+    public static final String NEXT_COIN_SPAWN_DATE = "NEXT_COIN_SPAWN_DATE";
   }
 
   public static class Player {
