@@ -1,20 +1,18 @@
 package edu.rice.rbox.FaultTolerance;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import java.util.Map;
-import java.util.UUID;
+
+import java.util.*;
+
 import network.GameNetworkProto;
 import network.GameServiceGrpc;
 import network.GameServiceGrpc.GameServiceBlockingStub;
+import network.GameNetworkProto.SuperPeerInfo;
 import network.RegistrarGrpc;
 import network.RegistrarGrpc.RegistrarBlockingStub;
 import org.bson.Document;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ConnectionManager {
 
@@ -25,13 +23,12 @@ public class ConnectionManager {
     private List<GameServiceBlockingStub> clients;
 
     private Map<RegistrarBlockingStub, List<UUID>> superPeer2gameClient;
-    private Map<RegistrarBlockingStub, GameNetworkProto.SuperPeerInfo> superPeers;
-    private List<GameNetworkProto.SuperPeerInfo> superPeerInfos;
+    private Map<RegistrarBlockingStub, String> superPeers;
     private MongoCollection superPeerCol;
     private MongoCollection clientCol;
-    private List<Integer> clientNumbers;
 
-    private Integer currAssignedSuperPeer = 0;
+
+
 
 
 
@@ -41,6 +38,9 @@ public class ConnectionManager {
                                   io.grpc.stub.StreamObserver<network.GameNetworkProto.UpdateFromServer> responseObserver) {
 
             System.out.println("Publish Update incorrectly called on registrar!!!");
+            GameNetworkProto.UpdateFromServer empty = GameNetworkProto.UpdateFromServer.newBuilder().build();
+            responseObserver.onNext(empty);
+            responseObserver.onCompleted();
         }
 
         @Override
@@ -48,27 +48,34 @@ public class ConnectionManager {
                                          io.grpc.stub.StreamObserver<network.GameNetworkProto.SuperPeerInfo> responseObserver) {
             System.out.println("Get Assign incorrectly called on registrar!");
 
-            // make sure not to go outta bounds
-            if (currAssignedSuperPeer > superPeerInfos.size() - 1) {
-                ConnectionManager.this.currAssignedSuperPeer = 0;
-            }
+            // Need client UUID
+            String sp = ConnectionManager.this.assignClient();
 
             // send over assigned superpeer info
+            SuperPeerInfo info = SuperPeerInfo.newBuilder().setHostname(sp).build();
+            responseObserver.onNext(info);
+            responseObserver.onCompleted();
 
 
-            ConnectionManager.this.currAssignedSuperPeer++;
         }
 
         @Override
         public void initPlayer(network.GameNetworkProto.InitialPlayerState request,
                                io.grpc.stub.StreamObserver<network.GameNetworkProto.UpdateFromServer> responseObserver) {
             System.out.println("Init Player incorrectly called on registrar!!!");
+            GameNetworkProto.UpdateFromServer empty = GameNetworkProto.UpdateFromServer.newBuilder().build();
+            responseObserver.onNext(empty);
+            responseObserver.onCompleted();
         }
 
         @Override
         public void removeMe(network.GameNetworkProto.PlayerID request,
                              io.grpc.stub.StreamObserver<network.GameNetworkProto.Empty> responseObserver) {
             System.out.println("Remove me called on registrar");
+            ConnectionManager.this.removeClient(UUID.fromString(request.getPlayerID()));
+            network.GameNetworkProto.Empty empty = network.GameNetworkProto.Empty.newBuilder().build();
+            responseObserver.onNext(empty);
+            responseObserver.onCompleted();
         }
     };
     // define the gameservice server in connection manager
@@ -81,10 +88,10 @@ public class ConnectionManager {
      */
     public ConnectionManager(MongoCollection spCollection, MongoCollection clientCollection) {
         clients = new ArrayList<>();
-        superPeers = new ArrayList<>();
+        superPeers = new HashMap<>();
         this.superPeerCol = spCollection;
         this.clientCol = clientCollection;
-        this.clientNumbers = new ArrayList<>();
+
     }
 
     /**
@@ -99,8 +106,8 @@ public class ConnectionManager {
                                      .usePlaintext(true)
                                      .build();
         RegistrarBlockingStub sp = RegistrarGrpc.newBlockingStub(channel);
-        superPeers.add(sp);
-        clientNumbers.add(0);
+        superPeers.put(sp, hostname + ":"+ port);
+        superPeer2gameClient.put(sp, new ArrayList<>());
 
         Document doc = new Document("hostname", hostname).append("port", port);
         superPeerCol.insertOne(doc);
@@ -115,16 +122,12 @@ public class ConnectionManager {
      * @param port port of the client
      * @return client stub
      */
-    public GameServiceBlockingStub addClient(String hostname, String port) {
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(hostname + ":"+ port)
-                                     .usePlaintext(true)
-                                     .build();
-        GameServiceBlockingStub client = GameServiceGrpc.newBlockingStub(channel);
-        clients.add(client);
+    public String addClient(String hostname, String port) {
+
         Document doc = new Document("hostname", hostname).append("port", port);
         clientCol.insertOne(doc);
 
-        return client;
+        return hostname + ":" + port;
     }
 
     /**
@@ -132,24 +135,37 @@ public class ConnectionManager {
      *
      * @return superPeer that is being assigned to
      */
-    public GameNetworkProto.SuperPeerInfo assignClient() {
-        int minIdx = 0;
+    public String assignClient(UUID client) {
+        RegistrarBlockingStub min = null;
         int minVal = -1;
-        for (int i =0; i < clientNumbers.size(); i++) {
-            if (minVal == -1 || clientNumbers.get(i) < minVal){
-                minIdx = i;
-                minVal = clientNumbers.get(i);
+
+        for(Map.Entry<RegistrarBlockingStub, List<UUID>> e : superPeer2gameClient.entrySet()) {
+            if (minVal == -1 || e.getValue().size() < minVal){
+                min = e.getKey();
+                minVal = e.getValue().size();
             }
-            if (minVal == 0){
+            if (minVal == 0) {
                 break;
             }
         }
-        clientNumbers.set(minIdx, minVal +1);
-        return superPeers.get(minIdx);
+
+        superPeer2gameClient.get(min).add(client);
+        return superPeers.get(min);
     }
 
-    public void removeClient() {
+    public void removeClient(UUID client) {
 
+
+        for(Map.Entry<RegistrarBlockingStub, List<UUID>> e : superPeer2gameClient.entrySet()) {
+            if (e.getValue().contains(client)){
+                e.getValue().remove(client);
+                break;
+            }
+        }
+    }
+
+    public GameServiceGrpc.GameServiceImplBase getGameServerRegistrarImpl(){
+        return gameServerRegistrarImpl;
     }
 
 }
