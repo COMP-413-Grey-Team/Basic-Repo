@@ -4,10 +4,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import edu.rice.rbox.Common.Change.RemoteChange;
-import edu.rice.rbox.Common.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
-import edu.rice.rbox.Game.Client.Game;
 import edu.rice.rbox.ObjStorage.ChangeReceiver;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -30,11 +28,10 @@ public class ReplicaManagerGrpc {
     private ChangeReceiver changeReceiver;
     private ServerUUID serverUUID;
 
-    private HashMap<GameObjectUUID, List<ServerUUID>> subscribers;      // Primary => Replica
-    private HashMap<GameObjectUUID, ServerUUID> publishers;             // Replica => Primary
-
-    private HashSet<GameObjectUUID> secondaries;                        // Secondary Replicas
-    private HashMap<GameObjectUUID, Integer> timeout;                   // Primary => timeout
+    private HashMap<GameObjectUUID, List<ServerUUID>> subscribers = new HashMap<>();      // Primary => Replica
+    private HashMap<GameObjectUUID, ServerUUID> publishers = new HashMap<>();             // Replica => Primary
+    private HashMap<GameObjectUUID, Integer> timeout = new HashMap<>();                   // Primary => timeout
+    private Integer initial_value = 50;
 
     private static StreamObserver<Empty> emptyResponseObserver = new StreamObserver<>() {
         @Override
@@ -54,9 +51,6 @@ public class ReplicaManagerGrpc {
     public ReplicaManagerGrpc(ChangeReceiver changeReceiver, ServerUUID serverUUID, ServerUUID registrarUUID) {
         this.changeReceiver = changeReceiver;
         this.serverUUID = serverUUID;
-        this.subscribers = new HashMap<>();
-        this.publishers = new HashMap<>();
-        this.secondaries = new HashSet<>();
     }
 
     /* Helper functions */
@@ -119,6 +113,7 @@ public class ReplicaManagerGrpc {
 
             // Add into publishers
             publishers.put(remoteChange.getTarget(), serverUUID);
+            timeout.put(remoteChange.getTarget(), initial_value);
 
             // Send remote change to storage
             changeReceiver.receiveChange(remoteChange);
@@ -144,6 +139,7 @@ public class ReplicaManagerGrpc {
 
             // Remove from publishers
             publishers.remove(replicaObjectUUID);
+            timeout.remove(replicaObjectUUID);
 
         } catch (StatusRuntimeException e) {
             logger.log(Level.WARNING, "RPC failed when sending unsubscribe request {0}", e.getStatus());
@@ -203,10 +199,11 @@ public class ReplicaManagerGrpc {
         public void handleUpdate(RBoxProto.UpdateMessage request, StreamObserver<Empty> responseObserver) {
             logger.log(Level.INFO, "Handling update...");
 
-            RemoteChange change = getRemoteChangeFromUpdateMessage(request);
-
             // Pass change to storage
+            RemoteChange change = getRemoteChangeFromUpdateMessage(request);
             changeReceiver.receiveChange(change);
+
+            responseObserver.onCompleted();
         }
     }
 
@@ -231,8 +228,23 @@ public class ReplicaManagerGrpc {
         }
     }
 
+    /* Functions for Object Location */
     void handleQueryResult(GameObjectUUID primaryObjectUUID, List<edu.rice.rbox.Replication.HolderInfo> interestedObjects) {
-        // TODO: Subscribe & Unsubscribe when necessary
+        // Subscribe
+        interestedObjects.stream()
+            .filter(holderInfo -> !publishers.containsKey(holderInfo.getGameObjectUUID()))
+            .forEach(holderInfo -> subscribe(holderInfo.getGameObjectUUID(), holderInfo.getServerUUID()));
+
+        // Unsubscribe
+        interestedObjects.stream()
+            .filter(holderInfo -> publishers.containsKey(holderInfo.getGameObjectUUID()))
+            .forEach(holderInfo -> timeout.put(holderInfo.getGameObjectUUID(), initial_value));
+        timeout.replaceAll((gameObjectUUID, time) -> time - 1);
+        timeout.forEach((gameObjectUUID, time) -> {
+            if (time == 0) {
+                unsubscribe(gameObjectUUID);
+            }
+        });
     }
 
     /* Functions for Object Storage */
@@ -252,7 +264,7 @@ public class ReplicaManagerGrpc {
             getStub(serverUUID).handleUpdate(request, emptyResponseObserver);
 
         } catch (StatusRuntimeException e) {
-            logger.log(Level.WARNING, "failure when sending update");
+            logger.log(Level.WARNING, "failure when sending update to primary");
         }
 
     }
@@ -277,7 +289,12 @@ public class ReplicaManagerGrpc {
                                                    .setRemoteChange(getByteStringFromRemoteChange(remoteChange))
                                                    .setMsg(msg)
                                                    .build();
-            getStub(serverUUID).handleUpdate(updateMessage, emptyResponseObserver);
+            try {
+                getStub(serverUUID).handleUpdate(updateMessage, emptyResponseObserver);
+
+            } catch (StatusRuntimeException e) {
+                logger.log(Level.WARNING, "failure when sending update to replica holders");
+            }
         });
     }
 }
