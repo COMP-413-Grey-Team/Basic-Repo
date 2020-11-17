@@ -4,6 +4,9 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import java.util.Map;
+import java.util.UUID;
+import network.GameNetworkProto;
 import network.GameServiceGrpc;
 import network.GameServiceGrpc.GameServiceBlockingStub;
 import network.RegistrarGrpc;
@@ -15,11 +18,61 @@ import java.util.List;
 
 public class ConnectionManager {
 
+
+
+
+    // player clients will not have gRPC servers, so we cannot have stubs to them
     private List<GameServiceBlockingStub> clients;
-    private List<RegistrarBlockingStub> superPeers;
+
+    private Map<RegistrarBlockingStub, List<UUID>> superPeer2gameClient;
+    private Map<RegistrarBlockingStub, GameNetworkProto.SuperPeerInfo> superPeers;
+    private List<GameNetworkProto.SuperPeerInfo> superPeerInfos;
     private MongoCollection superPeerCol;
     private MongoCollection clientCol;
     private List<Integer> clientNumbers;
+
+    private Integer currAssignedSuperPeer = 0;
+
+
+
+    private GameServiceGrpc.GameServiceImplBase gameServerRegistrarImpl = new GameServiceGrpc.GameServiceImplBase() {
+        @Override
+        public void publishUpdate(network.GameNetworkProto.UpdateFromClient request,
+                                  io.grpc.stub.StreamObserver<network.GameNetworkProto.UpdateFromServer> responseObserver) {
+
+            System.out.println("Publish Update incorrectly called on registrar!!!");
+        }
+
+        @Override
+        public void getAssignedSuperPeer(network.GameNetworkProto.Empty request,
+                                         io.grpc.stub.StreamObserver<network.GameNetworkProto.SuperPeerInfo> responseObserver) {
+            System.out.println("Get Assign incorrectly called on registrar!");
+
+            // make sure not to go outta bounds
+            if (currAssignedSuperPeer > superPeerInfos.size() - 1) {
+                ConnectionManager.this.currAssignedSuperPeer = 0;
+            }
+
+            // send over assigned superpeer info
+
+
+            ConnectionManager.this.currAssignedSuperPeer++;
+        }
+
+        @Override
+        public void initPlayer(network.GameNetworkProto.InitialPlayerState request,
+                               io.grpc.stub.StreamObserver<network.GameNetworkProto.UpdateFromServer> responseObserver) {
+            System.out.println("Init Player incorrectly called on registrar!!!");
+        }
+
+        @Override
+        public void removeMe(network.GameNetworkProto.PlayerID request,
+                             io.grpc.stub.StreamObserver<network.GameNetworkProto.Empty> responseObserver) {
+            System.out.println("Remove me called on registrar");
+        }
+    };
+    // define the gameservice server in connection manager
+
 
     /**
      * Manager for the connections to the registrar
@@ -79,7 +132,7 @@ public class ConnectionManager {
      *
      * @return superPeer that is being assigned to
      */
-    public RegistrarBlockingStub assignClient() {
+    public GameNetworkProto.SuperPeerInfo assignClient() {
         int minIdx = 0;
         int minVal = -1;
         for (int i =0; i < clientNumbers.size(); i++) {
