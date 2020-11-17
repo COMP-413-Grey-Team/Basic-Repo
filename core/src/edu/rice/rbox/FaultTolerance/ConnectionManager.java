@@ -21,7 +21,6 @@ public class ConnectionManager {
     private MongoCollection clientCol;
     private List<Integer> clientNumbers;
 
-
     /**
      * Manager for the connections to the registrar
      * @param spCollection MongoDB collection for the super-peers
@@ -94,6 +93,10 @@ public class ConnectionManager {
         }
         clientNumbers.set(minIdx, minVal +1);
         return superPeers.get(minIdx);
+    }
+
+    public void removeClient() {
+
     }
 
 }
