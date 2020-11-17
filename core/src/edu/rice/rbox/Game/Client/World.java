@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import static edu.rice.rbox.Game.Common.SyncState.GameStateDelta.MovingRooms.NOT;
+import static network.GameNetworkProto.UpdateFromClient.MovingRooms.NOT;
 
 public class World extends JPanel {
 
