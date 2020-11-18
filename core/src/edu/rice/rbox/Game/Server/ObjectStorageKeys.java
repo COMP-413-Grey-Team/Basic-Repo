@@ -1,6 +1,7 @@
 package edu.rice.rbox.Game.Server;
 
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Location.interest.InterestPredicate;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -31,7 +32,7 @@ public class ObjectStorageKeys {
     public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>() {{
       add(ROOM_ID);
     }};
-    public static final String PREDICATE = ""; // TODO: build predicate for players
+    public static final InterestPredicate PREDICATE = null; // TODO: build predicate for players
   }
 
   public static class Coin {
