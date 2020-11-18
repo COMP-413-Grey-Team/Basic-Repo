@@ -15,6 +15,7 @@ import org.apache.commons.lang3.SerializationUtils;
 
 import network.*;
 
+
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -218,12 +219,20 @@ public class ReplicaManagerGrpc {
             request.getPromotedUUIDsList().forEach(uuidStr -> {
                 GameObjectUUID gameObjectUUID = new GameObjectUUID(UUID.fromString(uuidStr));
                 changeReceiver.promoteSecondary(gameObjectUUID);
+                // No longer treated as a replica
+                publishers.remove(gameObjectUUID);
+                timeout.remove(gameObjectUUID);
             });
             responseObserver.onCompleted();
         }
 
         @Override
         public void connect(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
+            // No-op
+        }
+
+        @Override
+        public void querySecondary(RBoxProto.querySecondaryMessage request, StreamObserver<RBoxProto.secondaryTimestampsMessage> responseObserver) {
             // No-op
         }
     }
