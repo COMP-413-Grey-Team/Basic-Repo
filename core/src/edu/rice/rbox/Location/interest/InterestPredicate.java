@@ -8,13 +8,6 @@ import org.bson.conversions.Bson;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class InterestPredicate {
-    final String field;
-    final Boolean isRelative;
-
-    public InterestPredicate(String field, Boolean isRelative) {
-        this.field = field;
-        this.isRelative = isRelative;
-    }
-    abstract Bson toMongoQuery(GameObjectUUID relative_object_uuid, ObjectLocationStorageInterface adapter);
+public interface InterestPredicate {
+    Bson toMongoQuery(GameObjectUUID relative_object_uuid, ObjectLocationStorageInterface adapter);
 }

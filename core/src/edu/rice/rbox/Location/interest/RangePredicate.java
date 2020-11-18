@@ -9,15 +9,18 @@ import org.bson.conversions.Bson;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class RangePredicate<T extends Number> extends InterestPredicate {
+public class RangePredicate<T extends Number> implements InterestPredicate {
 
     final Number upper;
     final Number lower;
+    final String field;
+    final Boolean isRelative;
 
     public RangePredicate(String field, T upper, T lower, boolean isRelative) {
-        super(field, isRelative);
         this.upper = upper;
         this.lower = lower;
+        this.field = field;
+        this.isRelative = isRelative;
 
     }
 

@@ -9,13 +9,12 @@ import org.bson.conversions.Bson;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class CompositePredicate extends InterestPredicate {
+public class CompositePredicate implements InterestPredicate {
     private final PredicateBiOperator op;
     private final InterestPredicate p1;
     private final InterestPredicate p2;
 
     public CompositePredicate(InterestPredicate p1, InterestPredicate p2, PredicateBiOperator op) {
-        super(null, null);
         this.op = op;
         this.p1 = p1;
         this.p2 = p2;
