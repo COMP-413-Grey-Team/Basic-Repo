@@ -1,13 +1,17 @@
 package edu.rice.rbox.Location.registrar;
 
 import com.google.protobuf.Empty;
+import com.google.protobuf.Timestamp;
 import edu.rice.rbox.Networking.NetworkImpl;
+import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
 import io.grpc.stub.StreamObserver;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.HashMap;
+
 import network.ElectionGrpc;
 import network.FaultToleranceGrpc;
 import network.HealthGrpc;
@@ -62,22 +66,62 @@ public class TheCoolRegistrar {
     }
   };
 
-
+  //TODO: change this to work with the rest of the registrar
   private ElectionGrpc.ElectionImplBase electionServiceImpl = new ElectionGrpc.ElectionImplBase() {
+    int numLeaderMsg = 0;
+    HashMap<String, ElectionGrpc.ElectionBlockingStub> stubmap;
+    String uuid = "";
+    public String getUUID() {
+      return this.uuid;
+    }
+
+    public int getNumLeaderMsg() {
+      return numLeaderMsg;
+    }
+
+    public void setNumLeaderMsg(int numLeaderMsg) {
+      this.numLeaderMsg = numLeaderMsg;
+    }
+
+    public Timestamp getTimestamp() {
+      long millis = System.currentTimeMillis();
+      Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
+              .setNanos((int) ((millis % 1000) * 1000000)).build();
+      return timestamp;
+    }
+
     @Override
     public void connection(FaultToleranceGrpc.CheckConnection request,
                            StreamObserver<FaultToleranceGrpc.ConnectionResult> responseObserver) {
-      //TODO
+      String target = request.getCheckUUID();
+      ElectionGrpc.ElectionBlockingStub stub = this.stubmap.get(target);
+
+      FaultToleranceGrpc.Info information = FaultToleranceGrpc.Info.newBuilder().setSenderUUID(getUUID()).setTime(getTimestamp()).build();
+      FaultToleranceGrpc.CheckIn req = FaultToleranceGrpc.CheckIn.newBuilder().setSender(information).build();
+
+      boolean success;
+      try {
+        stub.check(req);
+        success = true;
+      } catch (Exception ex) {
+        success = false;
+        responseObserver.onError(ex);
+      }
+
+      FaultToleranceGrpc.ConnectionResult res = FaultToleranceGrpc.ConnectionResult.newBuilder().setSender(information).setResult(success).build();
+      responseObserver.onNext(res);
     }
 
     @Override
     public void check(FaultToleranceGrpc.CheckIn request, StreamObserver<FaultToleranceGrpc.Info> responseObserver) {
-      //TODO
+      FaultToleranceGrpc.Info information = FaultToleranceGrpc.Info.newBuilder().setSenderUUID(getUUID()).setTime(getTimestamp()).build();
+      responseObserver.onNext(information);
     }
 
     @Override
     public void downedLeader(FaultToleranceGrpc.LeaderDown request, StreamObserver<Empty> responseObserver) {
-      //TODO
+      this.numLeaderMsg++;
+      responseObserver.onNext(Empty.newBuilder().build());
     }
   };
 
@@ -112,7 +156,7 @@ public class TheCoolRegistrar {
                         // TODO: this is for the registrar faults/elections - looking @ u Nikhaz
                         .addService(this.healthServiceImpl)
                         // TODO: this is for the health service @ Nikhaz
-                        .addService(null)
+                        .addService((BindableService) null)
                         .build();
 
 
