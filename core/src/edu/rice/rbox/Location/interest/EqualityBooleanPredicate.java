@@ -1,6 +1,9 @@
 package edu.rice.rbox.Location.interest;
 
 import com.mongodb.client.model.Filters;
+import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Location.locator.Locator2Replication;
+import edu.rice.rbox.ObjStorage.ObjectLocationStorageInterface;
 import org.bson.conversions.Bson;
 
 import java.io.Serializable;
@@ -10,22 +13,20 @@ import java.util.HashMap;
  * For 'isRelative', 'value' indicates whether or not to match current boolean value.
  */
 public class EqualityBooleanPredicate extends EqualityPredicate<Boolean> {
-    private final boolean isRelative;
 
     public EqualityBooleanPredicate(String field, Boolean value, Boolean isRelative) {
-        super(field, value);
-        this.isRelative = isRelative;
+        super(field, value, isRelative);
     }
 
-    @Override
-    public Bson toMongoQuery(HashMap<String, Serializable> map) {
+    @Override //TODO: fill in adapter
+    public Bson toMongoQuery(GameObjectUUID relative_object_uuid, ObjectLocationStorageInterface storage) {
         Boolean valueAsBoolean = value;
 
-        if (isRelative) {
-            Boolean fieldValue = (Boolean) map.get(fieldName);
-            valueAsBoolean = value ? fieldValue : !fieldValue;
-        }
+//        if (this.isRelative) {
+//            Boolean fieldValue = (Boolean) storage.queryOneField(relative_object_uuid, this.field);
+//            valueAsBoolean = value ? fieldValue : !fieldValue;
+//        }
 
-        return Filters.eq(fieldName, valueAsBoolean);
+        return Filters.eq(this.field, valueAsBoolean);
     }
 }

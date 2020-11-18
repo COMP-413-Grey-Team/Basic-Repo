@@ -1,20 +1,11 @@
 package edu.rice.rbox.Location.interest;
 
-import org.bson.conversions.Bson;
-
-public abstract class EqualityPredicate<T> implements InterestPredicate {
-    final String fieldName;
+public abstract class EqualityPredicate<T> extends InterestPredicate {
     final T value;
 
-
-    public EqualityPredicate(String field, T value) {
-        this.fieldName = field;
+    public EqualityPredicate(String field, T value, Boolean isRelative) {
+        super(field, isRelative);
         this.value = value;
     }
-
-//    @Override
-//    public String toMongoQuery() {
-//        return String.format("eq(%s, %s)", fieldName, value);
-//    }
 
 }
