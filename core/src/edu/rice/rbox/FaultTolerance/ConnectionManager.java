@@ -49,7 +49,7 @@ public class ConnectionManager {
             System.out.println("Get Assign incorrectly called on registrar!");
 
             // Need client UUID
-            String sp = ConnectionManager.this.assignClient();
+            String sp = ConnectionManager.this.assignSuperPeer();
 
             // send over assigned superpeer info
             SuperPeerInfo info = SuperPeerInfo.newBuilder().setHostname(sp).build();
@@ -115,27 +115,13 @@ public class ConnectionManager {
         return sp;
     }
 
-    /**
-     * Create a stub to the client and add the stub to the list
-     *
-     * @param hostname host of the client
-     * @param port port of the client
-     * @return client stub
-     */
-    public String addClient(String hostname, String port) {
-
-        Document doc = new Document("hostname", hostname).append("port", port);
-        clientCol.insertOne(doc);
-
-        return hostname + ":" + port;
-    }
 
     /**
      * Assigns a client to the superpeer with the least amount of clients assigned
      *
      * @return superPeer that is being assigned to
      */
-    public String assignClient(UUID client) {
+    public String assignSuperPeer(UUID client) {
         RegistrarBlockingStub min = null;
         int minVal = -1;
 
@@ -149,6 +135,8 @@ public class ConnectionManager {
             }
         }
 
+        Document doc = new Document("hostname", superPeers.get(min)).append("playerUUID", client.toString());
+        clientCol.insertOne(doc);
         superPeer2gameClient.get(min).add(client);
         return superPeers.get(min);
     }

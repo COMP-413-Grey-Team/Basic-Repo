@@ -19,7 +19,7 @@ public class Registrar {
 
         System.out.println("Server Running on address: " + ip);
 
-        // TODO: Setup Mongo
+        // TODO: Setup Mongo, have a clean database and clean connection, make sure to clear them when starting a new system
         // TODO: Create Connection Manager
         // TODO: Start grpc server with proper services
 
