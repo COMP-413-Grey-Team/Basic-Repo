@@ -6,13 +6,23 @@ import io.grpc.stub.StreamObserver;
 import network.ElectionGrpc;
 import network.FaultToleranceGrpc;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Election extends ElectionGrpc.ElectionImplBase {
 
         String uuid = "";
+        int numLeaderMsg = 0;
         HashMap<String, ElectionGrpc.ElectionBlockingStub> stubmap;
         public Election(HashMap<String, ElectionGrpc.ElectionBlockingStub> stubmap) {
                 this.stubmap = stubmap;
+        }
+
+        public int getNumLeaderMsg() {
+                return numLeaderMsg;
+        }
+
+        public void setNumLeaderMsg(int numLeaderMsg) {
+                this.numLeaderMsg = numLeaderMsg;
         }
 
         public String getUUID() {
@@ -57,6 +67,7 @@ public class Election extends ElectionGrpc.ElectionImplBase {
 
         @Override
         public void downedLeader(FaultToleranceGrpc.LeaderDown request, StreamObserver<Empty> responseObserver) {
-                super.downedLeader(request, responseObserver);
+                this.numLeaderMsg++;
+                responseObserver.onNext(Empty.newBuilder().build());
         }
 }

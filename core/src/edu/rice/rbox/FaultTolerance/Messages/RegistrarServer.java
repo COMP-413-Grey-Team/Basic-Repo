@@ -1,6 +1,7 @@
 package edu.rice.rbox.FaultTolerance.Messages;
 
 import com.google.protobuf.Timestamp;
+import edu.rice.rbox.Location.Mongo.MongoManager;
 import io.grpc.BindableService;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -9,6 +10,7 @@ import io.grpc.ServerBuilder;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import network.RBoxProto;
@@ -20,18 +22,24 @@ public class RegistrarServer {
 
         private UUID serverUUID;
 
+        private Election election;
+
+        private MongoManager mongoManager;
+
         /**
          * Constructor for the registrar's Grpc server
          * @param services this is a list of all the implemented services that this server will use (defines RPCs that
          *                 can be called on it)
          * @param serverUUID this is the UUID of the superpeer that this server will be running on
          */
-        public RegistrarServer (List<BindableService> services, UUID serverUUID) {
+        public RegistrarServer (List<BindableService> services, UUID serverUUID, String password) {
                 var temp =  ServerBuilder.forPort(8080);
                 services.forEach((s) -> temp.addService(s));
                 this.server = temp.build();
                 this.serverUUID = serverUUID;
+                this.mongoManager = new MongoManager(password);
         }
+
 
         /**
          * This method starts up the system from the superpeer's perspective. It does the following:
@@ -46,6 +54,12 @@ public class RegistrarServer {
         public RegistrarGrpc.RegistrarBlockingStub startUp(String registrarIP) throws Exception {
                 // start up the server
                 this.server.start();
+
+                // init election object with hashmap of <uuid, blocking stubs>
+                this.election = new Election(new HashMap<>());
+
+                // Connect to Mongo DB
+                this.mongoManager.connect();
 
                 // make channel to the registrar using its IP and port num
                 ManagedChannel channel = ManagedChannelBuilder.forTarget(registrarIP)
