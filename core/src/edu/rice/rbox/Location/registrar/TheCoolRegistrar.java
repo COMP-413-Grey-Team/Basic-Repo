@@ -17,7 +17,7 @@ import network.RegistrarGrpc;
 
 public class TheCoolRegistrar {
 
-  private ConnectionManager connManager;
+  private TheCoolConnectionManager connManager;
 
   private RegistrarGrpc.RegistrarImplBase superPeerServiceImpl = new RegistrarGrpc.RegistrarImplBase() {
 
@@ -86,7 +86,7 @@ public class TheCoolRegistrar {
 
   public TheCoolRegistrar() {
     // TODO: set up the connection manager / Mongo stuff
-    this.connManager = new ConnectionManager(null, null);
+    this.connManager = new TheCoolConnectionManager(null, null);
   }
 
   public void init() throws  Exception {
