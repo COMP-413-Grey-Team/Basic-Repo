@@ -7,6 +7,8 @@ import edu.rice.rbox.Common.Change.RemoteChange;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
 import edu.rice.rbox.ObjStorage.ChangeReceiver;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import network.RBoxProto;
@@ -34,6 +36,10 @@ public class ReplicaManagerGrpc {
     private HashMap<GameObjectUUID, Integer> timeout = new HashMap<>();                   // Primary => timeout
     private Integer initial_value = 50;
 
+    private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceBlockingStub> blockingStubs = new HashMap<>();
+    private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceStub> stubs = new HashMap<>();
+    private RegistrarGrpc.RegistrarBlockingStub registrarBlockingStub;
+
     private static StreamObserver<Empty> emptyResponseObserver = new StreamObserver<>() {
         @Override
         public void onNext(Empty empty) { }
@@ -49,20 +55,18 @@ public class ReplicaManagerGrpc {
 
 
     /* Constructor */
-    public ReplicaManagerGrpc(ChangeReceiver changeReceiver, ServerUUID serverUUID, ServerUUID registrarUUID) {
+    public ReplicaManagerGrpc(ChangeReceiver changeReceiver, ServerUUID serverUUID) {
         this.changeReceiver = changeReceiver;
         this.serverUUID = serverUUID;
     }
 
     /* Helper functions */
     private RBoxServiceGrpc.RBoxServiceBlockingStub getBlockingStub(ServerUUID serverUUID) {
-        // TODO
-        return null;
+        return blockingStubs.get(serverUUID);
     }
 
     private RBoxServiceGrpc.RBoxServiceStub getStub(ServerUUID serverUUID) {
-        // TODO
-        return null;
+        return stubs.get(serverUUID);
     }
 
     private ByteString getByteStringFromRemoteChange(RemoteChange remoteChange) {
@@ -100,7 +104,7 @@ public class ReplicaManagerGrpc {
     }
 
     /* Replica Manager functions */
-    void subscribe(GameObjectUUID primaryObjectUUID, ServerUUID serverUUID) {
+    private void subscribe(GameObjectUUID primaryObjectUUID, ServerUUID serverUUID) {
         logger.log(Level.INFO, "Sending subscribe request...");
 
         // Construct Subscribe Request
@@ -126,7 +130,7 @@ public class ReplicaManagerGrpc {
     }
 
 
-    void unsubscribe(GameObjectUUID replicaObjectUUID) {
+    private void unsubscribe(GameObjectUUID replicaObjectUUID) {
         logger.info("Sending unsubscribe request...");
 
         // Construct Unsubscribe Request
@@ -135,6 +139,7 @@ public class ReplicaManagerGrpc {
         RBoxProto.UnsubscribeRequest request = RBoxProto.UnsubscribeRequest.newBuilder().setMsg(msg).build();
 
         try {
+            ServerUUID serverUUID = publishers.get(replicaObjectUUID);
             getStub(serverUUID).handleUnsubscribe(request, emptyResponseObserver);
             changeReceiver.deleteReplica(replicaObjectUUID, new Date(millis));
 
@@ -211,7 +216,13 @@ public class ReplicaManagerGrpc {
     class RegistrarImpl extends RegistrarGrpc.RegistrarImplBase {
         @Override
         public void alert(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
-            // TODO: Implement alert
+            // Save Registrar blocing stub
+            String registrarIP = request.getNewRegistrarIP();
+            ManagedChannel channel = ManagedChannelBuilder.forTarget(registrarIP)
+                                         .usePlaintext(true)
+                                         .build();
+            registrarBlockingStub = RegistrarGrpc.newBlockingStub(channel);
+            responseObserver.onCompleted();
         }
 
         @Override
@@ -228,7 +239,19 @@ public class ReplicaManagerGrpc {
 
         @Override
         public void connect(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
-            // No-op
+            ServerUUID superpeerUUID = new ServerUUID(UUID.fromString(request.getSender().getSenderUUID()));
+            String superpeerIP = request.getConnectionIP();
+
+            // Save stub and blocking stub
+            ManagedChannel channel = ManagedChannelBuilder.forTarget(superpeerIP)
+                                         .usePlaintext(true)
+                                         .build();
+            RBoxServiceGrpc.RBoxServiceBlockingStub blockingStub = RBoxServiceGrpc.newBlockingStub(channel);
+            RBoxServiceGrpc.RBoxServiceStub stub = RBoxServiceGrpc.newStub(channel);
+            blockingStubs.put(superpeerUUID, blockingStub);
+            stubs.put(superpeerUUID, stub);
+
+            responseObserver.onCompleted();
         }
 
         @Override
@@ -289,7 +312,7 @@ public class ReplicaManagerGrpc {
     }
 
     /* Helper function for update */
-    void sendToReplicaHolders(GameObjectUUID primaryObjectUUID, RemoteChange remoteChange) {
+    private void sendToReplicaHolders(GameObjectUUID primaryObjectUUID, RemoteChange remoteChange) {
         // Send Update Message to all replica holders
         long millis = System.currentTimeMillis();
         subscribers.get(primaryObjectUUID).forEach(serverUUID -> {
