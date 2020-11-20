@@ -44,12 +44,12 @@ public class ConnectionManager {
         }
 
         @Override
-        public void getAssignedSuperPeer(network.GameNetworkProto.Empty request,
+        public void getAssignedSuperPeer(GameNetworkProto.PlayerID request,
                                          io.grpc.stub.StreamObserver<network.GameNetworkProto.SuperPeerInfo> responseObserver) {
             System.out.println("Get Assign incorrectly called on registrar!");
 
             // Need client UUID
-            String sp = ConnectionManager.this.assignSuperPeer();
+            String sp = ConnectionManager.this.assignSuperPeer(UUID.fromString(request.getPlayerID()));
 
             // send over assigned superpeer info
             SuperPeerInfo info = SuperPeerInfo.newBuilder().setHostname(sp).build();
@@ -97,19 +97,18 @@ public class ConnectionManager {
     /**
      * Create a stub to the Superpeer and then add the stub to the list.
      *
-     * @param hostname host of the superpeer
-     * @param port port of the superpeer
+     * @param hostnameInfo host of the superpeer
      * @return superpeer stub
      */
-    public RegistrarBlockingStub addSuperPeer(String hostname, String port) {
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(hostname + ":"+ port)
+    public RegistrarBlockingStub addSuperPeer(String hostnameInfo) {
+        ManagedChannel channel = ManagedChannelBuilder.forTarget(hostnameInfo)
                                      .usePlaintext(true)
                                      .build();
         RegistrarBlockingStub sp = RegistrarGrpc.newBlockingStub(channel);
-        superPeers.put(sp, hostname + ":"+ port);
+        superPeers.put(sp, hostnameInfo);
         superPeer2gameClient.put(sp, new ArrayList<>());
 
-        Document doc = new Document("hostname", hostname).append("port", port);
+        Document doc = new Document("hostname", hostnameInfo);
         superPeerCol.insertOne(doc);
 
         return sp;
