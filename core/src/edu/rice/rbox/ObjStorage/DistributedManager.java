@@ -1,8 +1,9 @@
 package edu.rice.rbox.ObjStorage;
 
 import edu.rice.rbox.Common.Change.LocalChange;
-import edu.rice.rbox.Common.GameField;
+import edu.rice.rbox.Common.GameField.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Location.interest.InterestPredicate;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -49,12 +50,14 @@ public interface DistributedManager {
    * interesting_fields is automatically populated with MODE, PREDICATE, and INTERESTING_FIELDS
    */
   GameObjectUUID create(HashMap<String, GameField> fields, HashSet<String> interesting_fields,
-                        String predicate, GameObjectUUID author, int bufferIndex);
+                        InterestPredicate predicate, GameObjectUUID author, int bufferIndex);
 
   /**
-   * Deletes the specified object.
+   * Deletes the specified object from the entire buffer.
    *
    * @return Whether the delete was accepted.
    */
-  boolean delete(GameObjectUUID uuid, GameObjectUUID author, int bufferIndex);
+  boolean delete(GameObjectUUID uuid, GameObjectUUID author);
+
+  void queryInterest();
 }

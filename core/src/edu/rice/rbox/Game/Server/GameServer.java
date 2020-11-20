@@ -9,7 +9,6 @@ import java.net.Socket;
 public class GameServer extends Thread {
 
   private final ServerSocket serverSocket;
-  ClientConnectionManager clientConnectionManager;
 
   public GameServer(int port) throws IOException {
     serverSocket = new ServerSocket(port);
