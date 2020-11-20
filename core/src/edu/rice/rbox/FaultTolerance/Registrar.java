@@ -8,6 +8,8 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.UUID;
+
 import network.HealthGrpc;
 import network.RBoxProto;
 import network.RBoxServiceGrpc;
@@ -35,7 +37,7 @@ public class Registrar {
             String senderUUID = request.getSender().getSenderUUID();
             String senderHostnameInfo = request.getConnectionIP();
 
-            Registrar.this.connManager.addSuperPeer(senderHostnameInfo);
+            Registrar.this.connManager.addSuperPeer(senderHostnameInfo, UUID.fromString(senderUUID));
         }
 
         @Override
@@ -64,6 +66,8 @@ public class Registrar {
 
 
     public Registrar() {
+        // TODO: Setup Mongo, have a clean database and clean connection, make sure to clear them when starting a new system
+
         // TODO: set up the connection manager / Mongo stuff
         this.connManager = new ConnectionManager(null, null);
     }
@@ -77,7 +81,6 @@ public class Registrar {
 
         System.out.println("Server Running on address: " + ip);
 
-        // TODO: Setup Mongo, have a clean database and clean connection, make sure to clear them when starting a new system
         // TODO: Create Connection Manager
         // TODO: Start grpc server with proper services
 
@@ -91,7 +94,6 @@ public class Registrar {
                             // TODO: this is for the registrar faults/elections - looking @ u Nikhaz
                             .addService(this.healthServiceImpl)
                             // TODO: this is for the health service @ Nikhaz
-                            .addService(null)
                             .build();
 
 

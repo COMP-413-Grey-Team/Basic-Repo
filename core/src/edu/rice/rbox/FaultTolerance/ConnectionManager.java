@@ -20,10 +20,9 @@ public class ConnectionManager {
 
 
     // player clients will not have gRPC servers, so we cannot have stubs to them
-    private List<GameServiceBlockingStub> clients;
 
     private Map<RegistrarBlockingStub, List<UUID>> superPeer2gameClient;
-    private Map<RegistrarBlockingStub, String> superPeers;
+    private Map<RegistrarBlockingStub, SuperPeerInfo> superPeers;
     private MongoCollection superPeerCol;
     private MongoCollection clientCol;
 
@@ -48,12 +47,9 @@ public class ConnectionManager {
                                          io.grpc.stub.StreamObserver<network.GameNetworkProto.SuperPeerInfo> responseObserver) {
             System.out.println("Get Assign incorrectly called on registrar!");
 
-            // Need client UUID
-            String sp = ConnectionManager.this.assignSuperPeer(UUID.fromString(request.getPlayerID()));
 
             // send over assigned superpeer info
-            SuperPeerInfo info = SuperPeerInfo.newBuilder().setHostname(sp).build();
-            responseObserver.onNext(info);
+            responseObserver.onNext(ConnectionManager.this.assignSuperPeer(UUID.fromString(request.getPlayerID())));
             responseObserver.onCompleted();
 
 
@@ -78,7 +74,6 @@ public class ConnectionManager {
             responseObserver.onCompleted();
         }
     };
-    // define the gameservice server in connection manager
 
 
     /**
@@ -87,7 +82,6 @@ public class ConnectionManager {
      * @param clientCollection MongoDB collection for the clients
      */
     public ConnectionManager(MongoCollection spCollection, MongoCollection clientCollection) {
-        clients = new ArrayList<>();
         superPeers = new HashMap<>();
         this.superPeerCol = spCollection;
         this.clientCol = clientCollection;
@@ -100,15 +94,16 @@ public class ConnectionManager {
      * @param hostnameInfo host of the superpeer
      * @return superpeer stub
      */
-    public RegistrarBlockingStub addSuperPeer(String hostnameInfo) {
+    public RegistrarBlockingStub addSuperPeer(String hostnameInfo, UUID superPeerId) {
         ManagedChannel channel = ManagedChannelBuilder.forTarget(hostnameInfo)
                                      .usePlaintext(true)
                                      .build();
         RegistrarBlockingStub sp = RegistrarGrpc.newBlockingStub(channel);
-        superPeers.put(sp, hostnameInfo);
+        SuperPeerInfo superPeerInfo = SuperPeerInfo.newBuilder().setSuperPeerId(superPeerId.toString()).setHostname(hostnameInfo).build();
+        superPeers.put(sp, superPeerInfo);
         superPeer2gameClient.put(sp, new ArrayList<>());
 
-        Document doc = new Document("hostname", hostnameInfo);
+        Document doc = new Document("hostname", hostnameInfo).append("superPeerUUID", superPeerId.toString());
         superPeerCol.insertOne(doc);
 
         return sp;
@@ -120,7 +115,7 @@ public class ConnectionManager {
      *
      * @return superPeer that is being assigned to
      */
-    public String assignSuperPeer(UUID client) {
+    public SuperPeerInfo assignSuperPeer(UUID client) {
         RegistrarBlockingStub min = null;
         int minVal = -1;
 
@@ -153,6 +148,12 @@ public class ConnectionManager {
 
     public GameServiceGrpc.GameServiceImplBase getGameServerRegistrarImpl(){
         return gameServerRegistrarImpl;
+    }
+
+    public static ConnectionManager buildFromMongo(MongoCollection superPeerCol, MongoCollection clientCol) {
+        ConnectionManager connMan = new ConnectionManager(superPeerCol, clientCol);
+        // TODO: Create connection to all of the superPeers and clients.
+        return connMan;
     }
 
 }
