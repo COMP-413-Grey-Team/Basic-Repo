@@ -30,10 +30,10 @@ public class GameStateManager {
 
   private final ReentrantLock lock = new ReentrantLock();
 
+  private final int startRoomIndex = 0; // TODO: replace
+
   public GameState handlePlayerJoining(PlayerState newPlayerInfo) {
-    GameFieldList<GameObjectUUID> roomOrder =
-        (GameFieldList<GameObjectUUID>) objectStore.read(ObjectStorageKeys.Global.GLOBAL_OBJ, ObjectStorageKeys.Global.ROOM_ORDER, 0);
-    GameObjectUUID roomUUID = roomOrder.get(0);
+    final GameObjectUUID roomUUID = (GameObjectUUID) objectStore.read(Global.GLOBAL_OBJ, Global.roomKeyForIndex(startRoomIndex), 0);
 
     HashMap<String, GameField> playerMap = new HashMap<>() {{
       put(ObjectStorageKeys.Player.X_POS, new GameFieldDouble(newPlayerInfo.x));
