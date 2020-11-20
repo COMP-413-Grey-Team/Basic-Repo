@@ -2,13 +2,11 @@ package edu.rice.rbox.Location.locator;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.UpdateOptions;
+import edu.rice.rbox.Common.GameField.InterestingGameField;
 import edu.rice.rbox.Common.GameObjectUUID;
-import edu.rice.rbox.Common.InterestingGameField;
 import edu.rice.rbox.Common.ServerUUID;
 import edu.rice.rbox.Location.Mongo.MongoManager;
 import edu.rice.rbox.Location.interest.InterestPredicate;
@@ -18,6 +16,7 @@ import org.bson.*;
 import org.bson.conversions.Bson;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class LocatorMainImpl implements ObjectStorageLocationInterface {
 
@@ -26,11 +25,11 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
     private final ServerUUID OUR_SERVER;
 
     //TODO: real access to methods
-    private final ObjectLocationStorageInterface adapter;
+    private final ObjectLocationStorageInterface storage;
     /*
      Init MongoManager and store instance.
      */
-    public LocatorMainImpl(ServerUUID serverUUID, ObjectLocationStorageInterface adapter) {
+    public LocatorMainImpl(ServerUUID serverUUID, ObjectLocationStorageInterface storage) {
         MongoManager mongoManager = new MongoManager();
         mongoManager.connect();
         this.mongoCollection = mongoManager.getMongoClient()
@@ -39,7 +38,7 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
 
         this.objectPredicates = new HashMap<>();
         this.OUR_SERVER = serverUUID;
-        this.adapter = adapter;
+        this.storage = storage;
     }
 
     /*
@@ -51,13 +50,12 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
     public void queryInterest() {
         List<Bson> allQueries = new ArrayList<>();
         //TODO: replace with HolderInfo;
-        List<Object>
 
         Iterator<GameObjectUUID> iterator = this.objectPredicates.keySet().iterator();
         while (iterator.hasNext()) {
             GameObjectUUID gameObjectUUID = iterator.next();
-            InterestPredicate interestPredicate = objectPredicates.get(); // this line is still wrong
-            allQueries.add(interestPredicate.toMongoQuery( gameObjectUUID, adapter));
+            InterestPredicate interestPredicate = objectPredicates.get(gameObjectUUID); // this line is still wrong
+            allQueries.add(interestPredicate.toMongoQuery( gameObjectUUID, storage));
         }
 
 
@@ -66,9 +64,23 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
         if (finalQueryOption.isEmpty())
             return;
 
-        FindIterable<Document> documents = mongoCollection.find(finalQueryOption.get()));
+        FindIterable<Document> documents = mongoCollection.find(finalQueryOption.get());
 
-        //TODO: extract HolderInfo, formulate and send to replication;
+        //TODO: extract HolderInfo, formulate and send to replication, want _id and server_uuid
+
+        List<HolderInfo> interesting_objects = new ArrayList();
+
+        documents.forEach((Consumer<? super Document>) doc -> {
+            String obj_uuid_string = doc.getString("_id");
+            String server_uuid_string = doc.getString("server_uuid");
+
+            GameObjectUUID obj_uuid = new GameObjectUUID(UUID.fromString(obj_uuid_string));
+            ServerUUID server_uuid = new ServerUUID(UUID.fromString(server_uuid_string));
+
+            interesting_objects.add(new HolderInfo(obj_uuid, server_uuid));
+        });
+
+
 
         // todo: @tim: do we still care about this id part? i assume not
         // Bson bsonUUIDFilter = Filters.ne("_id", new BsonString(object_uuid.toString()));
@@ -93,7 +105,7 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
 
         Bson bsonUUID = Filters.eq("_id", new BsonString(gameObjectUUID.getUUID().toString()));
         for (String key: gameFieldMap.keySet()) {
-            BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(key, gameFieldMap.get(key).get()));
+            BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(key, gameFieldMap.get(key).getValue()));
             mongoCollection.updateOne(bsonUUID, updateObject, options);
         }
 
@@ -109,7 +121,7 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
     @Override
     public void update(GameObjectUUID gameObjectUUID, String field, InterestingGameField gameField) {
         Bson bsonUUID = Filters.eq("_id", new BsonString(gameObjectUUID.getUUID().toString()));
-        BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(field, gameField.get()));
+        BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(field, gameField.getValue()));
         mongoCollection.updateOne(bsonUUID, updateObject, new UpdateOptions());
     }
 

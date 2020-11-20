@@ -2,12 +2,8 @@ package edu.rice.rbox.Location.interest;
 
 import com.mongodb.client.model.Filters;
 import edu.rice.rbox.Common.GameObjectUUID;
-import edu.rice.rbox.Location.locator.Locator2Replication;
 import edu.rice.rbox.ObjStorage.ObjectLocationStorageInterface;
 import org.bson.conversions.Bson;
-
-import java.io.Serializable;
-import java.util.HashMap;
 
 public class EqualityStringPredicate extends EqualityPredicate<String>  {
 
@@ -20,8 +16,8 @@ public class EqualityStringPredicate extends EqualityPredicate<String>  {
         String valueAsString = value;
 
         if (isRelative) {
-//            String fieldValue = (String) storage.queryOneField(relative_object_uuid, this.field).get(fieldName);
-//            valueAsString = value.concat(fieldValue);
+            String fieldValue = (String) storage.queryOneField(relative_object_uuid, this.field).getValue();
+            valueAsString = value.concat(fieldValue);
         }
 
         return Filters.eq(this.field, valueAsString);

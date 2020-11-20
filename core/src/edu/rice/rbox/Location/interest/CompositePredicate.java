@@ -2,12 +2,8 @@ package edu.rice.rbox.Location.interest;
 
 import com.mongodb.client.model.Filters;
 import edu.rice.rbox.Common.GameObjectUUID;
-import edu.rice.rbox.Location.locator.Locator2Replication;
 import edu.rice.rbox.ObjStorage.ObjectLocationStorageInterface;
 import org.bson.conversions.Bson;
-
-import java.io.Serializable;
-import java.util.HashMap;
 
 public class CompositePredicate implements InterestPredicate {
     private final PredicateBiOperator op;
