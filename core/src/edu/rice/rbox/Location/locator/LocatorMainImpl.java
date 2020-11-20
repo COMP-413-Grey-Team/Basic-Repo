@@ -8,37 +8,34 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.UpdateOptions;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Common.InterestingGameField;
 import edu.rice.rbox.Common.ServerUUID;
 import edu.rice.rbox.Location.Mongo.MongoManager;
 import edu.rice.rbox.Location.interest.InterestPredicate;
+import edu.rice.rbox.ObjStorage.ObjectLocationStorageInterface;
+import edu.rice.rbox.ObjStorage.ObjectStorageLocationInterface;
 import org.bson.*;
 import org.bson.conversions.Bson;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
-public class LocatorMainImpl implements LocatorMain {
+public class LocatorMainImpl implements ObjectStorageLocationInterface {
 
     private MongoCollection<Document> mongoCollection;
-
     private HashMap<GameObjectUUID, InterestPredicate> objectPredicates;
-
-    //TODO: these need to be configured upon initialization of game
-    private final String DB_NAME = "trial_db";
-    private final String COLLECTION_NAME = "trial_collec";
-
-    //TODO: serverUUID
     private final ServerUUID OUR_SERVER;
 
     //TODO: real access to methods
-    private final Locator2Replication adapter;
+    private final ObjectLocationStorageInterface adapter;
     /*
      Init MongoManager and store instance.
      */
-    public LocatorMainImpl(ServerUUID serverUUID, Locator2Replication adapter) {
+    public LocatorMainImpl(ServerUUID serverUUID, ObjectLocationStorageInterface adapter) {
         MongoManager mongoManager = new MongoManager();
         mongoManager.connect();
-        this.mongoCollection = mongoManager.getMongoClient().getDatabase(DB_NAME).getCollection(COLLECTION_NAME);
+        this.mongoCollection = mongoManager.getMongoClient()
+                                   .getDatabase(MongoManager.DB_NAME)
+                                   .getCollection(MongoManager.COLLECTION_NAME);
 
         this.objectPredicates = new HashMap<>();
         this.OUR_SERVER = serverUUID;
@@ -52,10 +49,26 @@ public class LocatorMainImpl implements LocatorMain {
      */
     @Override
     public void queryInterest() {
+        List<Bson> allQueries = new ArrayList<>();
 
-//        Bson bsonUUIDFilter = Filters.ne("_id", new BsonString(object_uuid.toString()));
-//        FindIterable<Document> documents = mongoCollection.find(Filters.and(bsonUUIDFilter, bsonQuery));
+        Iterator<GameObjectUUID> iterator = this.objectPredicates.keySet().iterator();
+        while (iterator.hasNext()) {
+            GameObjectUUID gameObjectUUID = iterator.next();
+            InterestPredicate interestPredicate = objectPredicates.get(); // this line is still wrong
+            allQueries.add(interestPredicate.toMongoQuery( gameObjectUUID, adapter));
+        }
 
+
+        Optional<Bson> finalQueryOption = allQueries.stream().reduce((q1, q2) -> Filters.or(q1, q2));
+
+        if (finalQueryOption.isEmpty())
+            return;
+
+        FindIterable<Document> documents = mongoCollection.find(finalQueryOption.get()));
+
+        // todo: @tim: do we still care about this id part? i assume not
+        // Bson bsonUUIDFilter = Filters.ne("_id", new BsonString(object_uuid.toString()));
+        // FindIterable<Document> documents = mongoCollection.find(Filters.and(bsonUUIDFilter, bsonQuery));
         // todo: send a message to obj replication
     }
 
@@ -64,31 +77,25 @@ public class LocatorMainImpl implements LocatorMain {
          Create one if it doesn't exist.
          */
     @Override
-    public void addObjectInterest(GameObjectUUID object_uuid, InterestPredicate predicate, HashMap<String, Object> fields) {
+    public void add(GameObjectUUID gameObjectUUID, InterestPredicate predicate, HashMap<String, InterestingGameField> gameFieldMap) {
         //TODO: error-checking.
 
         //Save object_uuid and predicate.
-        objectPredicates.putIfAbsent(object_uuid, predicate);
+        objectPredicates.putIfAbsent(gameObjectUUID, predicate);
 
         // Create update options where if not exist, we create a new document
         UpdateOptions options = new UpdateOptions();
         options.upsert(true);
 
-        Bson bsonUUID = Filters.eq("_id", new BsonString(object_uuid.getUUID().toString()));
-        for (String key: fields.keySet()) {
-            //TODO: InterestingGameField.get();
-            BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(key, fields.get(key)));
+        Bson bsonUUID = Filters.eq("_id", new BsonString(gameObjectUUID.getUUID().toString()));
+        for (String key: gameFieldMap.keySet()) {
+            BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(key, gameFieldMap.get(key).get()));
             mongoCollection.updateOne(bsonUUID, updateObject, options);
         }
 
-        mongoCollection.updateOne(bsonUUID, new BasicDBObject(
-                "$set",
-                new BasicDBObject(
-                        "server_uuid",
-                        new BsonString(OUR_SERVER.getUUID().toString()
-                        )
-                )
-        ));
+        mongoCollection.updateOne(bsonUUID,
+            new BasicDBObject("$set",
+                new BasicDBObject("server_uuid", new BsonString(OUR_SERVER.getUUID().toString()))));
 
         // todo: send a message to obj replication
     }
@@ -97,21 +104,20 @@ public class LocatorMainImpl implements LocatorMain {
      Updates interesting field of given object.
      */
     @Override
-    public void updateObjectInterest(GameObjectUUID object_uuid, String fieldName, Object value) {
-        Bson bsonUUID = Filters.eq("_id", new BsonString(object_uuid.getUUID().toString()));
-        //TODO: InterestingGameField.get();
-        BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(fieldName, value));
+    public void update(GameObjectUUID gameObjectUUID, String field, InterestingGameField gameField) {
+        Bson bsonUUID = Filters.eq("_id", new BsonString(gameObjectUUID.getUUID().toString()));
+        BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(field, gameField.get()));
         mongoCollection.updateOne(bsonUUID, updateObject, new UpdateOptions());
     }
 
     /*
      Remove document in mongo, maybe return some status code.
-     TODO: remove from mongo and remove local predicate.
      */
     @Override
-    public void removeObjectInterest(GameObjectUUID object_uuid) {
-        Bson bsonUUID = Filters.eq("_id", new BsonString(object_uuid.getUUID().toString()));
+    public void delete(GameObjectUUID gameObjectUUID) {
+        Bson bsonUUID = Filters.eq("_id", new BsonString(gameObjectUUID.getUUID().toString()));
         mongoCollection.deleteOne(bsonUUID);
+        objectPredicates.remove(gameObjectUUID);
 
         // todo: send a mesesage to obj replication
     }
