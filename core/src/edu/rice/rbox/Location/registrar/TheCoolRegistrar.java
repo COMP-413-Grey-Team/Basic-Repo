@@ -2,15 +2,21 @@ package edu.rice.rbox.Location.registrar;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
+import com.mongodb.client.ClientSession;
+import com.mongodb.client.MongoClient;
+import edu.rice.rbox.Location.Mongo.MongoManager;
 import edu.rice.rbox.Networking.NetworkImpl;
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
+import io.grpc.services.HealthStatusManager;
 import io.grpc.stub.StreamObserver;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.UUID;
+
 
 import network.ElectionGrpc;
 import network.FaultToleranceGrpc;
@@ -23,11 +29,20 @@ public class TheCoolRegistrar {
 
   private TheCoolConnectionManager connManager;
 
-  private RegistrarGrpc.RegistrarImplBase superPeerServiceImpl = new RegistrarGrpc.RegistrarImplBase() {
+  boolean leader = false;
+
+  protected UUID uuid;
+
+  public String getUUID() {
+    return uuid.toString();
+  }
+
+  private RegistrarGrpc.RegistrarImplBase registrarServiceImpl = new RegistrarGrpc.RegistrarImplBase() {
 
     @Override
     public void alert(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
       // TODO: Nothing, because the registrar knows if its the lead or not already
+
     }
 
     @Override
@@ -51,6 +66,10 @@ public class TheCoolRegistrar {
     }
   };
 
+  private void sendAlert() {
+
+  }
+
 
   private HealthGrpc.HealthImplBase healthServiceImpl = new HealthGrpc.HealthImplBase() {
     @Override
@@ -66,28 +85,32 @@ public class TheCoolRegistrar {
     }
   };
 
+
+  static int numLeaderMsg = 0;
+
+  protected Timestamp getTimestamp() {
+    long millis = System.currentTimeMillis();
+    Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
+            .setNanos((int) ((millis % 1000) * 1000000)).build();
+    return timestamp;
+  }
+
+  protected double getNumRegistrarNodes() {
+    return (double)mongoClient.getDatabase(REGISTRAR).getCollection("registrar").countDocuments(clientSession);
+  }
+
+  protected Timestamp mostRecentDL = getTimestamp();
+
   //TODO: change this to work with the rest of the registrar
   private ElectionGrpc.ElectionImplBase electionServiceImpl = new ElectionGrpc.ElectionImplBase() {
-    int numLeaderMsg = 0;
     HashMap<String, ElectionGrpc.ElectionBlockingStub> stubmap;
-    String uuid = "";
-    public String getUUID() {
-      return this.uuid;
-    }
 
     public int getNumLeaderMsg() {
       return numLeaderMsg;
     }
 
-    public void setNumLeaderMsg(int numLeaderMsg) {
-      this.numLeaderMsg = numLeaderMsg;
-    }
-
-    public Timestamp getTimestamp() {
-      long millis = System.currentTimeMillis();
-      Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
-              .setNanos((int) ((millis % 1000) * 1000000)).build();
-      return timestamp;
+    public void setNumLeaderMsg(int newNumLeaderMsg) {
+      numLeaderMsg = newNumLeaderMsg;
     }
 
     @Override
@@ -120,17 +143,30 @@ public class TheCoolRegistrar {
 
     @Override
     public void downedLeader(FaultToleranceGrpc.LeaderDown request, StreamObserver<Empty> responseObserver) {
-      this.numLeaderMsg++;
+      if (!(getTimestamp().getSeconds() <= mostRecentDL.getSeconds() + 1)) {
+        setNumLeaderMsg(0);
+      }
+      setNumLeaderMsg(getNumLeaderMsg() + 1);
+      if (getNumLeaderMsg() > (2.0 / 3.0) * getNumRegistrarNodes()) {
+        leader = true;
+        sendAlert();
+      }
       responseObserver.onNext(Empty.newBuilder().build());
     }
   };
 
+  private static MongoManager mongoManager;
 
+  private static MongoClient mongoClient;
 
+  private static ClientSession clientSession;
 
-  public TheCoolRegistrar() {
+  String REGISTRAR = "registrar_DB";
+
+  public TheCoolRegistrar(String password) {
     // TODO: set up the connection manager / Mongo stuff
     this.connManager = new TheCoolConnectionManager(null, null);
+    mongoManager = new MongoManager(password);
   }
 
   public void init() throws  Exception {
@@ -140,22 +176,26 @@ public class TheCoolRegistrar {
       ip = socket.getLocalAddress().getHostAddress();
     }
 
-    System.out.println("Server Running on address: " + ip);
-
     // TODO: Setup Mongo
     // TODO: Create Connection Manager
     // TODO: Start grpc server with proper services
 
+    mongoManager.connect();
+    mongoClient = mongoManager.getMongoClient();
+    clientSession = mongoClient.startSession();
+
+    System.out.println("Server Running on address: " + ip);
     // Create a new server to listen on port 8080
 
     Server server = ServerBuilder.forPort(8080)
                         // this is for registrar/player client interactions
                         .addService(this.connManager.getGameServerRegistrarImpl())
                         // this is for registrar/superpeer interactions
-                        .addService(this.superPeerServiceImpl)
+                        .addService(this.registrarServiceImpl)
                         // TODO: this is for the registrar faults/elections - looking @ u Nikhaz
                         .addService(this.healthServiceImpl)
                         // TODO: this is for the health service @ Nikhaz
+                        .addService(this.electionServiceImpl)
                         .addService((BindableService) null)
                         .build();
 
