@@ -8,9 +8,7 @@ import java.util.HashMap;
 
 public class NoInterestPredicate implements InterestPredicate {
 
-    public NoInterestPredicate() {
-
-    }
+    public NoInterestPredicate() {}
 
     @Override
     public Bson toMongoQuery(HashMap<String, Serializable> map) {

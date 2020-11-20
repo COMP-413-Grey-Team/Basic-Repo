@@ -9,6 +9,7 @@ import edu.rice.rbox.Game.Common.SyncState.GameState;
 import edu.rice.rbox.Game.Common.SyncState.GameStateDelta;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
 import edu.rice.rbox.Location.interest.InterestPredicate;
+import edu.rice.rbox.Location.interest.NoInterestPredicate;
 import edu.rice.rbox.ObjStorage.ObjectStore;
 import org.bson.conversions.Bson;
 
@@ -110,12 +111,7 @@ public class GameStateManager {
     lock.lock();
     final GameObjectUUID
         coinUUID =
-        objectStore.create(coinValues, Coin.IMPORTANT_FIELDS, new InterestPredicate() {
-          @Override
-          public Bson toMongoQuery(HashMap<String, Serializable> map) {
-            return null; // TODO
-          }
-        }, roomUUID, 0);
+        objectStore.create(coinValues, Coin.IMPORTANT_FIELDS, new NoInterestPredicate(), roomUUID, 0);
 
     final GameFieldSet<GameObjectUUID> coinsInRoom = coinsInRoom(roomUUID);
     coinsInRoom.add(coinUUID);
