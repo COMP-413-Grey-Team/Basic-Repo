@@ -50,6 +50,8 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
     @Override
     public void queryInterest() {
         List<Bson> allQueries = new ArrayList<>();
+        //TODO: replace with HolderInfo;
+        List<Object>
 
         Iterator<GameObjectUUID> iterator = this.objectPredicates.keySet().iterator();
         while (iterator.hasNext()) {
@@ -65,6 +67,8 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
             return;
 
         FindIterable<Document> documents = mongoCollection.find(finalQueryOption.get()));
+
+        //TODO: extract HolderInfo, formulate and send to replication;
 
         // todo: @tim: do we still care about this id part? i assume not
         // Bson bsonUUIDFilter = Filters.ne("_id", new BsonString(object_uuid.toString()));
@@ -97,7 +101,6 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
             new BasicDBObject("$set",
                 new BasicDBObject("server_uuid", new BsonString(OUR_SERVER.getUUID().toString()))));
 
-        // todo: send a message to obj replication
     }
 
     /*
@@ -119,6 +122,5 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
         mongoCollection.deleteOne(bsonUUID);
         objectPredicates.remove(gameObjectUUID);
 
-        // todo: send a mesesage to obj replication
     }
 }
