@@ -81,7 +81,7 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
         });
 
 
-
+        replication.handleQueryResult(interesting_objects);
         // todo: @tim: do we still care about this id part? i assume not
         // Bson bsonUUIDFilter = Filters.ne("_id", new BsonString(object_uuid.toString()));
         // FindIterable<Document> documents = mongoCollection.find(Filters.and(bsonUUIDFilter, bsonQuery));
