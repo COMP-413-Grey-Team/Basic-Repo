@@ -33,6 +33,7 @@ public interface DistributedManager {
    */
   GameField read(final GameObjectUUID gameObjectID, final String field, final int bufferIndex);
 
+  HashMap<String, GameField> readAll(final GameObjectUUID id, final int bufferIndex);
   /**
    * Sends request from authorObject to change the state of targetObject – state changes reflected in local non-canonical cache.
    *
