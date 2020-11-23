@@ -12,6 +12,8 @@ import edu.rice.rbox.Location.Mongo.MongoManager;
 import edu.rice.rbox.Location.interest.InterestPredicate;
 import edu.rice.rbox.ObjStorage.ObjectLocationStorageInterface;
 import edu.rice.rbox.ObjStorage.ObjectStorageLocationInterface;
+import edu.rice.rbox.Replication.HolderInfo;
+import edu.rice.rbox.Replication.ObjectLocationReplicationInterface;
 import org.bson.*;
 import org.bson.conversions.Bson;
 
@@ -26,10 +28,13 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
 
     //TODO: real access to methods
     private final ObjectLocationStorageInterface storage;
+    private final ObjectLocationReplicationInterface replication;
     /*
      Init MongoManager and store instance.
      */
-    public LocatorMainImpl(ServerUUID serverUUID, ObjectLocationStorageInterface storage) {
+    public LocatorMainImpl(ServerUUID serverUUID,
+                           ObjectLocationStorageInterface storage,
+                           ObjectLocationReplicationInterface replication) {
         MongoManager mongoManager = new MongoManager();
         mongoManager.connect();
         this.mongoCollection = mongoManager.getMongoClient()
@@ -39,6 +44,7 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
         this.objectPredicates = new HashMap<>();
         this.OUR_SERVER = serverUUID;
         this.storage = storage;
+        this.replication = replication;
     }
 
     /*
