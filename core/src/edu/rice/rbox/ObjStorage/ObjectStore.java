@@ -129,6 +129,11 @@ public class ObjectStore implements DistributedManager, ChangeReceiver, ObjectLo
     }
 
     @Override
+    public HashMap<String, GameField> readAll(GameObjectUUID id, int bufferIndex) {
+        return (HashMap<String, GameField>) Collections.unmodifiableMap(store.get(circ(bufferIndex)).get(id));
+    }
+
+    @Override
     public InterestingGameField queryOneField(GameObjectUUID id, String field) {
         GameField value = read(id, field, 0);
         if (objectInterestingFields.get(id).contains(field)) {
