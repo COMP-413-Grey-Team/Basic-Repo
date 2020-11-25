@@ -3,17 +3,15 @@ package edu.rice.rbox.Game.Server;
 import edu.rice.rbox.Common.Change.LocalFieldChange;
 import edu.rice.rbox.Common.GameField.*;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Common.ServerUUID;
 import edu.rice.rbox.Game.Client.Sprites.CoinSprite;
 import edu.rice.rbox.Game.Common.SyncState.CoinState;
 import edu.rice.rbox.Game.Common.SyncState.GameState;
 import edu.rice.rbox.Game.Common.SyncState.GameStateDelta;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
-import edu.rice.rbox.Location.interest.InterestPredicate;
 import edu.rice.rbox.Location.interest.NoInterestPredicate;
 import edu.rice.rbox.ObjStorage.ObjectStore;
-import org.bson.conversions.Bson;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -31,10 +29,17 @@ public class GameStateManager {
 
   private final ReentrantLock lock = new ReentrantLock();
 
-  private final int startRoomIndex = 0; // TODO: replace
+  private ServerUUID myServerUUID() {
+    // TODO: Where do we get this ServerUUID from?
+    return ServerUUID.randomUUID();
+  }
 
   public GameState handlePlayerJoining(PlayerState newPlayerInfo) {
-    final GameObjectUUID roomUUID = (GameObjectUUID) objectStore.read(Global.GLOBAL_OBJ, Global.roomKeyForIndex(startRoomIndex), 0);
+    // Find one of the rooms this server is in charge of and add the player to that room.
+    final GameFieldMap<ServerUUID, GameFieldSet<GameObjectUUID>> serverRoomMap =
+        (GameFieldMap<ServerUUID, GameFieldSet<GameObjectUUID>>) objectStore.read(Global.GLOBAL_OBJ, Global.SERVER_ROOMS_MAP, 0);
+    final GameFieldSet<GameObjectUUID> roomUUIDs = serverRoomMap.get(myServerUUID());
+    final GameObjectUUID roomUUID = roomUUIDs.iterator().next();
 
     HashMap<String, GameField> playerMap = new HashMap<>() {{
       put(ObjectStorageKeys.Player.X_POS, new GameFieldDouble(newPlayerInfo.x));
@@ -42,16 +47,21 @@ public class GameStateManager {
       put(ObjectStorageKeys.Player.NAME, new GameFieldString(newPlayerInfo.name));
       put(ObjectStorageKeys.Player.COLOR, new GameFieldColor(newPlayerInfo.color));
       put(ObjectStorageKeys.Player.SCORE, new GameFieldInteger(newPlayerInfo.score));
-      put(ObjectStorageKeys.Player.ROOM_ID, roomUUID); // TODO: which room? This is probably determined at startup time
+      put(ObjectStorageKeys.Player.ROOM_ID, roomUUID);
     }};
     final GameObjectUUID newPlayerUUID = objectStore.create(playerMap, ObjectStorageKeys.Player.IMPORTANT_FIELDS, ObjectStorageKeys.Player.PREDICATE, roomUUID, 0);
+
+    final GameFieldSet<GameObjectUUID> roomMembers =
+        (GameFieldSet<GameObjectUUID>) objectStore.read(roomUUID, Room.PLAYERS_IN_ROOM, 0);
+    roomMembers.add(newPlayerUUID);
+    objectStore.write(new LocalFieldChange(roomUUID, Room.PLAYERS_IN_ROOM, roomMembers, 0), roomUUID);
+
     return gameStateForRoom(roomUUID, newPlayerUUID);
   }
 
   // This class will be responsible for taking in changes from the clients, resolving them, interacting with Object Storage, and returning a snapshot to send back to the game client.
   public GameState handleUpdateFromPlayer(GameStateDelta update) {
     final GameObjectUUID playerUUID = update.playerUUID;
-//    final int bufferIndex = objectStore.getBufferIndex(update.timestamp);
     final int bufferIndex = 0;
     final GameObjectUUID roomUUID = roomForPlayer(playerUUID);
 
@@ -96,6 +106,7 @@ public class GameStateManager {
     return gameStateForRoom(roomUUID, playerUUID);
   }
 
+  // TODO: This is never called currently. Put it on a timer, check to make sure the room is under coin capacity, and call this method.
   public void createRandomCoin(GameObjectUUID roomUUID) {
     final int x =
         ThreadLocalRandom.current().nextInt(CoinSprite.CIRCLE_RADIUS, WORLD_WIDTH - 2 * CoinSprite.CIRCLE_RADIUS);
