@@ -1,14 +1,9 @@
 package edu.rice.rbox.ObjStorage;
 
 import edu.rice.rbox.Common.Change.RemoteChange;
-import edu.rice.rbox.Common.Change.RemoteDeleteReplicaChange;
-import edu.rice.rbox.Common.GameField;
+import edu.rice.rbox.Common.GameField.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
-import edu.rice.rbox.Common.Mode;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -25,14 +20,13 @@ public interface ObjectStorageReplicationInterface {
 
   /**
    * Send an update to all of the replicas.
-   * @param interesting Whether the change is interesting and should be sent to the registrar.
    */
-  void broadcastUpdate(RemoteChange change, Boolean interesting);
+  void broadcastUpdate(RemoteChange change);
 
   /**
    * Notifies replication that a new primary has been created and should notify the registrar.
    */
-  void createPrimary(GameObjectUUID id, HashMap<String, GameField> interestingField, String predicate);
+  void createPrimary(GameObjectUUID id);
 
   /**
    * Notifies replication that a new primary has been created and should notify the registrar and all the replicas.

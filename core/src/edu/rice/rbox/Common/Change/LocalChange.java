@@ -6,5 +6,5 @@ public interface LocalChange {
 
   int getBufferIndex();
   GameObjectUUID getTarget();
-
+  LocalChange copyWithBufferIndex(int i);
 }

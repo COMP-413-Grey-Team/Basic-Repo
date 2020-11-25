@@ -1,12 +1,15 @@
 package edu.rice.rbox.Common;
 
+import edu.rice.rbox.Common.GameField.GameField;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-public class GameObjectUUID implements Serializable {
+public class GameObjectUUID implements Serializable, GameField {
 
     private final UUID uuid;
+
 
     public GameObjectUUID(UUID uuid) {
         super();
@@ -39,4 +42,13 @@ public class GameObjectUUID implements Serializable {
     public int hashCode() {
         return Objects.hash(uuid);
     }
+
+
+    @Override
+    public GameField copy() {
+        return new GameObjectUUID(uuid);
+    }
+
+    public static GameObjectUUID NULL = new GameObjectUUID(new UUID(0, 0));
+
 }
