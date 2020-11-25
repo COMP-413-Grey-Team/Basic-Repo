@@ -12,7 +12,9 @@ import edu.rice.rbox.Game.Common.SyncState.PlayerState;
 import edu.rice.rbox.Location.interest.NoInterestPredicate;
 import edu.rice.rbox.ObjStorage.ObjectStore;
 
+import javax.swing.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,13 +27,42 @@ import static edu.rice.rbox.Game.Server.ObjectStorageKeys.*;
 
 public class GameStateManager {
 
+  private final ServerUUID serverUUID;
   private ObjectStore objectStore;
 
   private final ReentrantLock lock = new ReentrantLock();
 
+  private Timer coinTimer = new Timer(500, e -> {
+    final HashSet<GameObjectUUID> roomsToGen = new HashSet<>();
+
+    final GameFieldMap<ServerUUID, GameFieldSet<GameFieldInteger>> serverRoomMap =
+        (GameFieldMap<ServerUUID, GameFieldSet<GameFieldInteger>>) objectStore.read(Global.GLOBAL_OBJ, Global.SERVER_ROOMS_MAP, 0);
+    final GameFieldSet<GameFieldInteger> roomIndices = serverRoomMap.get(myServerUUID());
+    lock.lock();
+    for (final GameFieldInteger roomIndex : roomIndices) {
+      final GameObjectUUID roomUUID =
+          (GameObjectUUID) objectStore.read(Global.GLOBAL_OBJ, Global.roomKeyForIndex(roomIndex.getValue()), 0);
+      final GameFieldSet<GameObjectUUID> coins =
+          (GameFieldSet<GameObjectUUID>) objectStore.read(roomUUID, Room.COINS_IN_ROOM, 0);
+      if (coins.size() < 25) {
+        roomsToGen.add(roomUUID);
+      }
+    }
+    lock.unlock();
+
+    roomsToGen.forEach(this::createRandomCoin);
+  });
+
+  public GameStateManager(ServerUUID serverUUID, ObjectStore objectStore) {
+    this.serverUUID = serverUUID;
+    this.objectStore = objectStore;
+    coinTimer.start();
+
+    // TODO: create the rooms this superpeer is responsible for
+  }
+
   private ServerUUID myServerUUID() {
-    // TODO: Where do we get this ServerUUID from?
-    return ServerUUID.randomUUID();
+    return serverUUID;
   }
 
   public GameState handlePlayerJoining(PlayerState newPlayerInfo) {
@@ -70,6 +101,8 @@ public class GameStateManager {
 
       final GameObjectUUID newRoomUUID = GameObjectUUID.randomUUID(); // TODO: calculate correct room UUID
       addPlayerToRoom(playerUUID, newRoomUUID);
+
+      return gameStateForRoom(newRoomUUID, playerUUID);
     }
 
     // Remove coins they have collected
