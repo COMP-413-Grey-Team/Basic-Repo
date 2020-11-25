@@ -4,7 +4,7 @@ import edu.rice.rbox.Common.Change.*;
 import edu.rice.rbox.Common.GameField.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
-import edu.rice.rbox.Common.InterestingGameField;
+import edu.rice.rbox.Common.GameField.InterestingGameField;
 import edu.rice.rbox.Common.Mode;
 import edu.rice.rbox.Location.interest.InterestPredicate;
 
@@ -126,6 +126,11 @@ public class ObjectStore implements DistributedManager, ChangeReceiver, ObjectLo
     @Override
     public GameField read(GameObjectUUID gameObjectID, String field, int bufferIndex) {
         return store.get(circ(bufferIndex)).get(gameObjectID).get(field);
+    }
+
+    @Override
+    public HashMap<String, GameField> readAll(GameObjectUUID id, int bufferIndex) {
+        return (HashMap<String, GameField>) Collections.unmodifiableMap(store.get(circ(bufferIndex)).get(id));
     }
 
     @Override
