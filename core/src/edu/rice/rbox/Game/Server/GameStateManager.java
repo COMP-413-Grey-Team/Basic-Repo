@@ -1,5 +1,8 @@
 package edu.rice.rbox.Game.Server;
 
+import edu.rice.rbox.Common.Change.LocalAddReplicaChange;
+import edu.rice.rbox.Common.Change.LocalChange;
+import edu.rice.rbox.Common.Change.LocalDeleteReplicaChange;
 import edu.rice.rbox.Common.Change.LocalFieldChange;
 import edu.rice.rbox.Common.GameField.*;
 import edu.rice.rbox.Common.GameObjectUUID;
@@ -13,12 +16,9 @@ import edu.rice.rbox.Location.interest.NoInterestPredicate;
 import edu.rice.rbox.ObjStorage.ObjectStore;
 
 import javax.swing.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import javax.swing.Timer;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
@@ -56,12 +56,33 @@ public class GameStateManager {
     roomsToGen.forEach(this::createRandomCoin);
   });
 
+  private Timer gameLoopTimer = new Timer(50, e -> {
+    objectStore.advanceBuffer();
+    objectStore.synchronize().forEach(localChange -> {
+      objectStore.write(localChange.copyWithBufferIndex(0), localChange.getTarget());
+      final GameFieldString type = (GameFieldString) objectStore.read(localChange.getTarget(), TYPE, 0);
+      if (type.getValue().equals(PlayerScore.TYPE_NAME)) {
+        GameFieldList<GameObjectUUID> leaderboard =
+            (GameFieldList<GameObjectUUID>) objectStore.read(Leaderboard.GLOBAL_OBJ, Leaderboard.LEADERBOARD_VALUE, 0);
+        if (localChange instanceof LocalAddReplicaChange) {
+          leaderboard.add(localChange.getTarget());
+        } else if (localChange instanceof LocalDeleteReplicaChange) {
+          leaderboard.remove(localChange.getTarget());
+        }
+        leaderboard.sort(Comparator.comparing(scoreUUID -> ((GameFieldInteger) objectStore.read((GameObjectUUID) scoreUUID, PlayerScore.VALUE, 0)).getValue()).reversed());
+        objectStore.write(new LocalFieldChange(Leaderboard.GLOBAL_OBJ, Leaderboard.LEADERBOARD_VALUE, leaderboard, 0), Leaderboard.GLOBAL_OBJ);
+      }
+    });
+  });
+
   public GameStateManager(ServerUUID serverUUID, ObjectStore objectStore) {
     this.serverUUID = serverUUID;
     this.objectStore = objectStore;
-    coinTimer.start();
 
     // TODO: create the rooms this superpeer is responsible for
+
+    coinTimer.start();
+    gameLoopTimer.start();
   }
 
   private ServerUUID myServerUUID() {
@@ -76,19 +97,28 @@ public class GameStateManager {
     final GameObjectUUID roomUUID = roomUUIDs.iterator().next();
 
     HashMap<String, GameField> playerMap = new HashMap<>() {{
+      put(TYPE, new GameFieldString(Player.TYPE_NAME));
       put(ObjectStorageKeys.Player.X_POS, new GameFieldDouble(newPlayerInfo.x));
       put(ObjectStorageKeys.Player.Y_POS, new GameFieldDouble(newPlayerInfo.y));
       put(ObjectStorageKeys.Player.NAME, new GameFieldString(newPlayerInfo.name));
       put(ObjectStorageKeys.Player.COLOR, new GameFieldColor(newPlayerInfo.color));
-      put(ObjectStorageKeys.Player.SCORE, new GameFieldInteger(newPlayerInfo.score));
       put(ObjectStorageKeys.Player.ROOM_ID, roomUUID);
     }};
     final GameObjectUUID newPlayerUUID = objectStore.create(playerMap, ObjectStorageKeys.Player.IMPORTANT_FIELDS, ObjectStorageKeys.Player.PREDICATE, roomUUID, 0);
+
+    final GameObjectUUID scoreUUID = objectStore.create(new HashMap<>(){{
+      put(TYPE, new GameFieldString(PlayerScore.TYPE_NAME));
+      put(PlayerScore.VALUE, new GameFieldInteger(newPlayerInfo.score));
+      put(PlayerScore.PLAYER_NAME, new GameFieldString(newPlayerInfo.name));
+    }}, PlayerScore.IMPORTANT_FIELDS, new NoInterestPredicate(), newPlayerUUID, 0);
+    objectStore.write(new LocalFieldChange(newPlayerUUID, Player.SCORE, scoreUUID, 0), newPlayerUUID);
 
     final GameFieldSet<GameObjectUUID> roomMembers =
         (GameFieldSet<GameObjectUUID>) objectStore.read(roomUUID, Room.PLAYERS_IN_ROOM, 0);
     roomMembers.add(newPlayerUUID);
     objectStore.write(new LocalFieldChange(roomUUID, Room.PLAYERS_IN_ROOM, roomMembers, 0), roomUUID);
+
+    // TODO: add player to leaderboard list
 
     return gameStateForRoom(roomUUID, newPlayerUUID);
   }
@@ -135,11 +165,10 @@ public class GameStateManager {
     }
 
     // Updating player score
-    final GameFieldInteger
-        score =
-        (GameFieldInteger) objectStore.read(playerUUID, ObjectStorageKeys.Player.SCORE, 0);
-    final GameFieldInteger newScore = new GameFieldInteger(score.getValue() + coinsCollected);
-    objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.SCORE, newScore, 0), playerUUID);
+    final GameObjectUUID scoreUUID = (GameObjectUUID) objectStore.read(playerUUID, ObjectStorageKeys.Player.SCORE, 0);
+    final int score = ((GameFieldInteger) objectStore.read(scoreUUID, PlayerScore.VALUE, 0)).getValue();
+    final GameFieldInteger newScore = new GameFieldInteger(score + coinsCollected);
+    objectStore.write(new LocalFieldChange(scoreUUID, PlayerScore.VALUE, newScore, 0), playerUUID);
 
     // Update position
     objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.X_POS, new GameFieldDouble(update.updatedPlayerState.x), 0), playerUUID);
@@ -154,6 +183,7 @@ public class GameStateManager {
     final int y =
         ThreadLocalRandom.current().nextInt(CoinSprite.CIRCLE_RADIUS, WORLD_HEIGHT - 2 * CoinSprite.CIRCLE_RADIUS);
     HashMap<String, GameField> coinValues = new HashMap<>() {{
+      put(TYPE, new GameFieldString(Coin.TYPE_NAME));
       put(Coin.ROOM_ID, roomUUID);
       put(Coin.X_POS, new GameFieldInteger(x));
       put(Coin.Y_POS, new GameFieldInteger(y));
@@ -176,6 +206,10 @@ public class GameStateManager {
     // Remove player from room
     // Deactivate/delete player
     removePlayerFromRoom(player, roomForPlayer(player));
+
+    final GameObjectUUID scoreUUID = (GameObjectUUID) objectStore.read(player, Player.SCORE, 0);
+    objectStore.delete(scoreUUID, player);
+    objectStore.delete(player, player);
   }
 
   public GameFieldSet<GameObjectUUID> playersInRoom(GameObjectUUID roomUUID) {
@@ -217,12 +251,13 @@ public class GameStateManager {
   }
 
   public PlayerState playerStateForPlayer(GameObjectUUID player) {
+    final GameObjectUUID scoreUUID = (GameObjectUUID) objectStore.read(player, Player.SCORE, 0);
     return new PlayerState(
         ((GameFieldInteger) objectStore.read(player, ObjectStorageKeys.Player.X_POS, 0)).getValue(),
         ((GameFieldInteger) objectStore.read(player, ObjectStorageKeys.Player.Y_POS, 0)).getValue(),
         ((GameFieldString) objectStore.read(player, ObjectStorageKeys.Player.NAME, 0)).getValue(),
         ((GameFieldColor) objectStore.read(player, ObjectStorageKeys.Player.COLOR, 0)).getValue(),
-        ((GameFieldInteger) objectStore.read(player, ObjectStorageKeys.Player.SCORE, 0)).getValue()
+        ((GameFieldInteger) objectStore.read(player, PlayerScore.VALUE, 0)).getValue()
     );
   }
 
