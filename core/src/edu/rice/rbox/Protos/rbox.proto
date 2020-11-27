@@ -38,12 +38,11 @@ service RBoxService {
   rpc handleUnsubscribe(UnsubscribeRequest) returns (google.protobuf.Empty);
 }
 
-message HealthCheckRequest {
+message HeartBeatRequest {
   BasicInfo sender = 1;
-  string service = 2;
 }
 
-message HealthCheckResponse {
+message HeartBeatResponse {
   enum ServingStatus {
     UNKNOWN = 0;
     SERVING = 1;
@@ -55,9 +54,7 @@ message HealthCheckResponse {
 }
 
 service Health {
-  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
-
-  rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
+  rpc Check(HeartBeatRequest) returns (HeartBeatResponse);
 }
 
 message NewRegistrarMessage {
@@ -86,9 +83,12 @@ message ConnectMessage {
   string connectionIP = 2;
 }
 
-service Registrar {
+service RegistrarConnections {
   rpc Alert(NewRegistrarMessage) returns (google.protobuf.Empty);
-  rpc Promote(PromoteSecondaryMessage) returns (google.protobuf.Empty);
   rpc Connect(ConnectMessage) returns (google.protobuf.Empty);
+}
+
+service RegistrarFaultTolerance {
+  rpc Promote(PromoteSecondaryMessage) returns (google.protobuf.Empty);
   rpc QuerySecondary(querySecondaryMessage) returns (secondaryTimestampsMessage);
 }

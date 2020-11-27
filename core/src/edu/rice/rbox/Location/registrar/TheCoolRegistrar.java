@@ -10,10 +10,6 @@ import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
-import io.grpc.health.v1.HealthCheckRequest;
-import io.grpc.health.v1.HealthCheckResponse;
-import io.grpc.services.HealthStatusManager;
-import io.grpc.health.v1.HealthGrpc;
 import io.grpc.stub.StreamObserver;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -21,15 +17,13 @@ import java.util.HashMap;
 import java.util.UUID;
 
 
+import network.*;
 import network.ElectionGrpc;
-import network.FaultToleranceGrpc;
-import network.RBoxProto;
+import network.HealthGrpc;
 import network.RBoxServiceGrpc;
-import network.RegistrarGrpc;
+import network.RegistrarConnectionsGrpc;
 
 public class TheCoolRegistrar {
-
-  public HealthStatusManager health = new HealthStatusManager();
 
   private TheCoolConnectionManager connManager;
 
@@ -43,19 +37,17 @@ public class TheCoolRegistrar {
     return uuid.toString();
   }
 
-  private RegistrarGrpc.RegistrarImplBase registrarServiceImpl = new RegistrarGrpc.RegistrarImplBase() {
+  private RBoxProto.BasicInfo getInfo() {
+    return RBoxProto.BasicInfo.newBuilder().setSenderUUID(getUUID()).setTime(getTimestamp()).build();
+  }
+
+  private RegistrarConnectionsGrpc.RegistrarConnectionsImplBase registrarConnectionServiceImpl = new RegistrarConnectionsGrpc.RegistrarConnectionsImplBase() {
 
     @Override
     public void alert(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
       // TODO: Nothing, because the registrar knows if its the lead or not already
       leaderUUID = UUID.fromString(request.getSender().getSenderUUID());
       responseObserver.onNext(Empty.getDefaultInstance());
-    }
-
-    @Override
-    public void promote(RBoxProto.PromoteSecondaryMessage request, StreamObserver<Empty> responseObserver) {
-      // TODO: idk wtf this is supposed to do
-
     }
 
     @Override
@@ -66,23 +58,12 @@ public class TheCoolRegistrar {
 
       TheCoolRegistrar.this.connManager.addSuperPeer(senderHostnameInfo);
     }
-
-    @Override
-    public void querySecondary(RBoxProto.querySecondaryMessage request,
-                               StreamObserver<RBoxProto.secondaryTimestampsMessage> responseObserver) {
-      // TODO: ditto to not knowing what this one does either
-    }
   };
-
-  private void sendAlert() {
-
-  }
-
 
   private HealthGrpc.HealthImplBase healthServiceImpl = new HealthGrpc.HealthImplBase() {
     @Override
-    public void check(HealthCheckRequest request, StreamObserver<HealthCheckResponse> responseObserver) {
-      health.setStatus(uuid.toString(), HealthCheckResponse.ServingStatus.SERVING);
+    public void check(RBoxProto.HeartBeatRequest request, StreamObserver<RBoxProto.HeartBeatResponse> responseObserver) {
+      responseObserver.onNext(RBoxProto.HeartBeatResponse.newBuilder().setSender(getInfo()).setStatus(RBoxProto.HeartBeatResponse.ServingStatus.SERVING).build());
     }
   };
 
@@ -134,12 +115,14 @@ public class TheCoolRegistrar {
 
       FaultToleranceGrpc.ConnectionResult res = FaultToleranceGrpc.ConnectionResult.newBuilder().setSender(information).setResult(success).build();
       responseObserver.onNext(res);
+      responseObserver.onCompleted();
     }
 
     @Override
     public void check(FaultToleranceGrpc.CheckIn request, StreamObserver<FaultToleranceGrpc.Info> responseObserver) {
       FaultToleranceGrpc.Info information = FaultToleranceGrpc.Info.newBuilder().setSenderUUID(getUUID()).setTime(getTimestamp()).build();
       responseObserver.onNext(information);
+      responseObserver.onCompleted();
     }
 
     @Override
@@ -150,9 +133,10 @@ public class TheCoolRegistrar {
       setNumLeaderMsg(getNumLeaderMsg() + 1);
       if (getNumLeaderMsg() > (2.0 / 3.0) * getNumRegistrarNodes()) {
         leader = true;
-        sendAlert();
+
       }
       responseObserver.onNext(Empty.newBuilder().build());
+      responseObserver.onCompleted();
     }
   };
 
@@ -192,7 +176,7 @@ public class TheCoolRegistrar {
                         // this is for registrar/player client interactions
                         .addService(this.connManager.getGameServerRegistrarImpl())
                         // this is for registrar/superpeer interactions
-                        .addService(this.registrarServiceImpl)
+                        .addService(this.registrarConnectionServiceImpl)
                         // TODO: this is for the registrar faults/elections - looking @ u Nikhaz
                         .addService(this.healthServiceImpl)
                         // TODO: this is for the health service @ Nikhaz
