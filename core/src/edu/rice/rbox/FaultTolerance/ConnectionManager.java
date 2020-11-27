@@ -26,6 +26,10 @@ public class ConnectionManager {
     private MongoCollection superPeerCol;
     private MongoCollection clientCol;
 
+    private Map<UUID, Integer> gameRooms;
+    private Integer currGameRoom;
+    private Integer numGameRooms;
+
 
 
 
@@ -85,7 +89,7 @@ public class ConnectionManager {
         superPeers = new HashMap<>();
         this.superPeerCol = spCollection;
         this.clientCol = clientCollection;
-
+        this.gameRooms = new HashMap<>();
     }
 
     /**
@@ -105,6 +109,14 @@ public class ConnectionManager {
 
         Document doc = new Document("hostname", hostnameInfo).append("superPeerUUID", superPeerId.toString());
         superPeerCol.insertOne(doc);
+
+
+        // assign superpeers a game room - game rooms start at 0
+        if (this.currGameRoom > this.numGameRooms - 1) {
+            this.currGameRoom = 0;
+        }
+        this.gameRooms.put(superPeerId, this.currGameRoom);
+
 
         return sp;
     }
