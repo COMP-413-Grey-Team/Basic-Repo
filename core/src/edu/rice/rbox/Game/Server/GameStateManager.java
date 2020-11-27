@@ -26,6 +26,7 @@ import static network.GameNetworkProto.UpdateFromClient.MovingRooms.NOT;
 import static edu.rice.rbox.Game.Client.World.WORLD_HEIGHT;
 import static edu.rice.rbox.Game.Client.World.WORLD_WIDTH;
 import static edu.rice.rbox.Game.Server.ObjectStorageKeys.*;
+import static network.GameNetworkProto.UpdateFromClient.MovingRooms.RIGHT;
 
 public class GameStateManager {
 
@@ -101,9 +102,13 @@ public class GameStateManager {
     if (update.movingRooms != NOT) {
       removePlayerFromRoom(playerUUID, roomUUID);
 
-//      int roomIndex = objectStore.read()
+      int numberOfRooms = ((GameFieldInteger) objectStore.read(Global.GLOBAL_OBJ, Global.NUMBER_OF_ROOMS, 0)).getValue();
+      int roomIndex = ((GameFieldInteger) objectStore.read(roomUUID, Room.ROOM_INDEX, 0)).getValue();
 
-      final GameObjectUUID newRoomUUID = GameObjectUUID.randomUUID(); // TODO: calculate correct room UUID
+      int nextRoomIndex = (update.movingRooms == RIGHT) ? ((roomIndex + 1) % numberOfRooms) : ((roomIndex - 1 + numberOfRooms) % numberOfRooms);
+      GameObjectUUID nextRoomUUID = (GameObjectUUID) objectStore.read(Global.GLOBAL_OBJ, Global.roomKeyForIndex(nextRoomIndex), 0);
+
+      final GameObjectUUID newRoomUUID = nextRoomUUID;
       addPlayerToRoom(playerUUID, newRoomUUID);
 
       return gameStateForRoom(newRoomUUID, playerUUID);

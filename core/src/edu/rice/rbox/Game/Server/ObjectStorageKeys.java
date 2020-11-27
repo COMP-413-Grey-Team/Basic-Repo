@@ -11,6 +11,7 @@ public class ObjectStorageKeys {
   public static class Global {
     public static final GameObjectUUID GLOBAL_OBJ = new GameObjectUUID(new UUID(1234, 1));
     public static final String SERVER_ROOMS_MAP = "SERVER_ROOMS_MAP";
+    public static final String NUMBER_OF_ROOMS = "NUMBER_OF_ROOMS";
     public static String roomKeyForIndex(int index) {
       return "ROOM_INDEX_" + index;
     }
