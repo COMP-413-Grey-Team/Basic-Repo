@@ -240,11 +240,13 @@ public class GameStateManager {
         this::playerStateForPlayer
     ));
 
+    lock.readLock().lock();
     final GameFieldSet<GameObjectUUID> coins = coinsInRoom(room);
     Map<GameObjectUUID, CoinState> coinsMap = coins.stream().collect(Collectors.toMap(
        coinUUID -> coinUUID,
        this::coinStateForCoin
     ));
+    lock.readLock().unlock();
 
     GameFieldColor backgroundColor =
         (GameFieldColor) objectStore.read(room, ObjectStorageKeys.Room.BACKGROUND_COLOR, 0);
