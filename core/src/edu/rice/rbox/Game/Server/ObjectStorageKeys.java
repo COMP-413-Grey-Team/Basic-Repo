@@ -26,7 +26,9 @@ public class ObjectStorageKeys {
     public static final String COINS_IN_ROOM = "COINS_IN_ROOM";
     public static final String BACKGROUND_COLOR = "BACKGROUND_COLOR";
     public static final String ROOM_INDEX = "ROOM_INDEX";
-    public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>();
+    public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>() {{
+      add(TYPE);
+    }};
   }
 
   public static class Player {
@@ -38,6 +40,7 @@ public class ObjectStorageKeys {
     public static final String NAME = "NAME";
     public static final String COLOR = "COLOR";
     public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>() {{
+      add(TYPE);
       add(ROOM_ID);
     }};
     public static final InterestPredicate PREDICATE = null; // TODO: build predicate for players
@@ -50,6 +53,7 @@ public class ObjectStorageKeys {
     public static final String Y_POS = "Y_POS";
     public static final String HAS_BEEN_COLLECTED = "HAS_BEEN_COLLECTED";
     public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>() {{
+      add(TYPE);
       add(ROOM_ID);
     }};
   }
@@ -58,14 +62,18 @@ public class ObjectStorageKeys {
     public static final String TYPE_NAME = "LEADERBOARD";
     public static final GameObjectUUID GLOBAL_OBJ = new GameObjectUUID(new UUID(1234, 2));
     public static final String LEADERBOARD_VALUE = "LEADERBOARD_VALUE";
-    public static final HashSet<String> IMPORTANT_FIELD = new HashSet<>();
+    public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>() {{
+      add(TYPE);
+    }};
   }
 
   public static class PlayerScore {
     public static final String TYPE_NAME = "PLAYER_SCORE";
     public static final String VALUE = "VALUE";
     public static final String PLAYER_NAME = "PLAYER_NAME";
-    public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>();
+    public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>() {{
+      add(TYPE);
+    }};
   }
 
 }
