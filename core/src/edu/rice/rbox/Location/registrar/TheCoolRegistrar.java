@@ -10,7 +10,10 @@ import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
+import io.grpc.health.v1.HealthCheckRequest;
+import io.grpc.health.v1.HealthCheckResponse;
 import io.grpc.services.HealthStatusManager;
+import io.grpc.health.v1.HealthGrpc;
 import io.grpc.stub.StreamObserver;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -20,18 +23,21 @@ import java.util.UUID;
 
 import network.ElectionGrpc;
 import network.FaultToleranceGrpc;
-import network.HealthGrpc;
 import network.RBoxProto;
 import network.RBoxServiceGrpc;
 import network.RegistrarGrpc;
 
 public class TheCoolRegistrar {
 
+  public HealthStatusManager health = new HealthStatusManager();
+
   private TheCoolConnectionManager connManager;
 
   boolean leader = false;
 
   protected UUID uuid;
+
+  private UUID leaderUUID;
 
   public String getUUID() {
     return uuid.toString();
@@ -42,12 +48,14 @@ public class TheCoolRegistrar {
     @Override
     public void alert(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
       // TODO: Nothing, because the registrar knows if its the lead or not already
-
+      leaderUUID = UUID.fromString(request.getSender().getSenderUUID());
+      responseObserver.onNext(Empty.getDefaultInstance());
     }
 
     @Override
     public void promote(RBoxProto.PromoteSecondaryMessage request, StreamObserver<Empty> responseObserver) {
       // TODO: idk wtf this is supposed to do
+
     }
 
     @Override
@@ -73,15 +81,8 @@ public class TheCoolRegistrar {
 
   private HealthGrpc.HealthImplBase healthServiceImpl = new HealthGrpc.HealthImplBase() {
     @Override
-    public void check(RBoxProto.HealthCheckRequest request,
-                      StreamObserver<RBoxProto.HealthCheckResponse> responseObserver) {
-      // TODO: do this
-    }
-
-    @Override
-    public void watch(RBoxProto.HealthCheckRequest request,
-                      StreamObserver<RBoxProto.HealthCheckResponse> responseObserver) {
-      // TODO: do this
+    public void check(HealthCheckRequest request, StreamObserver<HealthCheckResponse> responseObserver) {
+      health.setStatus(uuid.toString(), HealthCheckResponse.ServingStatus.SERVING);
     }
   };
 
@@ -199,7 +200,6 @@ public class TheCoolRegistrar {
                         .addService((BindableService) null)
                         .build();
 
-
     // Start the server
     server.start();
 
@@ -212,7 +212,6 @@ public class TheCoolRegistrar {
 
 
   public static void main( String[] args ) throws Exception {
-
 
 
   }
