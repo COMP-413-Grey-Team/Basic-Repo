@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import static network.GameNetworkProto.UpdateFromClient.MovingRooms.NOT;
@@ -30,7 +32,7 @@ public class GameStateManager {
   private final ServerUUID serverUUID;
   private ObjectStore objectStore;
 
-  private final ReentrantLock lock = new ReentrantLock();
+  private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
   private Timer coinTimer = new Timer(500, e -> {
     final HashSet<GameObjectUUID> roomsToGen = new HashSet<>();
@@ -38,7 +40,7 @@ public class GameStateManager {
     final GameFieldMap<ServerUUID, GameFieldSet<GameFieldInteger>> serverRoomMap =
         (GameFieldMap<ServerUUID, GameFieldSet<GameFieldInteger>>) objectStore.read(Global.GLOBAL_OBJ, Global.SERVER_ROOMS_MAP, 0);
     final GameFieldSet<GameFieldInteger> roomIndices = serverRoomMap.get(myServerUUID());
-    lock.lock();
+    lock.readLock().lock();
     for (final GameFieldInteger roomIndex : roomIndices) {
       final GameObjectUUID roomUUID =
           (GameObjectUUID) objectStore.read(Global.GLOBAL_OBJ, Global.roomKeyForIndex(roomIndex.getValue()), 0);
@@ -48,7 +50,7 @@ public class GameStateManager {
         roomsToGen.add(roomUUID);
       }
     }
-    lock.unlock();
+    lock.readLock().unlock();
 
     roomsToGen.forEach(this::createRandomCoin);
   });
@@ -99,6 +101,8 @@ public class GameStateManager {
     if (update.movingRooms != NOT) {
       removePlayerFromRoom(playerUUID, roomUUID);
 
+//      int roomIndex = objectStore.read()
+
       final GameObjectUUID newRoomUUID = GameObjectUUID.randomUUID(); // TODO: calculate correct room UUID
       addPlayerToRoom(playerUUID, newRoomUUID);
 
@@ -108,7 +112,7 @@ public class GameStateManager {
     // Remove coins they have collected
     int coinsCollected = 0;
     if (!update.deletedCoins.isEmpty()) {
-      lock.lock();
+      lock.writeLock().lock();
       final GameFieldSet<GameObjectUUID> coinsInRoom = coinsInRoom(roomUUID);
 
       for (GameObjectUUID coin : update.deletedCoins) {
@@ -122,7 +126,7 @@ public class GameStateManager {
         }
       }
       objectStore.write(new LocalFieldChange(roomUUID, Room.COINS_IN_ROOM, coinsInRoom, 0), roomUUID);
-      lock.unlock();
+      lock.writeLock().unlock();
     }
 
     // Updating player score
@@ -139,7 +143,6 @@ public class GameStateManager {
     return gameStateForRoom(roomUUID, playerUUID);
   }
 
-  // TODO: This is never called currently. Put it on a timer, check to make sure the room is under coin capacity, and call this method.
   public void createRandomCoin(GameObjectUUID roomUUID) {
     final int x =
         ThreadLocalRandom.current().nextInt(CoinSprite.CIRCLE_RADIUS, WORLD_WIDTH - 2 * CoinSprite.CIRCLE_RADIUS);
@@ -152,7 +155,7 @@ public class GameStateManager {
       put(Coin.HAS_BEEN_COLLECTED, new GameFieldBoolean(false));
     }};
 
-    lock.lock();
+    lock.writeLock().lock();
     final GameObjectUUID
         coinUUID =
         objectStore.create(coinValues, Coin.IMPORTANT_FIELDS, new NoInterestPredicate(), roomUUID, 0);
@@ -161,7 +164,7 @@ public class GameStateManager {
     coinsInRoom.add(coinUUID);
     objectStore.write(new LocalFieldChange(roomUUID, Room.COINS_IN_ROOM, coinsInRoom, 0), roomUUID);
 
-    lock.unlock();
+    lock.writeLock().unlock();
   }
 
   public void handlePlayerQuitting(GameObjectUUID player) {
