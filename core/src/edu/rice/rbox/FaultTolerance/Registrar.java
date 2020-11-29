@@ -24,11 +24,17 @@ public class Registrar {
         @Override
         public void alert(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
             // TODO: Nothing, because the registrar knows if its the lead or not already
+            com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
+            responseObserver.onNext(empty);
+            responseObserver.onCompleted();
         }
 
         @Override
         public void promote(RBoxProto.PromoteSecondaryMessage request, StreamObserver<Empty> responseObserver) {
             // TODO: idk wtf this is supposed to do
+            com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
+            responseObserver.onNext(empty);
+            responseObserver.onCompleted();
         }
 
         @Override
@@ -38,12 +44,16 @@ public class Registrar {
             String senderHostnameInfo = request.getConnectionIP();
 
             Registrar.this.connManager.addSuperPeer(senderHostnameInfo, UUID.fromString(senderUUID));
+            com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
+            responseObserver.onNext(empty);
+            responseObserver.onCompleted();
         }
 
         @Override
         public void querySecondary(RBoxProto.querySecondaryMessage request,
                                    StreamObserver<RBoxProto.secondaryTimestampsMessage> responseObserver) {
             // TODO: ditto to not knowing what this one does either
+
         }
     };
 

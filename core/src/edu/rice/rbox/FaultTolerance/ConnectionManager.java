@@ -14,6 +14,8 @@ import network.RegistrarGrpc;
 import network.RegistrarGrpc.RegistrarBlockingStub;
 import org.bson.Document;
 
+import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
+
 public class ConnectionManager {
 
 
@@ -70,10 +72,10 @@ public class ConnectionManager {
 
         @Override
         public void removeMe(network.GameNetworkProto.PlayerID request,
-                             io.grpc.stub.StreamObserver<network.GameNetworkProto.Empty> responseObserver) {
+                             io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver)  {
             System.out.println("Remove me called on registrar");
             ConnectionManager.this.removeClient(UUID.fromString(request.getPlayerID()));
-            network.GameNetworkProto.Empty empty = network.GameNetworkProto.Empty.newBuilder().build();
+            com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
             responseObserver.onNext(empty);
             responseObserver.onCompleted();
         }
