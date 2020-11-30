@@ -32,22 +32,22 @@ public class Superpeer {
             new ChangeReceiver() {
             @Override
             public void receiveChange(RemoteChange change) {
-
+                store.receiveChange(change);
             }
 
             @Override
             public void deleteReplica(GameObjectUUID id, Date timestamp) {
-
+                store.deleteReplica(id, timestamp);
             }
 
             @Override
             public RemoteChange getReplica(GameObjectUUID id) {
-                return null;
+                return store.getReplica(id);
             }
 
             @Override
             public void promoteSecondary(GameObjectUUID id) {
-
+                store.promoteSecondary(id);
             }
         },
             serverUUID);
@@ -74,6 +74,7 @@ public class Superpeer {
                 replicaManager.deletePrimary(id, change);
             }
         },
+            // TODO: set up storage location interface
             new ObjectStorageLocationInterface() {
             @Override
             public void add(GameObjectUUID id,
