@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * Unit tests for ReplicaManager.
  */
 @RunWith(JUnit4.class)
-public class ReplicationTest {
+public class ReplicationClientTest {
   private Server server;
   private ManagedChannel channel;
   private RBoxServiceGrpc.RBoxServiceBlockingStub blockingStub;
@@ -47,14 +47,10 @@ public class ReplicationTest {
 
   private static final ChangeReceiver changeReceiver = new ChangeReceiver() {
     @Override
-    public void receiveChange(RemoteChange change) {
-
-    }
+    public void receiveChange(RemoteChange change) { }
 
     @Override
-    public void deleteReplica(GameObjectUUID id, Date timestamp) {
-
-    }
+    public void deleteReplica(GameObjectUUID id, Date timestamp) { }
 
     @Override
     public RemoteChange getReplica(GameObjectUUID id) {
@@ -62,18 +58,14 @@ public class ReplicationTest {
     }
 
     @Override
-    public void promoteSecondary(GameObjectUUID id) {
-
-    }
+    public void promoteSecondary(GameObjectUUID id) { }
   };
   private ServerUUID serverUUID = ServerUUID.randomUUID();
-
-  private ReplicaManagerGrpc client = new ReplicaManagerGrpc(changeReceiver, serverUUID);
+  private ReplicaManagerGrpc client;
 
   // Mock server (ReplicaManagerImpl)
   private static final RBoxServiceGrpc.RBoxServiceImplBase replicaManagerImpl =
       mock(RBoxServiceGrpc.RBoxServiceImplBase.class, delegatesTo(
-//           new ReplicaManagerGrpc.ReplicaManagerImpl()
           new RBoxServiceGrpc.RBoxServiceImplBase() {
             @Override
             public void handleSubscribe(RBoxProto.SubscribeRequest request,
@@ -114,6 +106,7 @@ public class ReplicationTest {
                  .directExecutor()
                  .addService(replicaManagerImpl)
                  .build().start();
+    client = new ReplicaManagerGrpc(changeReceiver, serverUUID);
   }
 
   /**
@@ -127,30 +120,6 @@ public class ReplicationTest {
   @Test
   public void testUnsubscribeMsg() {
     // TODO
-    ArgumentCaptor<RBoxProto.UnsubscribeRequest> requestCaptor =
-        ArgumentCaptor.forClass(RBoxProto.UnsubscribeRequest.class);
-
-    GameObjectUUID primaryObjUUID = GameObjectUUID.randomUUID();
-    GameObjectUUID replicaObjUUID = GameObjectUUID.randomUUID();
-    HolderInfo interestedObject = new HolderInfo(replicaObjUUID, serverUUID);
-
-    // workaround to test private unsubscribe method
-    try {
-      Method method = client.getClass().getDeclaredMethod("unsubscribe", GameObjectUUID.class);
-      method.setAccessible(true);
-      method.invoke(client, replicaObjUUID);
-    } catch(Exception e) {
-      // method doesn't exist
-    }
-
-//    client.handleQueryResult(primaryObjUUID, List.of(interestedObject));
-//    client.unsubscribe(replicaObjUUID);
-
-    verify(replicaManagerImpl).handleUnsubscribe(requestCaptor.capture(), ArgumentMatchers.any());
-    // Verify all fields of the unsubscribe message
-    // TODO: check timestamp
-    assertEquals(serverUUID.toString(), requestCaptor.getValue().getMsg().getSenderInfo().getSenderUUID());
-    assertEquals(replicaObjUUID.toString(), requestCaptor.getValue().getMsg().getTargetObjectUUID());
   }
 
   @Test
