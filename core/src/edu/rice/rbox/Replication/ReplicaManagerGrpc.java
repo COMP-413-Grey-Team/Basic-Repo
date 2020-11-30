@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class ReplicaManagerGrpc {
+public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
 
     private static final Logger logger = Logger.getLogger(ReplicaManagerGrpc.class.getName());
@@ -261,7 +261,8 @@ public class ReplicaManagerGrpc {
     }
 
     /* Functions for Object Location */
-    void handleQueryResult(GameObjectUUID primaryObjectUUID, List<edu.rice.rbox.Replication.HolderInfo> interestedObjects) {
+    @Override
+    public void handleQueryResult(List<edu.rice.rbox.Replication.HolderInfo> interestedObjects) {
         // Subscribe
         interestedObjects.stream()
             .filter(holderInfo -> !publishers.containsKey(holderInfo.getGameObjectUUID()))
