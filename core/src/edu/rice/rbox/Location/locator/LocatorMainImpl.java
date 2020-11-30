@@ -35,11 +35,20 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
     public LocatorMainImpl(ServerUUID serverUUID,
                            ObjectLocationStorageInterface storage,
                            ObjectLocationReplicationInterface replication) {
+         this(serverUUID, storage, replication, MongoManager.DB_NAME, MongoManager.COLLECTION_NAME);
+    }
+
+    public LocatorMainImpl(ServerUUID serverUUID,
+                           ObjectLocationStorageInterface storage,
+                           ObjectLocationReplicationInterface replication,
+                           String db_name,
+                           String collection_name) {
+
         MongoManager mongoManager = new MongoManager();
         mongoManager.connect();
         this.mongoCollection = mongoManager.getMongoClient()
-                                   .getDatabase(MongoManager.DB_NAME)
-                                   .getCollection(MongoManager.COLLECTION_NAME);
+                .getDatabase(db_name)
+                .getCollection(collection_name);
 
         this.objectPredicates = new HashMap<>();
         this.OUR_SERVER = serverUUID;
