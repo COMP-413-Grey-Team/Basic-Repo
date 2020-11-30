@@ -163,7 +163,6 @@ public class ReplicaManagerGrpc {
         }
     };
 
-
     /* Constructor */
     public ReplicaManagerGrpc(int port, ChangeReceiver changeReceiver, ServerUUID serverUUID) {
         this.changeReceiver = changeReceiver;
@@ -179,6 +178,8 @@ public class ReplicaManagerGrpc {
     public void start(String registrarIP) throws Exception {
         server.start();
         logger.info("Server started, listening on " + port);
+        logger.info("This server UUID is " + serverUUID);
+        logger.info("Attempt to connect to " + registrarIP);
 
         ManagedChannel channel = ManagedChannelBuilder.forTarget(registrarIP).usePlaintext(true).build();
         this.registrarBlockingStub = RegistrarGrpc.newBlockingStub(channel);
@@ -193,18 +194,11 @@ public class ReplicaManagerGrpc {
 
         // Send the registrar a Connect message - Need the other files!
         long millis = System.currentTimeMillis();
-        Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
-                                  .setNanos((int) ((millis % 1000) * 1000000)).build();
-
-        RBoxProto.BasicInfo info = RBoxProto.BasicInfo.newBuilder()
-                                       .setSenderUUID(this.serverUUID.toString())
-                                       .setTime(timestamp)
-                                       .build();
 
         RBoxProto.ConnectMessage request =
             RBoxProto.ConnectMessage.newBuilder()
                 .setConnectionIP(systemipaddress + ":8080")
-                .setSender(info)
+                .setSender(generateBasicInfo(millis))
                 .build();
 
 
@@ -257,15 +251,18 @@ public class ReplicaManagerGrpc {
         return generateReplicationMessage(gameObjectUUID, millis);
     }
 
-    private RBoxProto.ReplicationMessage generateReplicationMessage(GameObjectUUID gameObjectUUID, long millis) {
+    private RBoxProto.BasicInfo generateBasicInfo(long millis) {
         Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
                                   .setNanos((int) ((millis % 1000) * 1000000)).build();
-        RBoxProto.BasicInfo senderInfo = RBoxProto.BasicInfo.newBuilder()
+        return RBoxProto.BasicInfo.newBuilder()
                                              .setSenderUUID(this.serverUUID.toString())
                                              .setTime(timestamp)
                                              .build();
+    }
+
+    private RBoxProto.ReplicationMessage generateReplicationMessage(GameObjectUUID gameObjectUUID, long millis) {
         return RBoxProto.ReplicationMessage.newBuilder()
-                   .setSenderInfo(senderInfo)
+                   .setSenderInfo(generateBasicInfo(millis))
                    .setTargetObjectUUID(gameObjectUUID.toString())
                    .build();
     }

@@ -43,6 +43,8 @@ public class GameObjectUUID implements Serializable, GameField {
         return Objects.hash(uuid);
     }
 
+    @Override
+    public String toString() { return uuid.toString();}
 
     @Override
     public GameField copy() {
