@@ -104,7 +104,7 @@ public class ReplicaManagerGrpc {
     }
 
     /* Replica Manager functions */
-    private void subscribe(GameObjectUUID primaryObjectUUID, ServerUUID serverUUID) {
+    public void subscribe(GameObjectUUID primaryObjectUUID, ServerUUID serverUUID) {
         logger.log(Level.INFO, "Sending subscribe request...");
 
         // Construct Subscribe Request
