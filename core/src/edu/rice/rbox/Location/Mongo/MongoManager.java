@@ -2,20 +2,23 @@ package edu.rice.rbox.Location.Mongo;
 
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
 
 
 public class MongoManager {
 
-    private final String PASSWORD;
+    public static final String DB_NAME = "game_db";
+    public static final String COLLECTION_NAME = "game_collection";
+    public static final String CLIENT_COLLECTION = "client_collection";
+    public static final String SUPERPEER_COLLECTION = "superpeer_collection";
+
+    private final String PASSWORD = "UwBNkGQwtdyRBbNf";
     private MongoClient mongoClient;
 
     public MongoClient getMongoClient() {
         return mongoClient;
     }
 
-    public MongoManager(String password) {
-        PASSWORD = password;
+    public MongoManager() {
     }
 
     public void connect() {

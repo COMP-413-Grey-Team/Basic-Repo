@@ -1,6 +1,11 @@
 package edu.rice.rbox.FaultTolerance;
 
 import com.google.protobuf.Empty;
+import com.mongodb.Mongo;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import edu.rice.rbox.Location.Mongo.MongoManager;
 import edu.rice.rbox.Networking.NetworkImpl;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -18,17 +23,24 @@ import network.RegistrarGrpc;
 public class Registrar {
 
     private ConnectionManager connManager;
+    private String ipAddress = "";
 
     private RegistrarGrpc.RegistrarImplBase superPeerServiceImpl = new RegistrarGrpc.RegistrarImplBase() {
 
         @Override
         public void alert(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
             // TODO: Nothing, because the registrar knows if its the lead or not already
+            com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
+            responseObserver.onNext(empty);
+            responseObserver.onCompleted();
         }
 
         @Override
         public void promote(RBoxProto.PromoteSecondaryMessage request, StreamObserver<Empty> responseObserver) {
             // TODO: idk wtf this is supposed to do
+            com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
+            responseObserver.onNext(empty);
+            responseObserver.onCompleted();
         }
 
         @Override
@@ -37,13 +49,19 @@ public class Registrar {
             String senderUUID = request.getSender().getSenderUUID();
             String senderHostnameInfo = request.getConnectionIP();
 
-            Registrar.this.connManager.addSuperPeer(senderHostnameInfo, UUID.fromString(senderUUID));
+            RegistrarGrpc.RegistrarBlockingStub spStub = Registrar.this.connManager
+                                                            .addSuperPeer(senderHostnameInfo, UUID.fromString(senderUUID));
+            spStub.connect(RBoxProto.ConnectMessage.newBuilder().setConnectionIP(ipAddress).build());
+            com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
+            responseObserver.onNext(empty);
+            responseObserver.onCompleted();
         }
 
         @Override
         public void querySecondary(RBoxProto.querySecondaryMessage request,
                                    StreamObserver<RBoxProto.secondaryTimestampsMessage> responseObserver) {
             // TODO: ditto to not knowing what this one does either
+
         }
     };
 
@@ -66,10 +84,16 @@ public class Registrar {
 
 
     public Registrar() {
-        // TODO: Setup Mongo, have a clean database and clean connection, make sure to clear them when starting a new system
-
-        // TODO: set up the connection manager / Mongo stuff
-        this.connManager = new ConnectionManager(null, null);
+        MongoManager mongoMan = new MongoManager();
+        mongoMan.connect();
+        MongoClient client = mongoMan.getMongoClient();
+        client.getDatabase(MongoManager.DB_NAME).drop();
+        MongoDatabase db = client.getDatabase(MongoManager.DB_NAME);
+        db.createCollection(MongoManager.CLIENT_COLLECTION);
+        db.createCollection(MongoManager.SUPERPEER_COLLECTION);
+        db.createCollection(MongoManager.COLLECTION_NAME);
+        this.connManager = new ConnectionManager(db.getCollection(MongoManager.SUPERPEER_COLLECTION),
+            db.getCollection(MongoManager.CLIENT_COLLECTION));
     }
 
     public void init() throws  Exception {
@@ -77,12 +101,11 @@ public class Registrar {
         try(final DatagramSocket socket = new DatagramSocket()){
             socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
             ip = socket.getLocalAddress().getHostAddress();
+            ipAddress = ip;
         }
 
         System.out.println("Server Running on address: " + ip);
 
-        // TODO: Create Connection Manager
-        // TODO: Start grpc server with proper services
 
         // Create a new server to listen on port 8080
 
@@ -109,7 +132,8 @@ public class Registrar {
 
 
     public static void main( String[] args ) throws Exception {
-
+        Registrar reg = new Registrar();
+        reg.init();
 
 
     }
