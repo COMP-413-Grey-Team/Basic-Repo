@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.concurrent.Executors;
 
 import network.GameNetworkProto;
 import network.GameServiceGrpc.GameServiceImplBase;
@@ -103,6 +104,7 @@ public class GameServerGrpc extends GameServiceImplBase {
 
     Server server = ServerBuilder.forPort(8080)
                         .addService(new GameServerGrpc())
+                        .executor(Executors.newFixedThreadPool(20))
                         .build();
 
 
