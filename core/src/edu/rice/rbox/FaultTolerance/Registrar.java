@@ -63,10 +63,18 @@ public class Registrar {
             // TODO: ditto to not knowing what this one does either
 
         }
+
+        @Override
+        public void assignGameRooms(network.RBoxProto.GameRooms request,
+                                    io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+
+            // no-op
+        }
     };
 
 
     private HealthGrpc.HealthImplBase healthServiceImpl = new HealthGrpc.HealthImplBase() {
+
         @Override
         public void check(RBoxProto.HealthCheckRequest request,
                           StreamObserver<RBoxProto.HealthCheckResponse> responseObserver) {

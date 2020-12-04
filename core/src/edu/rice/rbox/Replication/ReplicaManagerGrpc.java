@@ -161,6 +161,13 @@ public class ReplicaManagerGrpc {
         public void querySecondary(RBoxProto.querySecondaryMessage request, StreamObserver<RBoxProto.secondaryTimestampsMessage> responseObserver) {
             // No-op
         }
+
+
+        @Override
+        public void assignGameRooms(network.RBoxProto.GameRooms request,
+                                    io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+            // TODO: IMPLEMENT THIS PEOPLES!!!
+        }
     };
 
     /* Constructor */

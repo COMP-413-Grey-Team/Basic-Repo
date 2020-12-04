@@ -28,6 +28,8 @@ public class ConnectionManager {
     private MongoCollection superPeerCol;
     private MongoCollection clientCol;
 
+
+    // this is for game room assingment (each super peer is assigned a set of game rooms)
     private Map<UUID, Integer> gameRooms;
     private Integer currGameRoom;
     private Integer numGameRooms;
