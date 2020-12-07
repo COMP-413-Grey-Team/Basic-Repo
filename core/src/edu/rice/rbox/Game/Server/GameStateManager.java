@@ -17,6 +17,7 @@ import edu.rice.rbox.ObjStorage.ObjectStore;
 
 import javax.swing.*;
 import javax.swing.Timer;
+import java.awt.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -30,7 +31,6 @@ import static network.GameNetworkProto.UpdateFromClient.MovingRooms.RIGHT;
 
 public class GameStateManager {
 
-  private final ServerUUID serverUUID;
   private ObjectStore objectStore;
 
   private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -75,8 +75,7 @@ public class GameStateManager {
     });
   });
 
-  public GameStateManager(ServerUUID serverUUID, ObjectStore objectStore) {
-    this.serverUUID = serverUUID;
+  public GameStateManager(ObjectStore objectStore) {
     this.objectStore = objectStore;
 
     // TODO: create the rooms this superpeer is responsible for
@@ -286,6 +285,18 @@ public class GameStateManager {
     GameFieldColor backgroundColor =
         (GameFieldColor) objectStore.read(room, ObjectStorageKeys.Room.BACKGROUND_COLOR, 0);
     return new GameState(player, playersMap, coinsMap, backgroundColor.getValue());
+  }
+
+  public void initialize(Set<Integer> myRooms) {
+    myRooms.forEach(roomIndex -> {
+      objectStore.create(new HashMap<>() {{
+        put(TYPE, new GameFieldString(ObjectStorageKeys.Room.TYPE_NAME));
+        put(Room.PLAYERS_IN_ROOM, new GameFieldSet<>(new HashSet<>()));
+        put(Room.COINS_IN_ROOM, new GameFieldSet<>(new HashSet<>()));
+        put(Room.BACKGROUND_COLOR, new GameFieldColor(roomIndex % 2 == 0 ? Color.GRAY : Color.WHITE));
+        put(Room.ROOM_INDEX, new GameFieldInteger(roomIndex));
+      }}, new HashSet<>(), new NoInterestPredicate(), author, 0); // TODO: who is the author?
+    });
   }
 
 }
