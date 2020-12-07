@@ -31,6 +31,7 @@ import static network.GameNetworkProto.UpdateFromClient.MovingRooms.RIGHT;
 
 public class GameStateManager {
 
+  private final ServerUUID serverUUID;
   private ObjectStore objectStore;
 
   private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -75,10 +76,9 @@ public class GameStateManager {
     });
   });
 
-  public GameStateManager(ObjectStore objectStore) {
+  public GameStateManager(ServerUUID serverUUID, ObjectStore objectStore) {
+    this.serverUUID = serverUUID;
     this.objectStore = objectStore;
-
-    // TODO: create the rooms this superpeer is responsible for
 
     coinTimer.start();
     gameLoopTimer.start();
@@ -287,7 +287,7 @@ public class GameStateManager {
     return new GameState(player, playersMap, coinsMap, backgroundColor.getValue());
   }
 
-  public void initialize(Set<Integer> myRooms) {
+  public void initializeRooms(Set<Integer> myRooms) {
     myRooms.forEach(roomIndex -> {
       objectStore.create(new HashMap<>() {{
         put(TYPE, new GameFieldString(ObjectStorageKeys.Room.TYPE_NAME));
@@ -295,7 +295,7 @@ public class GameStateManager {
         put(Room.COINS_IN_ROOM, new GameFieldSet<>(new HashSet<>()));
         put(Room.BACKGROUND_COLOR, new GameFieldColor(roomIndex % 2 == 0 ? Color.GRAY : Color.WHITE));
         put(Room.ROOM_INDEX, new GameFieldInteger(roomIndex));
-      }}, new HashSet<>(), new NoInterestPredicate(), author, 0); // TODO: who is the author?
+      }}, new HashSet<>(), new NoInterestPredicate(), null, 0);
     });
   }
 
