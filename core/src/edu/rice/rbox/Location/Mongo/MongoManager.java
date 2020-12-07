@@ -11,6 +11,7 @@ public class MongoManager {
     public static final String CLIENT_COLLECTION = "client_collection";
     public static final String SUPERPEER_COLLECTION = "superpeer_collection";
 
+
     private final String PASSWORD = "UwBNkGQwtdyRBbNf";
     private MongoClient mongoClient;
 
