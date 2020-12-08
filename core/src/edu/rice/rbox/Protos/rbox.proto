@@ -86,9 +86,15 @@ message ConnectMessage {
   string connectionIP = 2;
 }
 
+message GameRooms {
+  BasicInfo sender = 1;
+  repeated int32 assigned_rooms = 2;
+}
+
 service Registrar {
   rpc Alert(NewRegistrarMessage) returns (google.protobuf.Empty);
   rpc Promote(PromoteSecondaryMessage) returns (google.protobuf.Empty);
   rpc Connect(ConnectMessage) returns (google.protobuf.Empty);
   rpc QuerySecondary(querySecondaryMessage) returns (secondaryTimestampsMessage);
+  rpc AssignGameRooms(GameRooms) returns (google.protobuf.Empty);
 }

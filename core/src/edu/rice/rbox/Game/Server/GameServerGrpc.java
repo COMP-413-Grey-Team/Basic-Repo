@@ -2,11 +2,13 @@ package edu.rice.rbox.Game.Server;
 
 import com.google.protobuf.Empty;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Common.ServerUUID;
 import edu.rice.rbox.Game.Client.Messages.UpdateFromClientMessage;
 import edu.rice.rbox.Game.Common.SyncState.GameState;
 import edu.rice.rbox.Game.Common.SyncState.GameStateDelta;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
 import edu.rice.rbox.Game.Server.Messages.UpdateFromServerMessage;
+import edu.rice.rbox.ObjStorage.ObjectStore;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
@@ -21,15 +23,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.concurrent.Executors;
 
 import network.GameNetworkProto;
 import network.GameServiceGrpc.GameServiceImplBase;
 
 public class GameServerGrpc extends GameServiceImplBase {
 
-  public GameServerGrpc() {
-  }
+  private GameStateManager gameStateManager;
 
+  public GameServerGrpc(ObjectStore objectStore, ServerUUID myServerUUID) {
+    gameStateManager = new GameStateManager(myServerUUID, objectStore);
+  }
 
   @Override
   public void publishUpdate(GameNetworkProto.UpdateFromClient request,
@@ -101,8 +106,11 @@ public class GameServerGrpc extends GameServiceImplBase {
 
     // Create a new server to listen on port 8080
 
+    // TODO: this doesn't really make sense for there to be a main method, since it depends on having an Object Store to use.
+    // We should move most of this code to the constructor.
     Server server = ServerBuilder.forPort(8080)
-                        .addService(new GameServerGrpc())
+                        .addService(new GameServerGrpc(null, ServerUUID.randomUUID()))
+                        .executor(Executors.newFixedThreadPool(20))
                         .build();
 
 
