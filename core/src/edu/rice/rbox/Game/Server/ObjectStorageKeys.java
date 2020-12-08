@@ -1,6 +1,7 @@
 package edu.rice.rbox.Game.Server;
 
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Common.ServerUUID;
 import edu.rice.rbox.Location.interest.InterestPredicate;
 
 import java.util.HashSet;
@@ -13,8 +14,7 @@ public class ObjectStorageKeys {
   public static class Global {
     public static final String TYPE_NAME = "GLOBAL";
     public static final GameObjectUUID GLOBAL_OBJ = new GameObjectUUID(new UUID(1234, 1));
-    public static final String SERVER_ROOMS_MAP = "SERVER_ROOMS_MAP";
-    public static final String NUMBER_OF_ROOMS = "NUMBER_OF_ROOMS";
+    public static String keyForServerUUID(ServerUUID uuid) { return "SERVER_ASSIGNED_ROOMS_" + uuid.getUUID().toString(); }
     public static String roomKeyForIndex(int index) {
       return "ROOM_INDEX_" + index;
     }
