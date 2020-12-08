@@ -17,11 +17,13 @@ import edu.rice.rbox.ObjStorage.ObjectStore;
 
 import javax.swing.*;
 import javax.swing.Timer;
+import java.awt.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
+import static edu.rice.rbox.Common.Constants.NUMBER_OF_ROOMS;
 import static network.GameNetworkProto.UpdateFromClient.MovingRooms.NOT;
 import static edu.rice.rbox.Game.Client.World.WORLD_HEIGHT;
 import static edu.rice.rbox.Game.Client.World.WORLD_WIDTH;
@@ -38,9 +40,7 @@ public class GameStateManager {
   private Timer coinTimer = new Timer(500, e -> {
     final HashSet<GameObjectUUID> roomsToGen = new HashSet<>();
 
-    final GameFieldMap<ServerUUID, GameFieldSet<GameFieldInteger>> serverRoomMap =
-        (GameFieldMap<ServerUUID, GameFieldSet<GameFieldInteger>>) objectStore.read(Global.GLOBAL_OBJ, Global.SERVER_ROOMS_MAP, 0);
-    final GameFieldSet<GameFieldInteger> roomIndices = serverRoomMap.get(myServerUUID());
+    final GameFieldSet<GameFieldInteger> roomIndices = (GameFieldSet<GameFieldInteger>) objectStore.read(Global.GLOBAL_OBJ, Global.keyForServerUUID(myServerUUID()), 0);
     lock.readLock().lock();
     for (final GameFieldInteger roomIndex : roomIndices) {
       final GameObjectUUID roomUUID =
@@ -79,8 +79,6 @@ public class GameStateManager {
     this.serverUUID = serverUUID;
     this.objectStore = objectStore;
 
-    // TODO: create the rooms this superpeer is responsible for
-
     coinTimer.start();
     gameLoopTimer.start();
   }
@@ -91,10 +89,9 @@ public class GameStateManager {
 
   public GameState handlePlayerJoining(PlayerState newPlayerInfo) {
     // Find one of the rooms this server is in charge of and add the player to that room.
-    final GameFieldMap<ServerUUID, GameFieldSet<GameObjectUUID>> serverRoomMap =
-        (GameFieldMap<ServerUUID, GameFieldSet<GameObjectUUID>>) objectStore.read(Global.GLOBAL_OBJ, Global.SERVER_ROOMS_MAP, 0);
-    final GameFieldSet<GameObjectUUID> roomUUIDs = serverRoomMap.get(myServerUUID());
-    final GameObjectUUID roomUUID = roomUUIDs.iterator().next();
+    final GameFieldSet<GameFieldInteger> roomIndices = (GameFieldSet<GameFieldInteger>) objectStore.read(Global.GLOBAL_OBJ, Global.keyForServerUUID(myServerUUID()), 0);
+    final GameObjectUUID roomUUID =
+        (GameObjectUUID) objectStore.read(Global.GLOBAL_OBJ, Global.roomKeyForIndex(roomIndices.iterator().next().getValue()), 0);
 
     HashMap<String, GameField> playerMap = new HashMap<>() {{
       put(TYPE, new GameFieldString(Player.TYPE_NAME));
@@ -132,10 +129,9 @@ public class GameStateManager {
     if (update.movingRooms != NOT) {
       removePlayerFromRoom(playerUUID, roomUUID);
 
-      int numberOfRooms = ((GameFieldInteger) objectStore.read(Global.GLOBAL_OBJ, Global.NUMBER_OF_ROOMS, 0)).getValue();
       int roomIndex = ((GameFieldInteger) objectStore.read(roomUUID, Room.ROOM_INDEX, 0)).getValue();
 
-      int nextRoomIndex = (update.movingRooms == RIGHT) ? ((roomIndex + 1) % numberOfRooms) : ((roomIndex - 1 + numberOfRooms) % numberOfRooms);
+      int nextRoomIndex = (update.movingRooms == RIGHT) ? ((roomIndex + 1) % NUMBER_OF_ROOMS) : ((roomIndex - 1 + NUMBER_OF_ROOMS) % NUMBER_OF_ROOMS);
       GameObjectUUID nextRoomUUID = (GameObjectUUID) objectStore.read(Global.GLOBAL_OBJ, Global.roomKeyForIndex(nextRoomIndex), 0);
 
       final GameObjectUUID newRoomUUID = nextRoomUUID;
@@ -286,6 +282,26 @@ public class GameStateManager {
     GameFieldColor backgroundColor =
         (GameFieldColor) objectStore.read(room, ObjectStorageKeys.Room.BACKGROUND_COLOR, 0);
     return new GameState(player, playersMap, coinsMap, backgroundColor.getValue());
+  }
+
+  public void initializeRooms(Set<Integer> myRooms) {
+    myRooms.forEach(roomIndex -> {
+      final GameObjectUUID roomUUID = objectStore.create(new HashMap<>() {{
+        put(TYPE, new GameFieldString(Room.TYPE_NAME));
+        put(Room.PLAYERS_IN_ROOM, new GameFieldSet<>(new HashSet<>()));
+        put(Room.COINS_IN_ROOM, new GameFieldSet<>(new HashSet<>()));
+        put(Room.BACKGROUND_COLOR, new GameFieldColor(roomIndex % 2 == 0 ? Color.GRAY : Color.WHITE));
+        put(Room.ROOM_INDEX, new GameFieldInteger(roomIndex));
+      }}, Room.IMPORTANT_FIELDS, new NoInterestPredicate(), null, 0);
+    });
+
+    objectStore.write(
+        new LocalFieldChange(
+            Global.GLOBAL_OBJ,
+            Global.keyForServerUUID(myServerUUID()),
+            new GameFieldSet<GameFieldInteger>(myRooms.stream().map(GameFieldInteger::new).collect(Collectors.toSet())),
+            0),
+        null);
   }
 
 }
