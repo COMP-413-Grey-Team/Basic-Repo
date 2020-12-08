@@ -53,8 +53,6 @@ message HeartBeatResponse {
   ServingStatus status = 2;
 }
 
-
-
 message NewRegistrarMessage {
   BasicInfo sender = 1;
   string newRegistrarIP = 2;
@@ -98,8 +96,6 @@ message CheckIn {
 message LeaderDown {
   BasicInfo sender = 1;
 }
-
-
 
 service InternalRegistrarFaultTolerance {
   // boiler plate init
