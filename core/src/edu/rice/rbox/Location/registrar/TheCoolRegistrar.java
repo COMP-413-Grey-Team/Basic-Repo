@@ -21,9 +21,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import network.*;
 import network.ElectionGrpc;
-import network.HealthGrpc;
 import network.RBoxServiceGrpc;
-import network.RegistrarConnectionsGrpc;
 
 public class TheCoolRegistrar {
 
@@ -31,14 +29,18 @@ public class TheCoolRegistrar {
 
   private ClusterManager clusterManager;
 
-  boolean leader = false;
+  private String ip;
+
+  protected String getIP() {
+    return ip;
+  }
 
   protected UUID uuid;
 
   private UUID leaderUUID;
 
-  public String getUUID() {
-    return uuid.toString();
+  public UUID getUUID() {
+    return this.uuid;
   }
 
   private RBoxProto.BasicInfo getInfo() {
@@ -63,6 +65,7 @@ public class TheCoolRegistrar {
   public TheCoolRegistrar(String password) {
     // TODO: set up the connection manager / Mongo stuff
     this.connManager = new TheCoolConnectionManager(null, null);
+    //this.clusterManager = new ClusterManager(getIP(),getUUID(), new Consumer<String>());
     mongoManager = new MongoManager(password);
   }
 
@@ -113,9 +116,9 @@ public class TheCoolRegistrar {
 
     // that while loop will send the heartbeats
 
-    var thing = new ClusterManager(null, null, new Consumer<String>() {
+    ClusterManager thing = new ClusterManager(null, null, new Consumer<String>() {
       @Override
-      public void accept(String s) {
+//      public void accept(String s) {
 //        for (Stub : connManager.superpees) {
 //          send somehing
 //        }
