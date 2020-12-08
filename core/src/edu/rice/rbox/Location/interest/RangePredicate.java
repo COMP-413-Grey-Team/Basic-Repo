@@ -1,40 +1,39 @@
 package edu.rice.rbox.Location.interest;
 
 import com.mongodb.client.model.Filters;
+import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.ObjStorage.ObjectLocationStorageInterface;
 import org.bson.conversions.Bson;
-
-import java.io.Serializable;
-import java.util.HashMap;
 
 public class RangePredicate<T extends Number> implements InterestPredicate {
 
-    final String fieldName;
     final Number upper;
     final Number lower;
-    final boolean isRelative;
+    final String field;
+    final Boolean isRelative;
 
     public RangePredicate(String field, T upper, T lower, boolean isRelative) {
-        this.fieldName = field;
         this.upper = upper;
         this.lower = lower;
+        this.field = field;
         this.isRelative = isRelative;
 
     }
 
 
     @Override
-    public Bson toMongoQuery(HashMap<String, Serializable> map) {
+    public Bson toMongoQuery(GameObjectUUID relative_object_uuid, ObjectLocationStorageInterface storage) {
         double upperValue = upper.doubleValue();
         double lowerValue = lower.doubleValue();
 
         if (isRelative) {
-            T fieldValue = (T) map.get(fieldName);
+            T fieldValue = (T) storage.queryOneField(relative_object_uuid, this.field).getValue();
             lowerValue = fieldValue.doubleValue() + lowerValue;
             upperValue = fieldValue.doubleValue() + upperValue;
         }
         return Filters.and(
-                Filters.gte(fieldName, lowerValue),
-                Filters.lte(fieldName, upperValue)
+                Filters.gte(this.field, lowerValue),
+                Filters.lte(this.field, upperValue)
         );
     }
 }

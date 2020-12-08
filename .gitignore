@@ -19,4 +19,5 @@ target/*
 /core/target/*
 
 *.DS_Store
-
+*.xml
+*.iml

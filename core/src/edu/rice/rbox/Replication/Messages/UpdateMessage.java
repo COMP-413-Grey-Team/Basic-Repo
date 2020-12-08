@@ -1,10 +1,9 @@
 package edu.rice.rbox.Replication.Messages;
 
-import edu.rice.rbox.Common.GameField;
+import edu.rice.rbox.Common.GameField.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**

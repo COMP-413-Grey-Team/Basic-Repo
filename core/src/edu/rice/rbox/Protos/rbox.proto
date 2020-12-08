@@ -40,6 +40,7 @@ service RBoxService {
 
 message HeartBeatRequest {
   BasicInfo sender = 1;
+  string service = 2;
 }
 
 message HeartBeatResponse {
@@ -93,6 +94,11 @@ message CheckIn {
   BasicInfo sender = 1;
 }
 
+message GameRooms {
+  BasicInfo sender = 1;
+  repeated int32 assigned_rooms = 2;
+}
+
 message LeaderDown {
   BasicInfo sender = 1;
 }
@@ -110,6 +116,8 @@ service InternalRegistrarFaultTolerance {
 
 service SuperpeerFaultTolerance {
   rpc Promote(PromoteSecondaryMessage) returns (google.protobuf.Empty);
+  rpc Connect(ConnectMessage) returns (google.protobuf.Empty);
   rpc QuerySecondary(QuerySecondaryMessage) returns (SecondaryTimestampsMessage);
+  rpc AssignGameRooms(GameRooms) returns (google.protobuf.Empty);
   rpc HeartBeatSuperpeer(HeartBeatRequest) returns (HeartBeatResponse);
 }

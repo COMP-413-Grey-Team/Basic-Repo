@@ -1,6 +1,6 @@
 package edu.rice.rbox.Common.Change;
 
-import edu.rice.rbox.Common.GameField;
+import edu.rice.rbox.Common.GameField.GameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 
 import java.util.HashMap;
@@ -19,7 +19,9 @@ public class LocalAddReplicaChange extends AddReplicaChange implements LocalChan
     return bufferIndex;
   }
 
-  public LocalAddReplicaChange copyWithIndex(int i) {
+  @Override
+  public LocalChange copyWithBufferIndex(int i) {
     return new LocalAddReplicaChange(this.getTarget(), this.getObject(), i);
   }
 }
+

@@ -1,10 +1,9 @@
 package edu.rice.rbox.Location.interest;
 
 import com.mongodb.client.model.Filters;
+import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.ObjStorage.ObjectLocationStorageInterface;
 import org.bson.conversions.Bson;
-
-import java.io.Serializable;
-import java.util.HashMap;
 
 public class CompositePredicate implements InterestPredicate {
     private final PredicateBiOperator op;
@@ -18,19 +17,16 @@ public class CompositePredicate implements InterestPredicate {
     }
 
     @Override
-    public Bson toMongoQuery(HashMap<String, Serializable> map) {
-        switch (op) {
-            case AND:
-                return Filters.and(
-                        p1.toMongoQuery(map),
-                        p2.toMongoQuery(map)
-                );
-            case OR:
-                return Filters.or(
-                        p1.toMongoQuery(map),
-                        p2.toMongoQuery(map)
-                );
-        }
-        return null;
+    public Bson toMongoQuery(GameObjectUUID relative_object_uuid, ObjectLocationStorageInterface storage) {
+        return switch (op) {
+            case AND -> Filters.and(
+                    p1.toMongoQuery(relative_object_uuid, storage),
+                    p2.toMongoQuery(relative_object_uuid, storage)
+            );
+            case OR -> Filters.or(
+                    p1.toMongoQuery(relative_object_uuid, storage),
+                    p2.toMongoQuery(relative_object_uuid, storage)
+            );
+        };
     }
 }
