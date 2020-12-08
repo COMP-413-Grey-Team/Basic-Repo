@@ -4,6 +4,7 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
+import com.mongodb.internal.connection.ClusterableServerFactory;
 import edu.rice.rbox.Location.Mongo.MongoManager;
 import edu.rice.rbox.Networking.NetworkImpl;
 import io.grpc.BindableService;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 
+import java.util.function.Consumer;
 import network.*;
 import network.ElectionGrpc;
 import network.HealthGrpc;
@@ -204,5 +206,14 @@ public class TheCoolRegistrar {
     // that thread will run a while loop forever
 
     // that while loop will send the heartbeats
+
+    var thing = new ClusterManager(null, null, new Consumer<String>() {
+      @Override
+      public void accept(String s) {
+//        for (Stub : connManager.superpees) {
+//          send somehing
+//        }
+      }
+    })
   }
 }
