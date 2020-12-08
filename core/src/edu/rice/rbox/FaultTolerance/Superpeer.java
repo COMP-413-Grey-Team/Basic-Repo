@@ -1,9 +1,9 @@
 package edu.rice.rbox.FaultTolerance;
 
-import com.google.protobuf.Timestamp;
 import edu.rice.rbox.Common.Change.RemoteChange;
 import edu.rice.rbox.Common.GameField.InterestingGameField;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Game.Server.GameStateManager;
 import edu.rice.rbox.Location.interest.InterestPredicate;
 import edu.rice.rbox.ObjStorage.ChangeReceiver;
 import edu.rice.rbox.ObjStorage.ObjectStorageLocationInterface;
@@ -23,6 +23,7 @@ public class Superpeer {
     private ServerUUID serverUUID;
     private ReplicaManagerGrpc replicaManager;
     private ObjectStore store;
+    private GameStateManager gameStateManager;
 
     /* Constructor of the Superpeer, setting up the adaptors */
     public Superpeer() {
@@ -99,6 +100,8 @@ public class Superpeer {
             }
         },
             storeSize);
+
+        this.gameStateManager = new GameStateManager(this.store);
     }
 
     private void start(String registrarIP) throws Exception {

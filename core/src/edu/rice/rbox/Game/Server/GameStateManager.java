@@ -19,6 +19,10 @@ public class GameStateManager {
 
   private ObjectStore objectStore;
 
+  public GameStateManager(ObjectStore objectStore) {
+      this.objectStore = objectStore;
+    }
+
   public GameState handlePlayerJoining(PlayerState newPlayerInfo) {
     GameFieldList<GameObjectUUID> roomOrder =
         (GameFieldList<GameObjectUUID>) objectStore.read(ObjectStorageKeys.Global.GLOBAL_OBJ, ObjectStorageKeys.Global.ROOM_ORDER, 0);
