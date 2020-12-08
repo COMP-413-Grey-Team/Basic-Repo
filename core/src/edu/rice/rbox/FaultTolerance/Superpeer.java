@@ -101,7 +101,7 @@ public class Superpeer {
         },
             storeSize);
 
-        this.gameStateManager = new GameStateManager(this.store);
+        this.gameStateManager = new GameStateManager(serverUUID, this.store);
     }
 
     private void start(String registrarIP) throws Exception {
