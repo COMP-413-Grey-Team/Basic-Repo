@@ -94,6 +94,7 @@ public class ConnectionManager {
         this.superPeerCol = spCollection;
         this.clientCol = clientCollection;
         this.stub2Room = new HashMap<>();
+        this.superPeer2gameClient = new HashMap<>();
     }
 
     /**
@@ -103,6 +104,7 @@ public class ConnectionManager {
      * @return superpeer stub
      */
     public RegistrarBlockingStub addSuperPeer(String hostnameInfo, UUID superPeerId) {
+        System.out.println("trying to create a superpeer stub to " + hostnameInfo);
         System.out.println("Super Peer " + hostnameInfo + " connecting");
         ManagedChannel channel = ManagedChannelBuilder.forTarget(hostnameInfo)
                                      .usePlaintext(true)
