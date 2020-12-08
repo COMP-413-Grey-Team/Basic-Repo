@@ -42,7 +42,7 @@ public class TheCoolRegistrar {
 
   private static UUID uuid;
 
-  private UUID leaderUUID;
+  private static UUID leaderUUID;
 
   public static UUID getUUID() {
     return uuid;
@@ -122,6 +122,19 @@ public class TheCoolRegistrar {
     Runnable target = new Runnable() {
       @Override
       public void run() {
+        while (!leader) {
+          if (getTimestamp().getSeconds() > clusterManager.getMostRecentHeartbeat().getSeconds() ||
+                  (getTimestamp().getSeconds() == clusterManager.getMostRecentHeartbeat().getSeconds() &&
+                          getTimestamp().getNanos() - clusterManager.getMostRecentHeartbeat().getNanos() > 500)) {
+            if (clusterManager.clusterMemberStubs.size() > 1) {
+              UUID backup = (UUID) clusterManager.clusterMemberUUIDs.keySet().toArray()[0];
+              if (backup == leaderUUID) {
+                backup = (UUID) clusterManager.clusterMemberUUIDs.keySet().toArray()[1];
+              }
+              clusterManager.clusterMemberUUIDs.get(backup).downedLeader(RBoxProto.LeaderDown.newBuilder().setSender(getInfo()).build());
+            }
+          }
+        }
         while (leader) {
           for (InternalRegistrarFaultToleranceBlockingStub stub : clusterManager.clusterMemberStubs.keySet()) {
             UUID stubUUID = clusterManager.clusterMemberStubs.get(stub);
@@ -171,6 +184,7 @@ public class TheCoolRegistrar {
               mostRecentSuperpeerHeartBeats.putIfAbsent(stub, info.getTime());
               mostRecentSuperpeerHeartBeats.put(stub, info.getTime());
             } else {
+              //TODO change info.getTime()
               if(info.getTime().getNanos() - mostRecentSuperpeerHeartBeats.get(stub).getNanos() > 500) {
                 //TODO use mongo to get downed objects
                 List<String> secondaryUUIDs = null;

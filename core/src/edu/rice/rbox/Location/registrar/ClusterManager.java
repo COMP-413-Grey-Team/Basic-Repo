@@ -19,7 +19,7 @@ public class ClusterManager {
 
   // holds the stubs to cluster members
   protected Map<InternalRegistrarFaultToleranceBlockingStub, UUID> clusterMemberStubs;
-  private Map<UUID, InternalRegistrarFaultToleranceBlockingStub> clusterMemberUUIDs;
+  protected Map<UUID, InternalRegistrarFaultToleranceBlockingStub> clusterMemberUUIDs;
 
   InternalRegistrarFaultToleranceBlockingStub leaderStub;
 
@@ -33,6 +33,14 @@ public class ClusterManager {
   private Consumer<String> alertSuperpeersOfNewLeader;
 
   private boolean leader = false;
+
+  private Timestamp mostRecentHeartbeat = Timestamp.getDefaultInstance();
+
+  public Timestamp getMostRecentHeartbeat() {
+    return mostRecentHeartbeat;
+  }
+
+  private boolean receivedInitialHeartbeat = false;
 
   private int numLeaderMsg = 0;
 
@@ -63,7 +71,7 @@ public class ClusterManager {
     return RBoxProto.BasicInfo.newBuilder().setSenderUUID(getUUID()).setTime(getTimestamp()).build();
   }
 
-  private Timestamp mostRecentDL = getTimestamp();
+  private Timestamp mostRecentDownedLeader = getTimestamp();
 
   // implements the internal registrar fault tolerance service
   private InternalRegistrarFaultToleranceGrpc.InternalRegistrarFaultToleranceImplBase internalClusterServiceImpl =
@@ -119,13 +127,17 @@ public class ClusterManager {
     public void heartBeatClusterMember(RBoxProto.HeartBeatRequest request,
                                        StreamObserver<RBoxProto.HeartBeatResponse> responseObserver) {
       //TODO
+      if(!receivedInitialHeartbeat) {
+        receivedInitialHeartbeat = true;
+      }
+      mostRecentHeartbeat = getTimestamp();
       responseObserver.onNext(RBoxProto.HeartBeatResponse.newBuilder().setSender(getInfo()).setStatus(RBoxProto.HeartBeatResponse.ServingStatus.SERVING).build());
     }
 
     @Override
     public void downedLeader(RBoxProto.LeaderDown request, StreamObserver<Empty> responseObserver) {
       //TODO
-      if (!(getTimestamp().getSeconds() <= mostRecentDL.getSeconds() + 1)) {
+      if (!(getTimestamp().getSeconds() <= mostRecentDownedLeader.getSeconds() + 1)) {
         setNumLeaderMsg(0);
       }
       setNumLeaderMsg(getNumLeaderMsg() + 1);
