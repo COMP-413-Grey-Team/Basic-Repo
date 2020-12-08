@@ -1,19 +1,20 @@
 package edu.rice.rbox.FaultTolerance;
 
-import com.google.protobuf.Timestamp;
 import edu.rice.rbox.Common.Change.RemoteChange;
 import edu.rice.rbox.Common.GameField.InterestingGameField;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Game.Server.GameStateManager;
 import edu.rice.rbox.Location.interest.InterestPredicate;
-import edu.rice.rbox.ObjStorage.ChangeReceiver;
-import edu.rice.rbox.ObjStorage.ObjectStorageLocationInterface;
-import edu.rice.rbox.ObjStorage.ObjectStorageReplicationInterface;
+import edu.rice.rbox.Location.locator.LocatorMainImpl;
+import edu.rice.rbox.ObjStorage.*;
+import edu.rice.rbox.Replication.HolderInfo;
+import edu.rice.rbox.Replication.ObjectLocationReplicationInterface;
 import edu.rice.rbox.Replication.ReplicaManagerGrpc;
-import edu.rice.rbox.ObjStorage.ObjectStore;
 import edu.rice.rbox.Common.ServerUUID;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class Superpeer {
@@ -23,12 +24,13 @@ public class Superpeer {
     private ServerUUID serverUUID;
     private ReplicaManagerGrpc replicaManager;
     private ObjectStore store;
+    private LocatorMainImpl locator;
+    private GameStateManager gameStateManager;
 
     /* Constructor of the Superpeer, setting up the adaptors */
     public Superpeer() {
         this.serverUUID = ServerUUID.randomUUID();
-        this.replicaManager = new ReplicaManagerGrpc(
-            port,
+        this.replicaManager = new ReplicaManagerGrpc(port, serverUUID,
             new ChangeReceiver() {
             @Override
             public void receiveChange(RemoteChange change) {
@@ -49,8 +51,7 @@ public class Superpeer {
             public void promoteSecondary(GameObjectUUID id) {
                 store.promoteSecondary(id);
             }
-        },
-            serverUUID);
+        });
 
         this.store = new ObjectStore(
             new ObjectStorageReplicationInterface() {
@@ -74,31 +75,36 @@ public class Superpeer {
                 replicaManager.deletePrimary(id, change);
             }
         },
-            // TODO: set up storage location interface
             new ObjectStorageLocationInterface() {
             @Override
             public void add(GameObjectUUID id,
                             InterestPredicate predicate,
                             HashMap<String, InterestingGameField> value) {
-
+                locator.add(id, predicate, value);
             }
 
             @Override
             public void update(GameObjectUUID id, String field, InterestingGameField value) {
-
+                locator.update(id, field, value);
             }
 
             @Override
             public void delete(GameObjectUUID id) {
-
+                locator.delete(id);
             }
 
             @Override
             public void queryInterest() {
-
+                locator.queryInterest();
             }
         },
             storeSize);
+
+        this.locator = new LocatorMainImpl(serverUUID,
+            (id, field) -> store.queryOneField(id, field),
+            interestedObjects -> replicaManager.handleQueryResult(interestedObjects)
+        );
+        this.gameStateManager = new GameStateManager(serverUUID, this.store);
     }
 
     private void start(String registrarIP) throws Exception {

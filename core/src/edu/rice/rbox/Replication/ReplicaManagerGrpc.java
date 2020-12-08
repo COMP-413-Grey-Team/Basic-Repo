@@ -162,7 +162,6 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
             // No-op
         }
 
-
         @Override
         public void assignGameRooms(network.RBoxProto.GameRooms request,
                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
@@ -171,7 +170,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
     };
 
     /* Constructor */
-    public ReplicaManagerGrpc(int port, ChangeReceiver changeReceiver, ServerUUID serverUUID) {
+    public ReplicaManagerGrpc(int port, ServerUUID serverUUID, ChangeReceiver changeReceiver) {
         this.changeReceiver = changeReceiver;
         this.serverUUID = serverUUID;
         this.port = port;
