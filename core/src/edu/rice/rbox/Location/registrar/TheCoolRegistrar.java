@@ -1,10 +1,10 @@
 package edu.rice.rbox.Location.registrar;
 
-import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
+import edu.rice.rbox.FaultTolerance.Messages.PromoteSecondaryMessage;
 import edu.rice.rbox.Location.Mongo.MongoManager;
 
 import io.grpc.BindableService;
@@ -14,9 +14,9 @@ import io.grpc.ServerBuilder;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import network.*;
 import network.InternalRegistrarFaultToleranceGrpc.*;
@@ -110,7 +110,8 @@ public class TheCoolRegistrar {
     server.awaitTermination();
   }
 
-  private static Map<InternalRegistrarFaultToleranceBlockingStub, Timestamp> mostRecentHeartBeats;
+  private static Map<InternalRegistrarFaultToleranceBlockingStub, Timestamp> mostRecentClusterHeartBeats;
+  private static Map<SuperpeerFaultToleranceBlockingStub, Timestamp> mostRecentSuperpeerHeartBeats;
 
   public static void main( String[] args ) throws Exception {
 
@@ -133,10 +134,10 @@ public class TheCoolRegistrar {
               success = false;
             }
             if (success) {
-              mostRecentHeartBeats.putIfAbsent(stub, info.getTime());
-              mostRecentHeartBeats.put(stub, info.getTime());
+              mostRecentClusterHeartBeats.putIfAbsent(stub, info.getTime());
+              mostRecentClusterHeartBeats.put(stub, info.getTime());
             } else {
-              if(info.getTime().getNanos() - mostRecentHeartBeats.get(stub).getNanos() > 500) {
+              if(info.getTime().getNanos() - mostRecentClusterHeartBeats.get(stub).getNanos() > 500) {
                 int countSuccessfulChecks = 0;
                 int countUnsuccessfulChecks = 0;
                 for (InternalRegistrarFaultToleranceBlockingStub checkStub : clusterManager.clusterMemberStubs.keySet()) {
@@ -152,6 +153,48 @@ public class TheCoolRegistrar {
                     clusterManager.clusterMemberStubs.remove(stub);
                     break;
                   }
+                }
+              }
+            }
+          }
+          for (SuperpeerFaultToleranceBlockingStub stub : connManager.superPeers.keySet()) {
+            UUID stubUUID = UUID.fromString(connManager.superPeers.get(stub));
+            RBoxProto.BasicInfo info = getInfo();
+            RBoxProto.HeartBeatRequest req = RBoxProto.HeartBeatRequest.newBuilder().setSender(info).build();
+            boolean success = true;
+            try {
+              stub.heartBeatSuperpeer(req);
+            } catch (Exception ex) {
+              success = false;
+            }
+            if (success) {
+              mostRecentSuperpeerHeartBeats.putIfAbsent(stub, info.getTime());
+              mostRecentSuperpeerHeartBeats.put(stub, info.getTime());
+            } else {
+              if(info.getTime().getNanos() - mostRecentSuperpeerHeartBeats.get(stub).getNanos() > 500) {
+                //TODO use mongo to get downed objects
+                List<String> secondaryUUIDs = null;
+                Map<String, String> secondaryBestTimestamps = null;
+                Map<String, SuperpeerFaultToleranceBlockingStub> secondaryBestSuperpeers = null;
+                connManager.superPeers.remove(stub);
+                for (SuperpeerFaultToleranceBlockingStub superpeer : connManager.superPeers.keySet()) {
+                   RBoxProto.secondaryTimestampsMessage timestamps;
+                   timestamps = superpeer.querySecondary(RBoxProto.querySecondaryMessage.newBuilder().addAllPrimaryUUIDs(secondaryUUIDs).build());
+                   int index = 0;
+                   for (String uuid : timestamps.getPrimaryUUIDsList()) {
+                     secondaryBestTimestamps.putIfAbsent(uuid, timestamps.getSecondaryTimestamps(index));
+                     secondaryBestSuperpeers.putIfAbsent(uuid, superpeer);
+                     if (Integer.parseInt(secondaryBestTimestamps.get(uuid)) > Integer.parseInt(timestamps.getSecondaryTimestamps(index))) {
+                       secondaryBestTimestamps.put(uuid, timestamps.getSecondaryTimestamps(index));
+                       secondaryBestSuperpeers.put(uuid, superpeer);
+                     }
+                     index++;
+                   }
+                }
+                //TODO double check that everything is being updated
+                for (String uuid : secondaryBestSuperpeers.keySet()) {
+                  RBoxProto.PromoteSecondaryMessage promote = RBoxProto.PromoteSecondaryMessage.newBuilder().setSender(getInfo()).addPromotedUUIDs(uuid).build();
+                  secondaryBestSuperpeers.get(uuid).promote(promote);
                 }
               }
             }

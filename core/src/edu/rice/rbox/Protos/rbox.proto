@@ -58,12 +58,12 @@ message NewRegistrarMessage {
   string newRegistrarIP = 2;
 }
 
-message querySecondaryMessage {
+message QuerySecondaryMessage {
   BasicInfo sender = 1;
   repeated string primaryUUIDs = 2;
 }
 
-message secondaryTimestampsMessage {
+message SecondaryTimestampsMessage {
   BasicInfo sender = 1;
   repeated string primaryUUIDs = 2;
   repeated string secondaryTimestamps = 3;
@@ -110,5 +110,6 @@ service InternalRegistrarFaultTolerance {
 
 service SuperpeerFaultTolerance {
   rpc Promote(PromoteSecondaryMessage) returns (google.protobuf.Empty);
-  rpc QuerySecondary(querySecondaryMessage) returns (secondaryTimestampsMessage);
+  rpc QuerySecondary(QuerySecondaryMessage) returns (SecondaryTimestampsMessage);
+  rpc HeartBeatSuperpeer(HeartBeatRequest) returns (HeartBeatResponse);
 }

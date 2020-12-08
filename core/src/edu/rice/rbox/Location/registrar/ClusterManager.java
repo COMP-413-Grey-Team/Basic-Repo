@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import network.ElectionGrpc;
-import network.FaultToleranceGrpc;
 import network.InternalRegistrarFaultToleranceGrpc;
 import network.InternalRegistrarFaultToleranceGrpc.*;
 import network.RBoxProto;
