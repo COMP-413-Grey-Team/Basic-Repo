@@ -103,6 +103,7 @@ public class ConnectionManager {
      * @return superpeer stub
      */
     public RegistrarBlockingStub addSuperPeer(String hostnameInfo, UUID superPeerId) {
+        System.out.println("Super Peer " + hostnameInfo + " connecting");
         ManagedChannel channel = ManagedChannelBuilder.forTarget(hostnameInfo)
                                      .usePlaintext(true)
                                      .build();
