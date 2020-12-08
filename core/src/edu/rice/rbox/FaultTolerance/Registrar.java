@@ -155,11 +155,7 @@ public class Registrar {
     public static void main( String[] args ) throws Exception {
         Registrar reg = new Registrar();
         reg.init();
-        Map<RegistrarGrpc.RegistrarBlockingStub, List<Integer>> roomsAssigned = null;
-        while (roomsAssigned != null){
-            // TODO: Add proper constant here
-            roomsAssigned = reg.getConnManager().assignRoomsToSuperPeers(5);
-        }
+
 
     }
 }

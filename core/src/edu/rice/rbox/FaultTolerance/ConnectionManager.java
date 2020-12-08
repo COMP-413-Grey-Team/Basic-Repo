@@ -114,6 +114,10 @@ public class ConnectionManager {
         Document doc = new Document("hostname", hostnameInfo).append("superPeerUUID", superPeerId.toString());
         superPeerCol.insertOne(doc);
         stub2Room.put(sp, new ArrayList<>());
+        if (stub2Room.size() >= 3) {
+            // TODO: Fix numbers
+            assignRoomsToSuperPeers(5);
+        }
 
 
 //        // assign superpeers a game room - game rooms start at 0
