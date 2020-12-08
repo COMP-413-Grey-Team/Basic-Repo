@@ -56,11 +56,12 @@ message UpdateFromServer {
 
 message SuperPeerInfo {
     string hostname = 1;
+    string superPeerId =2;
 }
 
 service GameService {
    rpc publishUpdate(UpdateFromClient) returns (UpdateFromServer);
-   rpc getAssignedSuperPeer(google.protobuf.Empty) returns (SuperPeerInfo);
+   rpc getAssignedSuperPeer(PlayerID) returns (SuperPeerInfo);
    rpc initPlayer(InitialPlayerState) returns (UpdateFromServer);
    rpc removeMe(PlayerID) returns (google.protobuf.Empty);
 }
