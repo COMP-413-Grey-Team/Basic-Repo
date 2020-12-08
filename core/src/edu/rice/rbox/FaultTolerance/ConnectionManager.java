@@ -6,10 +6,12 @@ import io.grpc.ManagedChannelBuilder;
 
 import java.util.*;
 
+import io.netty.handler.ipfilter.AbstractRemoteAddressFilter;
 import network.GameNetworkProto;
 import network.GameServiceGrpc;
 import network.GameServiceGrpc.GameServiceBlockingStub;
 import network.GameNetworkProto.SuperPeerInfo;
+import network.RBoxProto;
 import network.RegistrarGrpc;
 import network.RegistrarGrpc.RegistrarBlockingStub;
 import org.bson.Document;
@@ -30,10 +32,8 @@ public class ConnectionManager {
 
 
     // this is for game room assingment (each super peer is assigned a set of game rooms)
-    private Map<UUID, Integer> gameRooms;
+    private Map<RegistrarBlockingStub, List<Integer>> stub2Room;
     private Integer currGameRoom;
-    private Integer numGameRooms;
-
 
 
 
@@ -93,7 +93,7 @@ public class ConnectionManager {
         superPeers = new HashMap<>();
         this.superPeerCol = spCollection;
         this.clientCol = clientCollection;
-        this.gameRooms = new HashMap<>();
+        this.stub2Room = new HashMap<>();
     }
 
     /**
@@ -113,13 +113,14 @@ public class ConnectionManager {
 
         Document doc = new Document("hostname", hostnameInfo).append("superPeerUUID", superPeerId.toString());
         superPeerCol.insertOne(doc);
+        stub2Room.put(sp, new ArrayList<>());
 
 
-        // assign superpeers a game room - game rooms start at 0
-        if (this.currGameRoom > this.numGameRooms - 1) {
-            this.currGameRoom = 0;
-        }
-        this.gameRooms.put(superPeerId, this.currGameRoom);
+//        // assign superpeers a game room - game rooms start at 0
+//        if (this.currGameRoom > this.numGameRooms - 1) {
+//            this.currGameRoom = 0;
+//        }
+//        this.gameRooms.put(superPeerId, this.currGameRoom);
 
 
         return sp;
@@ -164,6 +165,29 @@ public class ConnectionManager {
 
     public GameServiceGrpc.GameServiceImplBase getGameServerRegistrarImpl(){
         return gameServerRegistrarImpl;
+    }
+
+    public Map<RegistrarBlockingStub, List<Integer>> assignRoomsToSuperPeers(int numRooms) {
+        int currAssigned = 0;
+        if  (stub2Room.size() < 3){
+            return null;
+        }
+
+
+        for (Map.Entry<RegistrarBlockingStub, List<Integer>> e: stub2Room.entrySet()) {
+            if (numRooms > currAssigned) {
+                stub2Room.get(e.getKey()).add(currAssigned);
+                currAssigned++;
+            }
+
+        }
+        stub2Room.forEach((k,v) -> {
+            RBoxProto.GameRooms.Builder gr = RBoxProto.GameRooms.newBuilder();
+            for(int i = 0; i <v.size(); i++)
+                gr.setAssignedRooms(i, v.get(i));
+            k.assignGameRooms(gr.build());
+        });
+        return stub2Room;
     }
 
     public static ConnectionManager buildFromMongo(MongoCollection superPeerCol, MongoCollection clientCol) {

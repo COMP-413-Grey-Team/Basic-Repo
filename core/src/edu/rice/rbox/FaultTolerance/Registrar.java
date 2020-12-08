@@ -5,6 +5,7 @@ import com.mongodb.Mongo;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import edu.rice.rbox.Game.Server.ObjectStorageKeys;
 import edu.rice.rbox.Location.Mongo.MongoManager;
 import edu.rice.rbox.Networking.NetworkImpl;
 import io.grpc.Server;
@@ -13,17 +14,22 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import network.HealthGrpc;
 import network.RBoxProto;
 import network.RBoxServiceGrpc;
 import network.RegistrarGrpc;
+import org.bson.Document;
+import edu.rice.rbox.FaultTolerance.Registrar;
 
 public class Registrar {
 
     private ConnectionManager connManager;
     private String ipAddress = "";
+    private MongoDatabase db;
 
     private RegistrarGrpc.RegistrarImplBase superPeerServiceImpl = new RegistrarGrpc.RegistrarImplBase() {
 
@@ -96,7 +102,7 @@ public class Registrar {
         mongoMan.connect();
         MongoClient client = mongoMan.getMongoClient();
         client.getDatabase(MongoManager.DB_NAME).drop();
-        MongoDatabase db = client.getDatabase(MongoManager.DB_NAME);
+        this.db = client.getDatabase(MongoManager.DB_NAME);
         db.createCollection(MongoManager.CLIENT_COLLECTION);
         db.createCollection(MongoManager.SUPERPEER_COLLECTION);
         db.createCollection(MongoManager.COLLECTION_NAME);
@@ -127,6 +133,9 @@ public class Registrar {
                             // TODO: this is for the health service @ Nikhaz
                             .build();
 
+        // Initialize Global object
+        Document globalObj = new Document("_id", ObjectStorageKeys.Global.GLOBAL_OBJ);
+        db.getCollection(MongoManager.COLLECTION_NAME).insertOne(globalObj);
 
         // Start the server
         server.start();
@@ -138,11 +147,19 @@ public class Registrar {
         server.awaitTermination();
     }
 
+    public ConnectionManager getConnManager() {
+        return connManager;
+    }
+
 
     public static void main( String[] args ) throws Exception {
         Registrar reg = new Registrar();
         reg.init();
-
+        Map<RegistrarGrpc.RegistrarBlockingStub, List<Integer>> roomsAssigned = null;
+        while (roomsAssigned != null){
+            // TODO: Add proper constant here
+            roomsAssigned = reg.getConnManager().assignRoomsToSuperPeers(5);
+        }
 
     }
 }
