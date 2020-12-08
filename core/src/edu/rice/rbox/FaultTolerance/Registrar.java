@@ -31,6 +31,7 @@ public class Registrar {
     private ConnectionManager connManager;
     private String ipAddress = "";
     private MongoDatabase db;
+    private UUID id = UUID.randomUUID();
 
     private RegistrarGrpc.RegistrarImplBase superPeerServiceImpl = new RegistrarGrpc.RegistrarImplBase() {
 
@@ -52,7 +53,6 @@ public class Registrar {
 
         @Override
         public void connect(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
-            // TODO: this is the UUID
 
             String senderUUID = request.getSender().getSenderUUID();
             String senderHostnameInfo = request.getConnectionIP();
@@ -61,7 +61,7 @@ public class Registrar {
 
             RegistrarGrpc.RegistrarBlockingStub spStub = Registrar.this.connManager
                                                             .addSuperPeer(senderHostnameInfo, UUID.fromString(senderUUID));
-            spStub.connect(RBoxProto.ConnectMessage.newBuilder().setConnectionIP(ipAddress).build());
+
             com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
             responseObserver.onNext(empty);
             responseObserver.onCompleted();
