@@ -197,6 +197,12 @@ public class TheCoolRegistrar {
 
   public static void main( String[] args ) throws Exception {
 
+    //start server by calling init
 
+    // create a new thread
+
+    // that thread will run a while loop forever
+
+    // that while loop will send the heartbeats
   }
 }

@@ -11,26 +11,8 @@ message Info {
   google.protobuf.Timestamp time = 2;
 }
 
-message CheckConnection {
-  Info sender = 1;
-  string checkUUID = 2;
-}
 
-message ConnectionResult {
-  Info sender = 1;
-  bool result = 2;
-}
-
-message CheckIn {
-  Info sender = 1;
-}
-
-message LeaderDown {
-  Info sender = 1;
-}
 
 service Election {
-  rpc Connection(CheckConnection) returns (ConnectionResult);
-  rpc Check(CheckIn) returns (Info);
-  rpc DownedLeader(LeaderDown) returns (google.protobuf.Empty);
+
 }
