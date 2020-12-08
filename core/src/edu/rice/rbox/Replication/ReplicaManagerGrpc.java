@@ -16,9 +16,8 @@ import org.apache.commons.lang3.SerializationUtils;
 import network.*;
 
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -38,7 +37,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
     private HashMap<GameObjectUUID, List<ServerUUID>> subscribers = new HashMap<>();      // Primary => Replica
     private HashMap<GameObjectUUID, ServerUUID> publishers = new HashMap<>();             // Replica => Primary
     private HashMap<GameObjectUUID, Integer> timeout = new HashMap<>();                   // Primary => timeout
-    private Integer initial_value = 50;
+    private final int initial_value = 50;
 
     private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceBlockingStub> blockingStubs = new HashMap<>();
     private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceStub> stubs = new HashMap<>();
@@ -142,6 +141,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
         @Override
         public void connect(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
+            System.out.println(request.getSender().getSenderUUID());
             ServerUUID superpeerUUID = new ServerUUID(UUID.fromString(request.getSender().getSenderUUID()));
             String superpeerIP = request.getConnectionIP();
 
@@ -190,20 +190,20 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         ManagedChannel channel = ManagedChannelBuilder.forTarget(registrarIP).usePlaintext(true).build();
         this.registrarBlockingStub = RegistrarGrpc.newBlockingStub(channel);
 
-        // TODO: Find public IP address - UNTESTED
-        String systemipaddress = "";
-        URL url_name = new URL("http://bot.whatismyipaddress.com");
-        BufferedReader sc =
-            new BufferedReader(new InputStreamReader(url_name.openStream()));
-        systemipaddress = sc.readLine().trim();
+        String ip;
+        try(final DatagramSocket socket = new DatagramSocket()){
+            socket.connect(InetAddress.getByName("8.8.8.8"), 3000);
+            ip = socket.getLocalAddress().getHostAddress();
+        }
+        System.out.println("Superpeer Running on address: " + ip);
 
 
-        // Send the registrar a Connect message - Need the other files!
+        // Send the registrar a Connect message
         long millis = System.currentTimeMillis();
 
         RBoxProto.ConnectMessage request =
             RBoxProto.ConnectMessage.newBuilder()
-                .setConnectionIP(systemipaddress + ":8080")
+                .setConnectionIP(ip + ":" + port)
                 .setSender(generateBasicInfo(millis))
                 .build();
 
