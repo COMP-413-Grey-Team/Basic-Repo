@@ -11,8 +11,8 @@ import network.GameNetworkProto;
 import network.GameServiceGrpc;
 import network.GameServiceGrpc.GameServiceBlockingStub;
 import network.GameNetworkProto.SuperPeerInfo;
-import network.RegistrarGrpc;
-import network.RegistrarGrpc.RegistrarBlockingStub;
+import network.SuperpeerFaultToleranceGrpc;
+import network.SuperpeerFaultToleranceGrpc.*;
 import org.bson.Document;
 
 public class TheCoolConnectionManager {
@@ -23,8 +23,8 @@ public class TheCoolConnectionManager {
   // player clients will not have gRPC servers, so we cannot have stubs to them
   private List<GameServiceBlockingStub> clients;
 
-  private Map<RegistrarBlockingStub, List<UUID>> superPeer2gameClient;
-  private Map<RegistrarBlockingStub, String> superPeers;
+  private Map<SuperpeerFaultToleranceBlockingStub, List<UUID>> superPeer2gameClient;
+  protected Map<SuperpeerFaultToleranceBlockingStub, String> superPeers;
   private MongoCollection superPeerCol;
   private MongoCollection clientCol;
 
@@ -101,11 +101,11 @@ public class TheCoolConnectionManager {
    * @param hostnameInfo host of the superpeer
    * @return superpeer stub
    */
-  public RegistrarBlockingStub addSuperPeer(String hostnameInfo) {
+  public SuperpeerFaultToleranceBlockingStub addSuperPeer(String hostnameInfo) {
     ManagedChannel channel = ManagedChannelBuilder.forTarget(hostnameInfo)
                                  .usePlaintext(true)
                                  .build();
-    RegistrarBlockingStub sp = RegistrarGrpc.newBlockingStub(channel);
+    SuperpeerFaultToleranceBlockingStub sp = SuperpeerFaultToleranceGrpc.newBlockingStub(channel);
     superPeers.put(sp, hostnameInfo);
     superPeer2gameClient.put(sp, new ArrayList<>());
 
@@ -136,10 +136,10 @@ public class TheCoolConnectionManager {
    * @return superPeer that is being assigned to
    */
   public String assignClient(UUID client) {
-    RegistrarBlockingStub min = null;
+    SuperpeerFaultToleranceBlockingStub min = null;
     int minVal = -1;
 
-    for(Map.Entry<RegistrarBlockingStub, List<UUID>> e : superPeer2gameClient.entrySet()) {
+    for(Map.Entry<SuperpeerFaultToleranceBlockingStub, List<UUID>> e : superPeer2gameClient.entrySet()) {
       if (minVal == -1 || e.getValue().size() < minVal){
         min = e.getKey();
         minVal = e.getValue().size();
@@ -156,7 +156,7 @@ public class TheCoolConnectionManager {
   public void removeClient(UUID client) {
 
 
-    for(Map.Entry<RegistrarBlockingStub, List<UUID>> e : superPeer2gameClient.entrySet()) {
+    for(Map.Entry<SuperpeerFaultToleranceBlockingStub, List<UUID>> e : superPeer2gameClient.entrySet()) {
       if (e.getValue().contains(client)){
         e.getValue().remove(client);
         break;

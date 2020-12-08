@@ -20,7 +20,7 @@ import network.RBoxProto;
 public class ClusterManager {
 
   // holds the stubs to cluster members
-  private Map<InternalRegistrarFaultToleranceBlockingStub, UUID> clusterMemberStubs;
+  protected Map<InternalRegistrarFaultToleranceBlockingStub, UUID> clusterMemberStubs;
   private Map<UUID, InternalRegistrarFaultToleranceBlockingStub> clusterMemberUUIDs;
 
   InternalRegistrarFaultToleranceBlockingStub leaderStub;
@@ -50,11 +50,11 @@ public class ClusterManager {
     return clusterMemberStubs.size();
   }
 
-  public String getUUID() {
+  private String getUUID() {
     return serverRunningThisUUID.toString();
   }
 
-  protected Timestamp getTimestamp() {
+  private Timestamp getTimestamp() {
     long millis = System.currentTimeMillis();
     Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
             .setNanos((int) ((millis % 1000) * 1000000)).build();

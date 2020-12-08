@@ -2,32 +2,37 @@ package edu.rice.rbox.Location.registrar;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
+
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
-import com.mongodb.internal.connection.ClusterableServerFactory;
 import edu.rice.rbox.Location.Mongo.MongoManager;
-import edu.rice.rbox.Networking.NetworkImpl;
+
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
-import io.grpc.stub.StreamObserver;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.HashMap;
+
+import java.util.Map;
 import java.util.UUID;
-
-
 import java.util.function.Consumer;
+
 import network.*;
-import network.ElectionGrpc;
-import network.RBoxServiceGrpc;
+import network.InternalRegistrarFaultToleranceGrpc.*;
+import network.SuperpeerFaultToleranceGrpc.*;
 
 public class TheCoolRegistrar {
 
-  private TheCoolConnectionManager connManager;
+  private static TheCoolConnectionManager connManager;
 
-  private ClusterManager clusterManager;
+  private static ClusterManager clusterManager;
+
+  private static double getNumRegistrarNodes () {
+    return (double)clusterManager.clusterMemberStubs.size();
+  }
+
+  private static boolean leader = false;
 
   private String ip;
 
@@ -35,19 +40,19 @@ public class TheCoolRegistrar {
     return ip;
   }
 
-  protected UUID uuid;
+  private static UUID uuid;
 
   private UUID leaderUUID;
 
-  public UUID getUUID() {
-    return this.uuid;
+  public static UUID getUUID() {
+    return uuid;
   }
 
-  private RBoxProto.BasicInfo getInfo() {
-    return RBoxProto.BasicInfo.newBuilder().setSenderUUID(getUUID()).setTime(getTimestamp()).build();
+  private static RBoxProto.BasicInfo getInfo() {
+    return RBoxProto.BasicInfo.newBuilder().setSenderUUID(getUUID().toString()).setTime(getTimestamp()).build();
   }
 
-  protected Timestamp getTimestamp() {
+  protected static Timestamp getTimestamp() {
     long millis = System.currentTimeMillis();
     Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
             .setNanos((int) ((millis % 1000) * 1000000)).build();
@@ -64,12 +69,12 @@ public class TheCoolRegistrar {
 
   public TheCoolRegistrar(String password) {
     // TODO: set up the connection manager / Mongo stuff
-    this.connManager = new TheCoolConnectionManager(null, null);
+    connManager = new TheCoolConnectionManager(null, null);
     //this.clusterManager = new ClusterManager(getIP(),getUUID(), new Consumer<String>());
     mongoManager = new MongoManager(password);
   }
 
-  public void init() throws  Exception {
+  public static void init() throws  Exception {
     String ip = "";
     try(final DatagramSocket socket = new DatagramSocket()){
       socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
@@ -89,9 +94,9 @@ public class TheCoolRegistrar {
 
     Server server = ServerBuilder.forPort(8080)
                         // this is for registrar/player client interactions
-                        .addService(this.connManager.getGameServerRegistrarImpl())
+                        .addService(connManager.getGameServerRegistrarImpl())
                         // this is for registrar/superpeer interactions
-                        .addService(this.clusterManager.getInternalServiceImpl())
+                        .addService(clusterManager.getInternalServiceImpl())
                         .addService((BindableService) null)
                         .build();
 
@@ -105,24 +110,69 @@ public class TheCoolRegistrar {
     server.awaitTermination();
   }
 
+  private static Map<InternalRegistrarFaultToleranceBlockingStub, Timestamp> mostRecentHeartBeats;
 
   public static void main( String[] args ) throws Exception {
 
     //start server by calling init
+    init();
 
     // create a new thread
+    Runnable target = new Runnable() {
+      @Override
+      public void run() {
+        while (leader) {
+          for (InternalRegistrarFaultToleranceBlockingStub stub : clusterManager.clusterMemberStubs.keySet()) {
+            UUID stubUUID = clusterManager.clusterMemberStubs.get(stub);
+            RBoxProto.BasicInfo info = getInfo();
+            RBoxProto.HeartBeatRequest req = RBoxProto.HeartBeatRequest.newBuilder().setSender(info).build();
+            boolean success = true;
+            try {
+              stub.heartBeatClusterMember(req);
+            } catch (Exception ex) {
+              success = false;
+            }
+            if (success) {
+              mostRecentHeartBeats.putIfAbsent(stub, info.getTime());
+              mostRecentHeartBeats.put(stub, info.getTime());
+            } else {
+              if(info.getTime().getNanos() - mostRecentHeartBeats.get(stub).getNanos() > 500) {
+                int countSuccessfulChecks = 0;
+                int countUnsuccessfulChecks = 0;
+                for (InternalRegistrarFaultToleranceBlockingStub checkStub : clusterManager.clusterMemberStubs.keySet()) {
+                  RBoxProto.CheckConnection check = RBoxProto.CheckConnection.newBuilder().setSender(getInfo()).setCheckUUID(stubUUID.toString()).build();
+                  if (checkStub.checkConnectionToClusterMember(check).getResult()) {
+                    countSuccessfulChecks++;
+                  } else {
+                    countUnsuccessfulChecks++;
+                  }
+                  if (countSuccessfulChecks > (2.0 / 3.0) * getNumRegistrarNodes()) {
+                    break;
+                  } else if (countUnsuccessfulChecks > (2.0 / 3.0) * getNumRegistrarNodes()) {
+                    clusterManager.clusterMemberStubs.remove(stub);
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    Thread heartBeatChecker = new Thread(target);
+    heartBeatChecker.start();
 
     // that thread will run a while loop forever
 
     // that while loop will send the heartbeats
 
-    ClusterManager thing = new ClusterManager(null, null, new Consumer<String>() {
-      @Override
+//    ClusterManager thing = new ClusterManager(null, null, new Consumer<String>() {
+//      @Override
 //      public void accept(String s) {
 //        for (Stub : connManager.superpees) {
 //          send somehing
 //        }
-      }
-    })
+//      }
+//    })
   }
 }
