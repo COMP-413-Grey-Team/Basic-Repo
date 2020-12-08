@@ -134,7 +134,7 @@ public class Registrar {
                             .build();
 
         // Initialize Global object
-        Document globalObj = new Document("_id", ObjectStorageKeys.Global.GLOBAL_OBJ);
+        Document globalObj = new Document("_id", ObjectStorageKeys.Global.GLOBAL_OBJ.toString());
         db.getCollection(MongoManager.COLLECTION_NAME).insertOne(globalObj);
 
         // Start the server
