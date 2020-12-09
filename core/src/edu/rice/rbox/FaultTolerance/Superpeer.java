@@ -12,9 +12,7 @@ import edu.rice.rbox.Replication.ObjectLocationReplicationInterface;
 import edu.rice.rbox.Replication.ReplicaManagerGrpc;
 import edu.rice.rbox.Common.ServerUUID;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 public class Superpeer {
@@ -124,5 +122,8 @@ public class Superpeer {
         Superpeer superpeer = new Superpeer();
         String registrarIP = args[0];
         superpeer.start(registrarIP);
+        Set<Integer> myRooms = new HashSet<>(superpeer.replicaManager.getAssignedRooms());
+        System.out.println("Number of rooms assigned to this superpeer: " + myRooms.size());
+        superpeer.gameStateManager.initializeRooms(myRooms);
     }
 }

@@ -78,9 +78,6 @@ public class GameStateManager {
   public GameStateManager(ServerUUID serverUUID, ObjectStore objectStore) {
     this.serverUUID = serverUUID;
     this.objectStore = objectStore;
-
-    coinTimer.start();
-    gameLoopTimer.start();
   }
 
   private ServerUUID myServerUUID() {
@@ -302,6 +299,9 @@ public class GameStateManager {
             new GameFieldSet<GameFieldInteger>(myRooms.stream().map(GameFieldInteger::new).collect(Collectors.toSet())),
             0),
         null);
+
+    coinTimer.start();
+    gameLoopTimer.start();
   }
 
 }
