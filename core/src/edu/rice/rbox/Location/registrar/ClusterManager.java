@@ -5,6 +5,7 @@ import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -20,6 +21,8 @@ public class ClusterManager {
   // holds the stubs to cluster members
   protected Map<InternalRegistrarFaultToleranceBlockingStub, UUID> clusterMemberStubs;
   protected Map<UUID, InternalRegistrarFaultToleranceBlockingStub> clusterMemberUUIDs;
+  protected Map<InternalRegistrarFaultToleranceBlockingStub, RBoxProto.BasicInfo> clusterMemberBasicInfos;
+  protected Map<InternalRegistrarFaultToleranceBlockingStub, String> clusterMemberIP;
 
   InternalRegistrarFaultToleranceBlockingStub leaderStub;
 
@@ -30,7 +33,7 @@ public class ClusterManager {
 
   private UUID serverRunningThisUUID;
 
-  private Consumer<String> alertSuperpeersOfNewLeader;
+  private Runnable alertSuperpeersOfNewLeader;
 
   private boolean leader = false;
 
@@ -87,14 +90,16 @@ public class ClusterManager {
     @Override
     public void connectFromCluster(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
       //TODO: create the gRPC blocking stub for the internal service for the machine running on the ip:port in the request of this RPC
-      String senderUUID = request.getClusterMemberSender().getSenderUUID();
+      String senderUUID = request.getSender().getSenderUUID();
       String senderHostnameInfo = request.getConnectionIP();
       ManagedChannel channel = ManagedChannelBuilder.forTarget(senderHostnameInfo)
               .usePlaintext(true)
               .build();
       InternalRegistrarFaultToleranceBlockingStub stub2clusterMember = InternalRegistrarFaultToleranceGrpc.newBlockingStub(channel);
-      clusterMemberStubs.put(stub2clusterMember, UUID.fromString(senderUUID));
-      clusterMemberUUIDs.put(UUID.fromString(senderUUID), stub2clusterMember);
+      clusterMemberBasicInfos.putIfAbsent(stub2clusterMember, request.getSender());
+      clusterMemberStubs.putIfAbsent(stub2clusterMember, UUID.fromString(senderUUID));
+      clusterMemberUUIDs.putIfAbsent(UUID.fromString(senderUUID), stub2clusterMember);
+      clusterMemberIP.putIfAbsent(stub2clusterMember, senderHostnameInfo);
       responseObserver.onNext(Empty.getDefaultInstance());
       responseObserver.onCompleted();
     }
@@ -142,6 +147,7 @@ public class ClusterManager {
       setNumLeaderMsg(getNumLeaderMsg() + 1);
       if (getNumLeaderMsg() > (2.0 / 3.0) * getNumRegistrarNodes()) {
         leader = true;
+        ClusterManager.this.alertSuperpeersOfNewLeader.run();
       }
       responseObserver.onNext(Empty.newBuilder().build());
       responseObserver.onCompleted();
@@ -156,11 +162,13 @@ public class ClusterManager {
 
 
   // constructor
-  public ClusterManager(String serverThisIsRunningOn, UUID uuidOfServerRunningThis,
-                        Consumer<String> alertNewLeader) {
-    this.hostName = serverThisIsRunningOn;
+  public ClusterManager(UUID uuidOfServerRunningThis,
+                        Runnable alertNewLeader) {
+
     this.serverRunningThisUUID = uuidOfServerRunningThis;
     this.alertSuperpeersOfNewLeader = alertNewLeader;
+    this.clusterMemberBasicInfos = new HashMap<>();
+    this.clusterMemberIP = new HashMap<>();
   }
 
 
@@ -174,6 +182,16 @@ public class ClusterManager {
      * return nothing
      * */
 
+    for (InternalRegistrarFaultToleranceBlockingStub stub1 : this.clusterMemberStubs.keySet()) {
+      for (InternalRegistrarFaultToleranceBlockingStub stub2 : this.clusterMemberStubs.keySet()) {
+        if (stub1 != stub2) {
+
+          // tell superpeer 1 to connect to superpeer 2
+          stub1.connectFromCluster(RBoxProto.ConnectMessage.newBuilder().setConnectionIP(this.clusterMemberIP.get(stub2)).setSender(this.clusterMemberBasicInfos.get(stub2)).build());
+
+        }
+      }
+    }
 
   }
 

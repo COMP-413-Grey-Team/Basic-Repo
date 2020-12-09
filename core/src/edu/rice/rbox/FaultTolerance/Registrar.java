@@ -1,12 +1,10 @@
 package edu.rice.rbox.FaultTolerance;
 
 import com.google.protobuf.Empty;
-import com.mongodb.Mongo;
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import edu.rice.rbox.Location.Mongo.MongoManager;
-import edu.rice.rbox.Networking.NetworkImpl;
+import edu.rice.rbox.Location.registrar.ClusterManager;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
@@ -15,25 +13,19 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.UUID;
 
-import network.HealthGrpc;
+
 import network.RBoxProto;
 import network.RBoxServiceGrpc;
-import network.RegistrarGrpc;
+import network.SuperpeerFaultToleranceGrpc.*;
 
 public class Registrar {
 
     private ConnectionManager connManager;
     private String ipAddress = "";
 
-    private RegistrarGrpc.RegistrarImplBase superPeerServiceImpl = new RegistrarGrpc.RegistrarImplBase() {
+    private ClusterManager clusterManager;
 
-        @Override
-        public void alert(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
-            // TODO: Nothing, because the registrar knows if its the lead or not already
-            com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
-            responseObserver.onNext(empty);
-            responseObserver.onCompleted();
-        }
+    private SuperpeerFaultToleranceImplBase superPeerServiceImpl = new SuperpeerFaultToleranceImplBase() {
 
         @Override
         public void promote(RBoxProto.PromoteSecondaryMessage request, StreamObserver<Empty> responseObserver) {
@@ -44,49 +36,54 @@ public class Registrar {
         }
 
         @Override
-        public void connect(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
-            // TODO: this is the UUID
+        public void connectToSuperpeer(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
+
             String senderUUID = request.getSender().getSenderUUID();
             String senderHostnameInfo = request.getConnectionIP();
 
-            RegistrarGrpc.RegistrarBlockingStub spStub = Registrar.this.connManager
+            SuperpeerFaultToleranceBlockingStub spStub = Registrar.this.connManager
                                                             .addSuperPeer(senderHostnameInfo, UUID.fromString(senderUUID));
-            spStub.connect(RBoxProto.ConnectMessage.newBuilder().setConnectionIP(ipAddress).build());
+
+
             com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
             responseObserver.onNext(empty);
             responseObserver.onCompleted();
         }
 
         @Override
-        public void querySecondary(RBoxProto.querySecondaryMessage request,
-                                   StreamObserver<RBoxProto.secondaryTimestampsMessage> responseObserver) {
-            // TODO: ditto to not knowing what this one does either
+        public void querySecondary(RBoxProto.QuerySecondaryMessage request,
+                                   StreamObserver<RBoxProto.SecondaryTimestampsMessage> responseObserver) {
 
+            // noop
+            responseObserver.onNext(RBoxProto.SecondaryTimestampsMessage.getDefaultInstance());
+            responseObserver.onCompleted();
         }
 
         @Override
-        public void assignGameRooms(network.RBoxProto.GameRooms request,
+        public void assignGameRooms(RBoxProto.GameRooms request, StreamObserver<Empty> responseObserver) {
+
+            // TODO: the super peer will never send the registrar this, right - hence noop?
+            responseObserver.onNext(Empty.getDefaultInstance());
+            responseObserver.onCompleted();
+        }
+
+        @Override
+        public void heartBeatSuperpeer(RBoxProto.HeartBeatRequest request,
+                                       StreamObserver<RBoxProto.HeartBeatResponse> responseObserver) {
+            // noop
+            responseObserver.onNext(RBoxProto.HeartBeatResponse.getDefaultInstance());
+            responseObserver.onCompleted();
+        }
+
+        @Override
+        public void alertSuperPeers(network.RBoxProto.NewRegistrarMessage request,
                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
-
-            // no-op
+            // noop
+            responseObserver.onNext(Empty.getDefaultInstance());
+            responseObserver.onCompleted();
         }
     };
 
-
-    private HealthGrpc.HealthImplBase healthServiceImpl = new HealthGrpc.HealthImplBase() {
-
-        @Override
-        public void check(RBoxProto.HealthCheckRequest request,
-                          StreamObserver<RBoxProto.HealthCheckResponse> responseObserver) {
-            // TODO: do this
-        }
-
-        @Override
-        public void watch(RBoxProto.HealthCheckRequest request,
-                          StreamObserver<RBoxProto.HealthCheckResponse> responseObserver) {
-            // TODO: do this
-        }
-    };
 
 
 
@@ -102,6 +99,18 @@ public class Registrar {
         db.createCollection(MongoManager.COLLECTION_NAME);
         this.connManager = new ConnectionManager(db.getCollection(MongoManager.SUPERPEER_COLLECTION),
             db.getCollection(MongoManager.CLIENT_COLLECTION));
+
+        this.clusterManager = new ClusterManager(null, new Runnable() {
+            // this runnable notifies superpeers that this registrar is the lead
+            @Override
+            public void run() {
+                for (SuperpeerFaultToleranceBlockingStub spStub : connManager.getSuperpeers()) {
+                    // TODO:    MUST ACTUALLY MAKE THE MESSAGE BY SETTING FIELDS, WHICH I AINT BOUT
+
+                    spStub.alertSuperPeers(RBoxProto.NewRegistrarMessage.newBuilder().build());
+                }
+            }
+        });
     }
 
     public void init() throws  Exception {
@@ -114,6 +123,8 @@ public class Registrar {
 
         System.out.println("Server Running on address: " + ip);
 
+        this.ipAddress = ip + ":8080";
+
 
         // Create a new server to listen on port 8080
 
@@ -122,8 +133,6 @@ public class Registrar {
                             .addService(this.connManager.getGameServerRegistrarImpl())
                             // this is for registrar/superpeer interactions
                             .addService(this.superPeerServiceImpl)
-                            // TODO: this is for the registrar faults/elections - looking @ u Nikhaz
-                            .addService(this.healthServiceImpl)
                             // TODO: this is for the health service @ Nikhaz
                             .build();
 
