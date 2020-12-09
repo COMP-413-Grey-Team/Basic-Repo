@@ -41,7 +41,7 @@ public class ConnectionManager {
         @Override
         public void getAssignedSuperPeer(GameNetworkProto.PlayerID request,
                                          io.grpc.stub.StreamObserver<network.GameNetworkProto.SuperPeerInfo> responseObserver) {
-            System.out.println("Get Assign incorrectly called on registrar!");
+            System.out.println("Get Assigned superpeer called on registrar!");
 
 
             // send over assigned superpeer info
@@ -141,7 +141,7 @@ public class ConnectionManager {
             }
         }
 
-        Document doc = new Document("hostname", superPeers.get(min)).append("playerUUID", client.toString());
+        Document doc = new Document("hostname", superPeers.get(min).getHostname()).append("playerUUID", client.toString());
         clientCol.insertOne(doc);
         superPeer2gameClient.get(min).add(client);
         return superPeers.get(min);
