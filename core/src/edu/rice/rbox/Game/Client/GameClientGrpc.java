@@ -61,9 +61,9 @@ public class GameClientGrpc {
   }
 
   // TODO: This message should be sent to the registrar, not the game server.
-  public GameNetworkProto.SuperPeerInfo getSuperPeer() {
+  public GameNetworkProto.SuperPeerInfo getSuperPeer(String playerID) {
     GameNetworkProto.SuperPeerInfo response =
-        serverStub.getAssignedSuperPeer(Empty.newBuilder().build());
+        serverStub.getAssignedSuperPeer(GameNetworkProto.PlayerID.newBuilder().setPlayerID(playerID).build());
 
     return response;
   }
