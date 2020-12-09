@@ -8,11 +8,19 @@ import javax.swing.JFrame;
 public class Game extends JFrame {
 
   public Game() {
-
-    initUI();
+    initMenu();
   }
 
-  private void initUI() {
+  private void initMenu() {
+    add(new GameMenu());
+    setResizable(false);
+    pack();
+
+    setTitle("snake");
+    setLocationRelativeTo(null);
+  }
+
+  private void initGame() {
     add(new World(new PlayerState(30, 30, "Evan", Color.BLUE, 0)));
 
     setResizable(false);
@@ -22,6 +30,8 @@ public class Game extends JFrame {
     setLocationRelativeTo(null);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
+
+
 
   public static void main(String[] args) {
 
