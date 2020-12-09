@@ -76,7 +76,7 @@ message PromoteSecondaryMessage {
 }
 
 message ConnectMessage {
-  BasicInfo cluster_member_sender = 1;
+  BasicInfo sender = 1;
   string connectionIP = 2;
 }
 
@@ -115,8 +115,9 @@ service InternalRegistrarFaultTolerance {
 }
 
 service SuperpeerFaultTolerance {
+  rpc AlertSuperPeers(NewRegistrarMessage) returns (google.protobuf.Empty);
   rpc Promote(PromoteSecondaryMessage) returns (google.protobuf.Empty);
-  rpc Connect(ConnectMessage) returns (google.protobuf.Empty);
+  rpc ConnectToSuperpeer(ConnectMessage) returns (google.protobuf.Empty);
   rpc QuerySecondary(QuerySecondaryMessage) returns (SecondaryTimestampsMessage);
   rpc AssignGameRooms(GameRooms) returns (google.protobuf.Empty);
   rpc HeartBeatSuperpeer(HeartBeatRequest) returns (HeartBeatResponse);
