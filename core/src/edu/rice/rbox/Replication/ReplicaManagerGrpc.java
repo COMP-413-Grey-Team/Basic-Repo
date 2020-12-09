@@ -41,6 +41,8 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
     private HashMap<GameObjectUUID, Timestamp> timestamp = new HashMap<>();                       // Replica => timestamp
     private final int initial_value = 50;
 
+    private List<Integer> assignedRooms;    // rooms assigned to this superpeer by the registrar
+
     private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceBlockingStub> blockingStubs = new HashMap<>();
     private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceStub> stubs = new HashMap<>();
     private RegistrarGrpc.RegistrarBlockingStub registrarBlockingStub;
@@ -152,7 +154,6 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
         @Override
         public void connect(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
-            System.out.println(request.getSender().getSenderUUID());
             ServerUUID superpeerUUID = new ServerUUID(UUID.fromString(request.getSender().getSenderUUID()));
             String superpeerIP = request.getConnectionIP();
 
@@ -188,7 +189,9 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         @Override
         public void assignGameRooms(network.RBoxProto.GameRooms request,
                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
-            // TODO: IMPLEMENT THIS PEOPLES!!!
+            // Save the list of assigned rooms locally so we can initialize the rooms from the superpeer
+            assignedRooms = request.getAssignedRoomsList();
+            responseObserver.onCompleted();
         }
     };
 
@@ -421,5 +424,8 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
             }
         });
     }
+
+    /* Getter for initializing game rooms associated with this superpeer. */
+    public List<Integer> getAssignedRooms() { return assignedRooms; }
 
 }
