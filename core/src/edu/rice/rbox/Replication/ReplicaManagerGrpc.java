@@ -122,7 +122,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
             RemoteChange change = getRemoteChangeFromUpdateMessage(request);
             changeReceiver.receiveChange(change);
-
+            responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
     };
@@ -136,6 +136,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                                          .usePlaintext(true)
                                          .build();
             registrarBlockingStub = RegistrarGrpc.newBlockingStub(channel);
+            responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
 
@@ -149,6 +150,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                 timestamp.remove(gameObjectUUID);
                 timeout.remove(gameObjectUUID);
             });
+            responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
 
@@ -165,7 +167,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
             RBoxServiceGrpc.RBoxServiceStub stub = RBoxServiceGrpc.newStub(channel);
             blockingStubs.put(superpeerUUID, blockingStub);
             stubs.put(superpeerUUID, stub);
-
+            responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
 
@@ -191,6 +193,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
             // Save the list of assigned rooms locally so we can initialize the rooms from the superpeer
             assignedRooms = request.getAssignedRoomsList();
+            responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
     };
