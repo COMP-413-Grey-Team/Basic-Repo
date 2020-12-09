@@ -60,10 +60,15 @@ public class GameClientGrpc {
     return response;
   }
 
-  // TODO: This message should be sent to the registrar, not the game server.
   public GameNetworkProto.SuperPeerInfo getSuperPeer(String playerID) {
     GameNetworkProto.SuperPeerInfo response =
         serverStub.getAssignedSuperPeer(GameNetworkProto.PlayerID.newBuilder().setPlayerID(playerID).build());
+
+    System.out.println("This was called!");
+    // This is the UUID = 2dfa71ec-4df8-48f8-b7fe-202e2994fd50
+    System.out.println("This is the super peer's id: " + response.getSuperPeerId());
+    // This is the IP = 10.125.200.165:3000
+    System.out.println("This is the super peer host name: " + response.getHostname());
 
     return response;
   }

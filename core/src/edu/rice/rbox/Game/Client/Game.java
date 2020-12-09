@@ -6,6 +6,7 @@ import edu.rice.rbox.Game.Common.Utils.KeyState;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.UUID;
 import javax.swing.*;
 
 public class Game extends JFrame {
@@ -25,10 +26,14 @@ public class Game extends JFrame {
         System.exit(1);
       }
       clientConnector.connect(ip);
+
+      // Get assigned superpeer
+      clientConnector.getSuperPeer(_clientID.toString());
     }
 
   });
   private final World _world = new World(new PlayerState(30, 30, "Evan", Color.BLUE, 0));
+  private final UUID _clientID = UUID.randomUUID();
 
   public Game() {
     setContentPane(_contentPane);
