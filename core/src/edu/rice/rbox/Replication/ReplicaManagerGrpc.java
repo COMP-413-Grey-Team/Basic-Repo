@@ -219,7 +219,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         String ip;
         try(final DatagramSocket socket = new DatagramSocket()){
             socket.connect(InetAddress.getByName("8.8.8.8"), 3000);
-            ip = socket.getLocalAddress().getHostAddress();
+            ip = socket.getLocalAddress().getHostAddress() + ":" + port;
         }
         System.out.println("Superpeer Running on address: " + ip);
 
@@ -229,10 +229,9 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
         RBoxProto.ConnectMessage request =
             RBoxProto.ConnectMessage.newBuilder()
-                .setConnectionIP(ip + ":" + port)
+                .setConnectionIP(ip)
                 .setSender(generateBasicInfo(millis))
                 .build();
-
 
         registrarBlockingStub.connect(request);
     }

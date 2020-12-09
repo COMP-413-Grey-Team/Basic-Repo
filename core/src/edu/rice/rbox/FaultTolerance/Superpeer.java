@@ -7,8 +7,6 @@ import edu.rice.rbox.Game.Server.GameStateManager;
 import edu.rice.rbox.Location.interest.InterestPredicate;
 import edu.rice.rbox.Location.locator.LocatorMainImpl;
 import edu.rice.rbox.ObjStorage.*;
-import edu.rice.rbox.Replication.HolderInfo;
-import edu.rice.rbox.Replication.ObjectLocationReplicationInterface;
 import edu.rice.rbox.Replication.ReplicaManagerGrpc;
 import edu.rice.rbox.Common.ServerUUID;
 

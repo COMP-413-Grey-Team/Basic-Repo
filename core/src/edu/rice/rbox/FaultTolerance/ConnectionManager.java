@@ -7,22 +7,12 @@ import io.grpc.ManagedChannelBuilder;
 
 import java.util.*;
 
-import io.netty.handler.ipfilter.AbstractRemoteAddressFilter;
-import network.GameNetworkProto;
-import network.GameServiceGrpc;
-import network.GameServiceGrpc.GameServiceBlockingStub;
+import network.*;
 import network.GameNetworkProto.SuperPeerInfo;
-import network.RBoxProto;
-import network.RegistrarGrpc;
 import network.RegistrarGrpc.RegistrarBlockingStub;
 import org.bson.Document;
 
-import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
-
 public class ConnectionManager {
-
-
-
 
     // player clients will not have gRPC servers, so we cannot have stubs to them
 
@@ -35,9 +25,6 @@ public class ConnectionManager {
     // this is for game room assingment (each super peer is assigned a set of game rooms)
     private Map<RegistrarBlockingStub, List<Integer>> stub2Room;
     private Integer currGameRoom;
-
-
-
 
 
     private GameServiceGrpc.GameServiceImplBase gameServerRegistrarImpl = new GameServiceGrpc.GameServiceImplBase() {
@@ -207,24 +194,27 @@ public class ConnectionManager {
     // sends connect msgs to superpeers so they are completely interconnected
     public void makeSuperpeersInterconnected() {
 
+        // Connect using RboxService Stub
         for (RegistrarBlockingStub stub1 : this.superPeers.keySet()) {
             for (RegistrarBlockingStub stub2 : this.superPeers.keySet()) {
                 if (stub1 != stub2) {
                     SuperPeerInfo spInfo1 = this.superPeers.get(stub1);
-
+                    long millis = System.currentTimeMillis();
                     Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
                                               .setNanos((int) ((millis % 1000) * 1000000)).build();
 
-                    var basicInfo = RBoxProto.BasicInfo.newBuilder()
-                               .setSenderUUID(this.serverUUID.toString())
+                    RBoxProto.BasicInfo basicInfo = RBoxProto.BasicInfo.newBuilder()
+                               .setSenderUUID(spInfo1.getSuperPeerId())
                                .setTime(timestamp)
                                .build();
 
                     RBoxProto.ConnectMessage request =
                         RBoxProto.ConnectMessage.newBuilder()
-                            .setConnectionIP(info.)
-                            .setSender(generateBasicInfo(millis))
+                            .setConnectionIP(spInfo1.getHostname())
+                            .setSender(basicInfo)
                             .build();
+
+                    stub2.connect(request);
                 }
 
             }
