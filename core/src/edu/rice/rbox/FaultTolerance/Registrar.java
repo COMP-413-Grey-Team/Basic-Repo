@@ -135,7 +135,7 @@ public class Registrar {
                 for (SuperpeerFaultToleranceBlockingStub spStub : connManager.getSuperpeers()) {
                     // TODO:    MUST ACTUALLY MAKE THE MESSAGE BY SETTING FIELDS, WHICH I AINT BOUT
 
-                    spStub.alertSuperPeers(RBoxProto.NewRegistrarMessage.newBuilder().build());
+                    spStub.alertSuperPeers(RBoxProto.NewRegistrarMessage.newBuilder().setSender(getInfo()).build());
                 }
             }
         });
