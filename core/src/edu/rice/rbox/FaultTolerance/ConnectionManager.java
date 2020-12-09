@@ -8,11 +8,12 @@ import java.util.*;
 
 import network.GameNetworkProto;
 import network.GameServiceGrpc;
-import network.GameServiceGrpc.GameServiceBlockingStub;
 import network.GameNetworkProto.SuperPeerInfo;
-import network.RegistrarGrpc;
-import network.RegistrarGrpc.RegistrarBlockingStub;
+
+import network.SuperpeerFaultToleranceGrpc;
+import network.SuperpeerFaultToleranceGrpc.*;
 import org.bson.Document;
+
 
 import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
@@ -23,8 +24,8 @@ public class ConnectionManager {
 
     // player clients will not have gRPC servers, so we cannot have stubs to them
 
-    private Map<RegistrarBlockingStub, List<UUID>> superPeer2gameClient;
-    private Map<RegistrarBlockingStub, SuperPeerInfo> superPeers;
+    private Map<SuperpeerFaultToleranceBlockingStub, List<UUID>> superPeer2gameClient;
+    protected Map<SuperpeerFaultToleranceBlockingStub, SuperPeerInfo> superPeers;
     private MongoCollection superPeerCol;
     private MongoCollection clientCol;
 
@@ -102,11 +103,11 @@ public class ConnectionManager {
      * @param hostnameInfo host of the superpeer
      * @return superpeer stub
      */
-    public RegistrarBlockingStub addSuperPeer(String hostnameInfo, UUID superPeerId) {
+    public SuperpeerFaultToleranceBlockingStub addSuperPeer(String hostnameInfo, UUID superPeerId) {
         ManagedChannel channel = ManagedChannelBuilder.forTarget(hostnameInfo)
                                      .usePlaintext(true)
                                      .build();
-        RegistrarBlockingStub sp = RegistrarGrpc.newBlockingStub(channel);
+        SuperpeerFaultToleranceBlockingStub sp = SuperpeerFaultToleranceGrpc.newBlockingStub(channel);
         SuperPeerInfo superPeerInfo = SuperPeerInfo.newBuilder().setSuperPeerId(superPeerId.toString()).setHostname(hostnameInfo).build();
         superPeers.put(sp, superPeerInfo);
         superPeer2gameClient.put(sp, new ArrayList<>());
@@ -132,10 +133,10 @@ public class ConnectionManager {
      * @return superPeer that is being assigned to
      */
     public SuperPeerInfo assignSuperPeer(UUID client) {
-        RegistrarBlockingStub min = null;
+        SuperpeerFaultToleranceBlockingStub min = null;
         int minVal = -1;
 
-        for(Map.Entry<RegistrarBlockingStub, List<UUID>> e : superPeer2gameClient.entrySet()) {
+        for(Map.Entry<SuperpeerFaultToleranceBlockingStub, List<UUID>> e : superPeer2gameClient.entrySet()) {
             if (minVal == -1 || e.getValue().size() < minVal){
                 min = e.getKey();
                 minVal = e.getValue().size();
@@ -154,7 +155,7 @@ public class ConnectionManager {
     public void removeClient(UUID client) {
 
 
-        for(Map.Entry<RegistrarBlockingStub, List<UUID>> e : superPeer2gameClient.entrySet()) {
+        for(Map.Entry<SuperpeerFaultToleranceBlockingStub, List<UUID>> e : superPeer2gameClient.entrySet()) {
             if (e.getValue().contains(client)){
                 e.getValue().remove(client);
                 break;
@@ -170,6 +171,10 @@ public class ConnectionManager {
         ConnectionManager connMan = new ConnectionManager(superPeerCol, clientCol);
         // TODO: Create connection to all of the superPeers and clients.
         return connMan;
+    }
+
+    public Set<SuperpeerFaultToleranceBlockingStub> getSuperpeers() {
+        return this.superPeers.keySet();
     }
 
 }
