@@ -125,7 +125,8 @@ public class Registrar {
         System.out.println("Server Running on address: " + ip);
 
         // Initialize Global object
-        Document globalObj = new Document("_id", ObjectStorageKeys.Global.GLOBAL_OBJ.toString());
+        Document globalObj = new Document("_id", ObjectStorageKeys.Global.GLOBAL_OBJ.toString())
+                                 .append(ObjectStorageKeys.TYPE, ObjectStorageKeys.Global.TYPE_NAME);
         db.getCollection(MongoManager.COLLECTION_NAME).insertOne(globalObj);
 
         // Create a new server to listen on port 8080 - within its own thread
