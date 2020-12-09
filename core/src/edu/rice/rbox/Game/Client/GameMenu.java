@@ -7,11 +7,12 @@ import javax.swing.*;
 
 public class GameMenu extends JPanel {
 
-  private final JPanel _content = new JPanel();
-  private final JLabel _title = new JLabel("Tumbly Fumbles");
+  Menu2Game _menu2Game;
+  private final JLabel _title = new JLabel("This is a game");
   private final JButton _playBtn = new JButton("Play");
 
-  public GameMenu() {
+  public GameMenu(Menu2Game menu2Game) {
+    this._menu2Game = menu2Game;
     initMenu();
   }
 
@@ -27,8 +28,8 @@ public class GameMenu extends JPanel {
     _playBtn.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        // TODO: Send add player message here?
-
+        // TODO: Need to send some sort of initial message here!
+        _menu2Game.playGame();
       }
     });
 

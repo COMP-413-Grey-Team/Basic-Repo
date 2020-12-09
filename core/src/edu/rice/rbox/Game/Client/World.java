@@ -61,7 +61,6 @@ public class World extends JPanel {
     for (int i = 0; i < 20; i++) {
       coins.put(GameObjectUUID.randomUUID(), randomCoin());
     }
-    initWorld();
   }
 
   private CoinSprite randomCoin() {
@@ -69,7 +68,7 @@ public class World extends JPanel {
         ThreadLocalRandom.current().nextInt(CoinSprite.CIRCLE_RADIUS, WORLD_HEIGHT - 2 * CoinSprite.CIRCLE_RADIUS));
   }
 
-  private void initWorld() {
+  public void initWorld() {
     addKeyListener(new GameKeyAdapter());
     setBackground(Color.CYAN);
     setFocusable(true);
