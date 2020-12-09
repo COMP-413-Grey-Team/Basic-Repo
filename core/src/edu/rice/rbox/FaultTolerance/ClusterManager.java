@@ -1,4 +1,4 @@
-package edu.rice.rbox.Location.registrar;
+package edu.rice.rbox.FaultTolerance;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
@@ -8,7 +8,6 @@ import io.grpc.stub.StreamObserver;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import network.InternalRegistrarFaultToleranceGrpc;
 import network.InternalRegistrarFaultToleranceGrpc.*;
@@ -167,6 +166,8 @@ public class ClusterManager {
 
     this.serverRunningThisUUID = uuidOfServerRunningThis;
     this.alertSuperpeersOfNewLeader = alertNewLeader;
+    this.clusterMemberUUIDs = new HashMap<>();
+    this.clusterMemberStubs = new HashMap<>();
     this.clusterMemberBasicInfos = new HashMap<>();
     this.clusterMemberIP = new HashMap<>();
   }
