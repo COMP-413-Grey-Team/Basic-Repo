@@ -8,6 +8,7 @@ import com.mongodb.client.model.UpdateOptions;
 import edu.rice.rbox.Common.GameField.InterestingGameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
+import edu.rice.rbox.Game.Server.ObjectStorageKeys;
 import edu.rice.rbox.Location.Mongo.MongoManager;
 import edu.rice.rbox.Location.interest.InterestPredicate;
 import edu.rice.rbox.ObjStorage.ObjectLocationStorageInterface;
@@ -56,6 +57,8 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
         this.replication = replication;
     }
 
+
+
     /*
      Call predicate, maybe add condition to not inc. this object_uuid.
      Take results, formulate and send to replication
@@ -63,6 +66,16 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
      */
     @Override
     public void queryInterest() {
+
+        List<HolderInfo> results = formulate_results();
+
+        replication.handleQueryResult(results);
+    }
+
+    /*
+     Used for testing
+     */
+    public List<HolderInfo> formulate_results() {
         List<Bson> allQueries = new ArrayList<>();
         //TODO: replace with HolderInfo;
 
@@ -77,7 +90,7 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
         Optional<Bson> finalQueryOption = allQueries.stream().reduce((q1, q2) -> Filters.or(q1, q2));
 
         if (finalQueryOption.isEmpty())
-            return;
+            return Collections.emptyList();
 
         FindIterable<Document> documents = mongoCollection.find(finalQueryOption.get());
 
@@ -95,12 +108,7 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
             interesting_objects.add(new HolderInfo(obj_uuid, server_uuid));
         });
 
-
-        replication.handleQueryResult(interesting_objects);
-        // todo: @tim: do we still care about this id part? i assume not
-        // Bson bsonUUIDFilter = Filters.ne("_id", new BsonString(object_uuid.toString()));
-        // FindIterable<Document> documents = mongoCollection.find(Filters.and(bsonUUIDFilter, bsonQuery));
-        // todo: send a message to obj replication
+        return interesting_objects;
     }
 
     /*
@@ -114,6 +122,11 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
         //Save object_uuid and predicate.
         objectPredicates.putIfAbsent(gameObjectUUID, predicate);
 
+        addForTest(gameObjectUUID, gameFieldMap);
+
+    }
+
+    public void addForTest(GameObjectUUID gameObjectUUID, HashMap<String, InterestingGameField> gameFieldMap) {
         // Create update options where if not exist, we create a new document
         UpdateOptions options = new UpdateOptions();
         options.upsert(true);
@@ -125,8 +138,8 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
         }
 
         mongoCollection.updateOne(bsonUUID,
-            new BasicDBObject("$set",
-                new BasicDBObject("server_uuid", new BsonString(OUR_SERVER.getUUID().toString()))));
+                new BasicDBObject("$set",
+                        new BasicDBObject("server_uuid", new BsonString(OUR_SERVER.getUUID().toString()))));
 
     }
 
@@ -147,7 +160,55 @@ public class LocatorMainImpl implements ObjectStorageLocationInterface {
     public void delete(GameObjectUUID gameObjectUUID) {
         Bson bsonUUID = Filters.eq("_id", new BsonString(gameObjectUUID.getUUID().toString()));
         mongoCollection.deleteOne(bsonUUID);
-        objectPredicates.remove(gameObjectUUID);
 
+        if (objectPredicates.containsKey(gameObjectUUID)) {
+            objectPredicates.remove(gameObjectUUID);
+        }
     }
+
+    /*
+        Adding fields to the global object.
+     */
+
+    @Override
+    public void addGlobalObjectField(String fieldname, Object fieldvalue) {
+        UpdateOptions options = new UpdateOptions();
+        options.upsert(true);
+
+        Bson bsonGlobalType = Filters.eq("type", new BsonString(ObjectStorageKeys.Global.TYPE_NAME));
+
+        BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(fieldname, fieldvalue));
+        mongoCollection.updateOne(bsonGlobalType, updateObject, options);
+    }
+
+    /*
+        Retrieving fields from the global object
+     */
+    @Override
+    public Map<String, Object> getGlobalObjectFields() {
+        Bson bsonGlobalType = Filters.eq("type", new BsonString("GLOBAL"));
+
+        FindIterable<Document> result = mongoCollection.find(bsonGlobalType);
+
+        Document global_obj_doc = result.first();
+
+        Map<String, Object> global_obj = new HashMap<>();
+
+        global_obj_doc.forEach(
+                global_obj::put
+        );
+
+        return global_obj;
+    }
+
+
+    /*
+     Removes all documents from the connected collection.
+     USED FOR TESTING...
+     */
+    public void removeAllFromCollection() {
+        mongoCollection.deleteMany(new BasicDBObject());
+    }
+
+
 }

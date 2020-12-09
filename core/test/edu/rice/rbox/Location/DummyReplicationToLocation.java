@@ -1,4 +1,4 @@
-package test.edu.rice.rbox.Location;
+package edu.rice.rbox.Location;
 
 import edu.rice.rbox.Replication.HolderInfo;
 import edu.rice.rbox.Replication.ObjectLocationReplicationInterface;

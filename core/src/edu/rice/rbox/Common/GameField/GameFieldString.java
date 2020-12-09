@@ -1,6 +1,6 @@
 package edu.rice.rbox.Common.GameField;
 
-public class GameFieldString implements GameField {
+public class GameFieldString implements InterestingGameField {
 
   private String value;
 
