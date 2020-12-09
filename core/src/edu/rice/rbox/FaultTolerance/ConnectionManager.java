@@ -1,5 +1,6 @@
 package edu.rice.rbox.FaultTolerance;
 
+import com.google.protobuf.Timestamp;
 import com.mongodb.client.MongoCollection;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -201,6 +202,34 @@ public class ConnectionManager {
         ConnectionManager connMan = new ConnectionManager(superPeerCol, clientCol);
         // TODO: Create connection to all of the superPeers and clients.
         return connMan;
+    }
+
+    // sends connect msgs to superpeers so they are completely interconnected
+    public void makeSuperpeersInterconnected() {
+
+        for (RegistrarBlockingStub stub1 : this.superPeers.keySet()) {
+            for (RegistrarBlockingStub stub2 : this.superPeers.keySet()) {
+                if (stub1 != stub2) {
+                    SuperPeerInfo spInfo1 = this.superPeers.get(stub1);
+
+                    Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
+                                              .setNanos((int) ((millis % 1000) * 1000000)).build();
+
+                    var basicInfo = RBoxProto.BasicInfo.newBuilder()
+                               .setSenderUUID(this.serverUUID.toString())
+                               .setTime(timestamp)
+                               .build();
+
+                    RBoxProto.ConnectMessage request =
+                        RBoxProto.ConnectMessage.newBuilder()
+                            .setConnectionIP(info.)
+                            .setSender(generateBasicInfo(millis))
+                            .build();
+                }
+
+            }
+        }
+
     }
 
 }
