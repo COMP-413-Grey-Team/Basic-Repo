@@ -3,6 +3,7 @@ package edu.rice.rbox.Replication;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Timestamps;
 import edu.rice.rbox.Common.Change.RemoteChange;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
@@ -36,7 +37,8 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
     private HashMap<GameObjectUUID, List<ServerUUID>> subscribers = new HashMap<>();      // Primary => Replica
     private HashMap<GameObjectUUID, ServerUUID> publishers = new HashMap<>();             // Replica => Primary
-    private HashMap<GameObjectUUID, Integer> timeout = new HashMap<>();                   // Primary => timeout
+    private HashMap<GameObjectUUID, Integer> timeout = new HashMap<>();                   // Replica => timeout
+    private HashMap<GameObjectUUID, Timestamp> timestamp = new HashMap<>();                       // Replica => timestamp
     private final int initial_value = 50;
 
     private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceBlockingStub> blockingStubs = new HashMap<>();
@@ -108,6 +110,14 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
             logger.log(Level.INFO, "Handling update...");
 
             // Pass change to storage
+            GameObjectUUID gameObjectUUID = getGameObjectUUIDFromMessage(request.getMsg());
+            Timestamp ts = request.getMsg().getSenderInfo().getTime();
+
+            // If it's updating a replica, update the latest timestamp
+            if (timestamp.containsKey(gameObjectUUID) && Timestamps.compare(ts, timestamp.get(gameObjectUUID)) > 0) {
+                timestamp.put(gameObjectUUID, ts);
+            }
+
             RemoteChange change = getRemoteChangeFromUpdateMessage(request);
             changeReceiver.receiveChange(change);
 
@@ -134,6 +144,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                 changeReceiver.promoteSecondary(gameObjectUUID);
                 // No longer treated as a replica
                 publishers.remove(gameObjectUUID);
+                timestamp.remove(gameObjectUUID);
                 timeout.remove(gameObjectUUID);
             });
             responseObserver.onCompleted();
@@ -159,7 +170,19 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
         @Override
         public void querySecondary(RBoxProto.querySecondaryMessage request, StreamObserver<RBoxProto.secondaryTimestampsMessage> responseObserver) {
-            // No-op
+            RBoxProto.secondaryTimestampsMessage.Builder msgBuilder = RBoxProto.secondaryTimestampsMessage.newBuilder();
+
+            request.getPrimaryUUIDsList().forEach(uuidStr -> {
+                GameObjectUUID replicaObjectUUID = new GameObjectUUID(UUID.fromString(uuidStr));
+                if (timestamp.containsKey(replicaObjectUUID)) {
+                    Timestamp time = timestamp.get(replicaObjectUUID);
+                    msgBuilder.addPrimaryUUIDs(uuidStr).addSecondaryTimestamps(time);
+                }
+            });
+
+            RBoxProto.secondaryTimestampsMessage msg = msgBuilder.build();
+            responseObserver.onNext(msg);
+            responseObserver.onCompleted();
         }
 
         @Override
@@ -285,10 +308,12 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         try {
             response = getBlockingStub(serverUUID).handleSubscribe(request);
             RemoteChange remoteChange = getRemoteChangeFromUpdateMessage(response);
+            GameObjectUUID replicaObjectUUID = remoteChange.getTarget();
 
             // Add into publishers
-            publishers.put(remoteChange.getTarget(), serverUUID);
-            timeout.put(remoteChange.getTarget(), initial_value);
+            publishers.put(replicaObjectUUID, serverUUID);
+            timestamp.put(replicaObjectUUID, response.getMsg().getSenderInfo().getTime());
+            timeout.put(replicaObjectUUID, initial_value);
 
             // Send remote change to storage
             changeReceiver.receiveChange(remoteChange);
@@ -315,6 +340,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
             // Remove from publishers
             publishers.remove(replicaObjectUUID);
+            timestamp.remove(replicaObjectUUID);
             timeout.remove(replicaObjectUUID);
 
         } catch (StatusRuntimeException e) {

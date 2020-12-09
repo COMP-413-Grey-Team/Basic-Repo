@@ -73,7 +73,7 @@ message querySecondaryMessage {
 message secondaryTimestampsMessage {
   BasicInfo sender = 1;
   repeated string primaryUUIDs = 2;
-  repeated string secondaryTimestamps = 3;
+  repeated google.protobuf.Timestamp secondaryTimestamps = 3;
 }
 
 message PromoteSecondaryMessage {
