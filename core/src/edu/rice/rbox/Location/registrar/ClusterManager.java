@@ -88,16 +88,15 @@ public class ClusterManager {
     public void connectFromCluster(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
       //TODO: create the gRPC blocking stub for the internal service for the machine running on the ip:port in the request of this RPC
       String senderUUID = request.getClusterMemberSender().getSenderUUID();
-      ManagedChannel channel = ManagedChannelBuilder.forTarget(senderUUID)
+      String senderHostnameInfo = request.getConnectionIP();
+      ManagedChannel channel = ManagedChannelBuilder.forTarget(senderHostnameInfo)
               .usePlaintext(true)
               .build();
       InternalRegistrarFaultToleranceBlockingStub stub2clusterMember = InternalRegistrarFaultToleranceGrpc.newBlockingStub(channel);
       clusterMemberStubs.put(stub2clusterMember, UUID.fromString(senderUUID));
       clusterMemberUUIDs.put(UUID.fromString(senderUUID), stub2clusterMember);
-      /*String senderUUID = request.getSender().getSenderUUID();
-      String senderHostnameInfo = request.getConnectionIP();
-
-      TheCoolRegistrar.this.connManager.addSuperPeer(senderHostnameInfo);*/
+      responseObserver.onNext(Empty.getDefaultInstance());
+      responseObserver.onCompleted();
     }
 
     @Override
@@ -143,7 +142,6 @@ public class ClusterManager {
       setNumLeaderMsg(getNumLeaderMsg() + 1);
       if (getNumLeaderMsg() > (2.0 / 3.0) * getNumRegistrarNodes()) {
         leader = true;
-
       }
       responseObserver.onNext(Empty.newBuilder().build());
       responseObserver.onCompleted();

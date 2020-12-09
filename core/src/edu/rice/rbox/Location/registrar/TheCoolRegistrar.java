@@ -4,6 +4,8 @@ import com.google.protobuf.Timestamp;
 
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import edu.rice.rbox.FaultTolerance.ConnectionManager;
 import edu.rice.rbox.FaultTolerance.Messages.PromoteSecondaryMessage;
 import edu.rice.rbox.Location.Mongo.MongoManager;
 
@@ -67,11 +69,21 @@ public class TheCoolRegistrar {
 
   String REGISTRAR = "registrar_DB";
 
-  public TheCoolRegistrar(String password) {
+  public TheCoolRegistrar() {
     // TODO: set up the connection manager / Mongo stuff
-    connManager = new TheCoolConnectionManager(null, null);
     //this.clusterManager = new ClusterManager(getIP(),getUUID(), new Consumer<String>());
-    mongoManager = new MongoManager(password);
+    MongoManager mongoMan = new MongoManager();
+    mongoMan.connect();
+    MongoClient client = mongoMan.getMongoClient();
+    client.getDatabase(MongoManager.DB_NAME).drop();
+    MongoDatabase db = client.getDatabase(MongoManager.DB_NAME);
+    db.createCollection(MongoManager.CLIENT_COLLECTION);
+    db.createCollection(MongoManager.SUPERPEER_COLLECTION);
+    db.createCollection(MongoManager.COLLECTION_NAME);
+    this.connManager = new TheCoolConnectionManager(db.getCollection(MongoManager.SUPERPEER_COLLECTION),
+            db.getCollection(MongoManager.CLIENT_COLLECTION));
+    //TODO initialize this
+    this.clusterManager = new ClusterManager(null, null, null);
   }
 
   public static void init() throws  Exception {
@@ -184,21 +196,21 @@ public class TheCoolRegistrar {
               mostRecentSuperpeerHeartBeats.putIfAbsent(stub, info.getTime());
               mostRecentSuperpeerHeartBeats.put(stub, info.getTime());
             } else {
-              //TODO change info.getTime()
               if(info.getTime().getNanos() - mostRecentSuperpeerHeartBeats.get(stub).getNanos() > 500) {
                 //TODO use mongo to get downed objects
                 List<String> secondaryUUIDs = null;
-                Map<String, String> secondaryBestTimestamps = null;
+                Map<String, Timestamp> secondaryBestTimestamps = null;
                 Map<String, SuperpeerFaultToleranceBlockingStub> secondaryBestSuperpeers = null;
                 connManager.superPeers.remove(stub);
                 for (SuperpeerFaultToleranceBlockingStub superpeer : connManager.superPeers.keySet()) {
-                   RBoxProto.secondaryTimestampsMessage timestamps;
-                   timestamps = superpeer.querySecondary(RBoxProto.querySecondaryMessage.newBuilder().addAllPrimaryUUIDs(secondaryUUIDs).build());
+                   RBoxProto.SecondaryTimestampsMessage timestamps;
+                   timestamps = superpeer.querySecondary(RBoxProto.QuerySecondaryMessage.newBuilder().addAllPrimaryUUIDs(secondaryUUIDs).build());
                    int index = 0;
                    for (String uuid : timestamps.getPrimaryUUIDsList()) {
                      secondaryBestTimestamps.putIfAbsent(uuid, timestamps.getSecondaryTimestamps(index));
                      secondaryBestSuperpeers.putIfAbsent(uuid, superpeer);
-                     if (Integer.parseInt(secondaryBestTimestamps.get(uuid)) > Integer.parseInt(timestamps.getSecondaryTimestamps(index))) {
+                     //TODO check this comparison
+                     if (Integer.parseInt(secondaryBestTimestamps.get(uuid).toString()) > Integer.parseInt(timestamps.getSecondaryTimestamps(index).toString())) {
                        secondaryBestTimestamps.put(uuid, timestamps.getSecondaryTimestamps(index));
                        secondaryBestSuperpeers.put(uuid, superpeer);
                      }
