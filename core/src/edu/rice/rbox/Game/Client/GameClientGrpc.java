@@ -97,9 +97,9 @@ public class GameClientGrpc {
             gsd.movingRooms.getNumber());
   }
 
-  public static void main(String args[]) {
-    GameClientGrpc client = new GameClientGrpc();
-    client.connect(args[0]);
-  }
+//  public static void main(String args[]) {
+//    GameClientGrpc client = new GameClientGrpc();
+//    client.connect(args[0]);
+//  }
 
 }

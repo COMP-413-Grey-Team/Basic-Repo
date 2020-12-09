@@ -10,12 +10,23 @@ import javax.swing.*;
 
 public class Game extends JFrame {
 
+  private final GameClientGrpc clientConnector = new GameClientGrpc();
   private final JPanel _contentPane = new JPanel();
   private final GameMenu _menu = new GameMenu(new Menu2Game() {
     @Override
     public void playGame() {
       initGame();
     }
+
+    @Override
+    public void connectToRegistrar(String ip) {
+      if (ip.length() == 0) {
+        System.err.println("Error: Empty IP was empty!");
+        System.exit(1);
+      }
+      clientConnector.connect(ip);
+    }
+
   });
   private final World _world = new World(new PlayerState(30, 30, "Evan", Color.BLUE, 0));
 
@@ -26,7 +37,6 @@ public class Game extends JFrame {
 
   private void initMenu() {
     _contentPane.add(_menu);
-    System.out.println(_world.hasFocus());
     setResizable(false);
     pack();
 
