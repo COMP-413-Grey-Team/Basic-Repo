@@ -21,7 +21,7 @@ import org.bson.conversions.Bson;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class LocatorMainImpl implements ObjectStorageLocationInterface {
+public class LocatorMainImpl implements LocatorMain {
 
     private MongoCollection<Document> mongoCollection;
     private HashMap<GameObjectUUID, InterestPredicate> objectPredicates;
