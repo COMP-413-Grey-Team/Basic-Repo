@@ -3,6 +3,7 @@ package edu.rice.rbox.FaultTolerance;
 import edu.rice.rbox.Common.Change.RemoteChange;
 import edu.rice.rbox.Common.GameField.InterestingGameField;
 import edu.rice.rbox.Common.GameObjectUUID;
+import edu.rice.rbox.Game.Server.GameServer;
 import edu.rice.rbox.Game.Server.GameStateManager;
 import edu.rice.rbox.Location.interest.InterestPredicate;
 import edu.rice.rbox.Location.locator.LocatorMainImpl;
@@ -25,9 +26,19 @@ public class Superpeer {
     private LocatorMainImpl locator;
     private GameStateManager gameStateManager;
 
+    // TODO: need to double check this with miguel and evan
+    private GameServer gameServer;
+
     /* Constructor of the Superpeer, setting up the adaptors */
     public Superpeer() {
         this.serverUUID = ServerUUID.randomUUID();
+
+        this.gameStateManager = new GameStateManager(serverUUID, this.store);
+
+        // TODO: another change I made
+        this.gameServer = new GameServer(this.gameStateManager);
+
+
         this.replicaManager = new ReplicaManagerGrpc(port, serverUUID,
             new ChangeReceiver() {
             @Override
@@ -49,7 +60,7 @@ public class Superpeer {
             public void promoteSecondary(GameObjectUUID id) {
                 store.promoteSecondary(id);
             }
-        });
+        }, this.gameServer.getGameServiceImplBase());
 
         this.store = new ObjectStore(
             new ObjectStorageReplicationInterface() {
@@ -112,7 +123,7 @@ public class Superpeer {
             (id, field) -> store.queryOneField(id, field),
             interestedObjects -> replicaManager.handleQueryResult(interestedObjects)
         );
-        this.gameStateManager = new GameStateManager(serverUUID, this.store);
+
     }
 
     private void start(String registrarIP) throws Exception {

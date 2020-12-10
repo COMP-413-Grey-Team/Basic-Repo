@@ -200,13 +200,14 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
     };
 
     /* Constructor */
-    public ReplicaManagerGrpc(int port, ServerUUID serverUUID, ChangeReceiver changeReceiver) {
+    public ReplicaManagerGrpc(int port, ServerUUID serverUUID, ChangeReceiver changeReceiver, GameServiceGrpc.GameServiceImplBase gameService) {
         this.changeReceiver = changeReceiver;
         this.serverUUID = serverUUID;
         this.port = port;
         this.server = ServerBuilder.forPort(port)
                           .addService(rboxServiceImpl)
                           .addService(registrarServiceImpl)
+                          .addService(gameService)
                           .build();
     }
 
