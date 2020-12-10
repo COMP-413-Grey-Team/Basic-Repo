@@ -44,7 +44,9 @@ public class GameServerGrpc extends GameServiceImplBase {
     System.out.println("Player State: " + this.reconstructPlayerState(request).toString());
     System.out.println("Moved Rooms?: " + (((Integer) request.getMovingRoomsValue())).toString());
 
-    responseObserver.onNext(GameNetworkProto.UpdateFromServer.newBuilder().build());
+    final GameState gameState = gameStateManager.handleUpdateFromPlayer(clientUpdateToGameStateDelta(request));
+
+    responseObserver.onNext(gameStateToServerMsg(gameState).getUpdateFromServer());
     responseObserver.onCompleted();
   }
 
@@ -60,13 +62,23 @@ public class GameServerGrpc extends GameServiceImplBase {
     System.out.println("Name: " + request.getName());
     System.out.println("Color: " + request.getColor());
 
-    responseObserver.onNext(GameNetworkProto.UpdateFromServer.newBuilder().build());
+    final GameState
+        gameState =
+        gameStateManager.handlePlayerJoining(new PlayerState(0,
+            0,
+            request.getName(),
+            Color.getColor(request.getColor()),
+            0));
+
+    responseObserver.onNext(gameStateToServerMsg(gameState).getUpdateFromServer());
     responseObserver.onCompleted();
   }
 
   @Override
   public void removeMe(GameNetworkProto.PlayerID request, StreamObserver<Empty> responseObserver) {
     System.out.println("Player ID: " + request.getPlayerID());
+
+    gameStateManager.handlePlayerQuitting(new GameObjectUUID(UUID.fromString(request.getPlayerID())));
 
     responseObserver.onNext(Empty.newBuilder().build());
     responseObserver.onCompleted();
@@ -81,8 +93,7 @@ public class GameServerGrpc extends GameServiceImplBase {
             gs.clientUUID);
   }
 
-  public GameStateDelta clientMsgToGameStateDelta(UpdateFromClientMessage msg) {
-    GameNetworkProto.UpdateFromClient update = msg.getUpdateFromClientMessage();
+  public GameStateDelta clientUpdateToGameStateDelta(GameNetworkProto.UpdateFromClient update) {
     HashSet<GameObjectUUID> delCoins = new HashSet<GameObjectUUID>();
     for (String dc: update.getDeletedCoinsList()) {
       delCoins.add(new GameObjectUUID(UUID.fromString(dc)));

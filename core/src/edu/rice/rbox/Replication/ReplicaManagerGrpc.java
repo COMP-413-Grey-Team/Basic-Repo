@@ -45,7 +45,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
     private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceBlockingStub> blockingStubs = new HashMap<>();
     private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceStub> stubs = new HashMap<>();
-    private RegistrarGrpc.RegistrarBlockingStub registrarBlockingStub;
+    private SuperpeerFaultToleranceGrpc.SuperpeerFaultToleranceBlockingStub registrarBlockingStub;
 
     private static StreamObserver<Empty> emptyResponseObserver = new StreamObserver<>() {
         @Override
@@ -127,15 +127,15 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         }
     };
 
-    private RegistrarGrpc.RegistrarImplBase registrarServiceImpl = new RegistrarGrpc.RegistrarImplBase() {
+    private SuperpeerFaultToleranceGrpc.SuperpeerFaultToleranceImplBase registrarServiceImpl = new SuperpeerFaultToleranceGrpc.SuperpeerFaultToleranceImplBase() {
         @Override
-        public void alert(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
+        public void alertSuperPeers(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
             // Save Registrar blocing stub
             String registrarIP = request.getNewRegistrarIP();
             ManagedChannel channel = ManagedChannelBuilder.forTarget(registrarIP)
                                          .usePlaintext(true)
                                          .build();
-            registrarBlockingStub = RegistrarGrpc.newBlockingStub(channel);
+            registrarBlockingStub = SuperpeerFaultToleranceGrpc.newBlockingStub(channel);
             responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
@@ -155,7 +155,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         }
 
         @Override
-        public void connect(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
+        public void connectToSuperpeer(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
             ServerUUID superpeerUUID = new ServerUUID(UUID.fromString(request.getSender().getSenderUUID()));
             String superpeerIP = request.getConnectionIP();
 
@@ -167,13 +167,14 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
             RBoxServiceGrpc.RBoxServiceStub stub = RBoxServiceGrpc.newStub(channel);
             blockingStubs.put(superpeerUUID, blockingStub);
             stubs.put(superpeerUUID, stub);
+            logger.info("Connected to superpeer: " + request.getConnectionIP());
             responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
 
         @Override
-        public void querySecondary(RBoxProto.querySecondaryMessage request, StreamObserver<RBoxProto.secondaryTimestampsMessage> responseObserver) {
-            RBoxProto.secondaryTimestampsMessage.Builder msgBuilder = RBoxProto.secondaryTimestampsMessage.newBuilder();
+        public void querySecondary(RBoxProto.QuerySecondaryMessage request, StreamObserver<RBoxProto.SecondaryTimestampsMessage> responseObserver) {
+            RBoxProto.SecondaryTimestampsMessage.Builder msgBuilder = RBoxProto.SecondaryTimestampsMessage.newBuilder();
 
             request.getPrimaryUUIDsList().forEach(uuidStr -> {
                 GameObjectUUID replicaObjectUUID = new GameObjectUUID(UUID.fromString(uuidStr));
@@ -183,7 +184,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                 }
             });
 
-            RBoxProto.secondaryTimestampsMessage msg = msgBuilder.build();
+            RBoxProto.SecondaryTimestampsMessage msg = msgBuilder.build();
             responseObserver.onNext(msg);
             responseObserver.onCompleted();
         }
@@ -217,7 +218,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         logger.info("Attempt to connect to " + registrarIP);
 
         ManagedChannel channel = ManagedChannelBuilder.forTarget(registrarIP).usePlaintext(true).build();
-        this.registrarBlockingStub = RegistrarGrpc.newBlockingStub(channel);
+        this.registrarBlockingStub = SuperpeerFaultToleranceGrpc.newBlockingStub(channel);
 
         String ip;
         try(final DatagramSocket socket = new DatagramSocket()){
@@ -236,7 +237,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                 .setSender(generateBasicInfo(millis))
                 .build();
 
-        registrarBlockingStub.connect(request);
+        registrarBlockingStub.connectToSuperpeer(request);
     }
 
     /** Stop serving requests and shutdown resources. */

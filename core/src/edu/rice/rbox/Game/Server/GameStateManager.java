@@ -84,6 +84,11 @@ public class GameStateManager {
     return serverUUID;
   }
 
+  private Random random = new Random();
+  private int getRandomNumberUsingNextInt(int min, int max) {
+    return random.nextInt(max - min) + min;
+  }
+
   public GameState handlePlayerJoining(PlayerState newPlayerInfo) {
     // Find one of the rooms this server is in charge of and add the player to that room.
     final GameFieldSet<GameFieldInteger> roomIndices = (GameFieldSet<GameFieldInteger>) objectStore.read(Global.GLOBAL_OBJ, Global.keyForServerUUID(myServerUUID()), 0);
@@ -92,8 +97,8 @@ public class GameStateManager {
 
     HashMap<String, GameField> playerMap = new HashMap<>() {{
       put(TYPE, new GameFieldString(Player.TYPE_NAME));
-      put(ObjectStorageKeys.Player.X_POS, new GameFieldDouble(newPlayerInfo.x));
-      put(ObjectStorageKeys.Player.Y_POS, new GameFieldDouble(newPlayerInfo.y));
+      put(ObjectStorageKeys.Player.X_POS, new GameFieldDouble(getRandomNumberUsingNextInt(30, WORLD_WIDTH - 30)));
+      put(ObjectStorageKeys.Player.Y_POS, new GameFieldDouble(getRandomNumberUsingNextInt(30, WORLD_HEIGHT - 30)));
       put(ObjectStorageKeys.Player.NAME, new GameFieldString(newPlayerInfo.name));
       put(ObjectStorageKeys.Player.COLOR, new GameFieldColor(newPlayerInfo.color));
       put(ObjectStorageKeys.Player.ROOM_ID, roomUUID);
