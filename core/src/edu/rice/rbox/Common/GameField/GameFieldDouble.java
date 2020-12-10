@@ -1,8 +1,8 @@
 package edu.rice.rbox.Common.GameField;
 
-public class GameFieldDouble implements GameField {
+public class GameFieldDouble implements InterestingGameField<Double> {
 
-  private double value;
+  private Double value;
 
   public GameFieldDouble(double value) {
     this.value = value;
@@ -13,6 +13,6 @@ public class GameFieldDouble implements GameField {
     return new GameFieldDouble(value);
   }
 
-  public double getValue() { return value; }
+  public Double getValue() { return value; }
 
 }

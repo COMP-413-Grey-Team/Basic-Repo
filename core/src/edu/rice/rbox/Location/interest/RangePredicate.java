@@ -28,7 +28,7 @@ public class RangePredicate<T extends Number> implements InterestPredicate {
 
         if (isRelative) {
             T fieldValue = (T) storage.queryOneField(relative_object_uuid, this.field).getValue();
-            lowerValue = fieldValue.doubleValue() + lowerValue;
+            lowerValue = fieldValue.doubleValue() - lowerValue;
             upperValue = fieldValue.doubleValue() + upperValue;
         }
         return Filters.and(

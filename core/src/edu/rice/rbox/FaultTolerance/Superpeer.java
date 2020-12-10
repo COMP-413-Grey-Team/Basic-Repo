@@ -10,7 +10,9 @@ import edu.rice.rbox.ObjStorage.*;
 import edu.rice.rbox.Replication.ReplicaManagerGrpc;
 import edu.rice.rbox.Common.ServerUUID;
 
+
 import java.util.*;
+
 
 
 public class Superpeer {
@@ -90,6 +92,16 @@ public class Superpeer {
             }
 
             @Override
+            public void addGlobalObjectField(String fieldname, Object fieldvalue) {
+                locator.addGlobalObjectField(fieldname, fieldvalue);
+            }
+
+            @Override
+            public Map<String, Object> getGlobalObjectFields() {
+                return locator.getGlobalObjectFields();
+            }
+
+                @Override
             public void queryInterest() {
                 locator.queryInterest();
             }

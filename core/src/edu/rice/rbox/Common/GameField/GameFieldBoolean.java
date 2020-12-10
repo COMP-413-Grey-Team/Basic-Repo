@@ -1,6 +1,6 @@
 package edu.rice.rbox.Common.GameField;
 
-public class GameFieldBoolean implements GameField {
+public class GameFieldBoolean implements InterestingGameField<Boolean> {
 
   private boolean value;
 
@@ -13,6 +13,7 @@ public class GameFieldBoolean implements GameField {
     return new GameFieldBoolean(value);
   }
 
-  public boolean getValue() { return value; }
+  @Override
+  public Boolean getValue() { return value; }
 
 }
