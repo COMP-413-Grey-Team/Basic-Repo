@@ -22,7 +22,7 @@ public class RegistrarServer {
 
         private UUID serverUUID;
 
-        private Election election;
+//        private Election election;
 
         private MongoManager mongoManager;
 
@@ -56,7 +56,7 @@ public class RegistrarServer {
                 this.server.start();
 
                 // init election object with hashmap of <uuid, blocking stubs>
-                this.election = new Election(new HashMap<>());
+//                this.election = new Election(new HashMap<>());
 
                 // Connect to Mongo DB
                 this.mongoManager.connect();
