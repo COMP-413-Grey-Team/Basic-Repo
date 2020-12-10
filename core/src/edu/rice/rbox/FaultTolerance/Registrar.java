@@ -4,11 +4,13 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
+import edu.rice.rbox.Game.Server.ObjectStorageKeys;
 import edu.rice.rbox.Location.Mongo.MongoManager;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
 import io.grpc.stub.StreamObserver;
+import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
@@ -19,12 +21,20 @@ import java.util.UUID;
 
 import network.InternalRegistrarFaultToleranceGrpc;
 import network.RBoxProto;
+import network.RBoxServiceGrpc;
+import org.bson.Document;
+import edu.rice.rbox.FaultTolerance.Registrar;
 import network.SuperpeerFaultToleranceGrpc.*;
 
 public class Registrar {
 
     private ConnectionManager connManager;
     private String ipAddress = "";
+    private MongoDatabase db;
+    private UUID id = UUID.randomUUID();
+
+    private static Map<InternalRegistrarFaultToleranceGrpc.InternalRegistrarFaultToleranceBlockingStub, Timestamp> mostRecentClusterHeartBeats = new HashMap<>();
+    private static Map<SuperpeerFaultToleranceBlockingStub, Timestamp> mostRecentSuperpeerHeartBeats = new HashMap<>();
 
     private static ClusterManager clusterManager;
 
@@ -65,13 +75,12 @@ public class Registrar {
 
         @Override
         public void connectToSuperpeer(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
-
             String senderUUID = request.getSender().getSenderUUID();
             String senderHostnameInfo = request.getConnectionIP();
 
+            System.out.println("Super with IP/port " + senderHostnameInfo + " called connectTo RPC");
             SuperpeerFaultToleranceBlockingStub spStub = Registrar.this.connManager
                                                             .addSuperPeer(senderHostnameInfo, UUID.fromString(senderUUID));
-
 
             com.google.protobuf.Empty empty = com.google.protobuf.Empty.newBuilder().build();
             responseObserver.onNext(empty);
@@ -115,13 +124,12 @@ public class Registrar {
 
 
 
-
     public Registrar() {
         MongoManager mongoMan = new MongoManager();
         mongoMan.connect();
         MongoClient client = mongoMan.getMongoClient();
         client.getDatabase(MongoManager.DB_NAME).drop();
-        MongoDatabase db = client.getDatabase(MongoManager.DB_NAME);
+        this.db = client.getDatabase(MongoManager.DB_NAME);
         db.createCollection(MongoManager.CLIENT_COLLECTION);
         db.createCollection(MongoManager.SUPERPEER_COLLECTION);
         db.createCollection(MongoManager.COLLECTION_NAME);
@@ -141,9 +149,6 @@ public class Registrar {
         });
     }
 
-    private static Map<InternalRegistrarFaultToleranceGrpc.InternalRegistrarFaultToleranceBlockingStub, Timestamp> mostRecentClusterHeartBeats = new HashMap<>();
-    private static Map<SuperpeerFaultToleranceBlockingStub, Timestamp> mostRecentSuperpeerHeartBeats = new HashMap<>();
-
     public void init() throws  Exception {
         String ip = "";
         try(final DatagramSocket socket = new DatagramSocket()){
@@ -152,13 +157,15 @@ public class Registrar {
             ipAddress = ip;
         }
 
+        this.ipAddress = ip + ":8080";
         System.out.println("Server Running on address: " + ip);
 
-        this.ipAddress = ip + ":8080";
+        // Initialize Global object
+        Document globalObj = new Document("_id", ObjectStorageKeys.Global.GLOBAL_OBJ.toString())
+                                 .append(ObjectStorageKeys.TYPE, ObjectStorageKeys.Global.TYPE_NAME);
+        db.getCollection(MongoManager.COLLECTION_NAME).insertOne(globalObj);
 
-
-        // Create a new server to listen on port 8080
-
+        // Create a new server to listen on port 8080 - within its own thread
         Server server = ServerBuilder.forPort(8080)
                             // this is for registrar/player client interactions
                             .addService(this.connManager.getGameServerRegistrarImpl())
@@ -166,13 +173,25 @@ public class Registrar {
                             .addService(this.superPeerServiceImpl)
                             // TODO: this is for the health service @ Nikhaz
                             .build();
+        Thread registrarServerThread = new Thread(() -> {
+            try {
+                // Start the server
+                server.start();
+
+                // Server threads are running in the background.
+                System.out.println("Server started");
+
+                // Don't exit the main thread. Wait until server is terminated.
+                server.awaitTermination();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
 
 
-        // Start the server
-        server.start();
+        });
 
-        // Server threads are running in the background.
-        System.out.println("Server started");
+        registrarServerThread.start();
+//        registrarServerThread.join();
 
         // create a new thread
         Runnable target = new Runnable() {
@@ -279,6 +298,9 @@ public class Registrar {
         server.awaitTermination();
     }
 
+    public ConnectionManager getConnManager() {
+      return connManager;
+    }
 
     public static void main( String[] args ) throws Exception {
         Registrar reg = new Registrar();

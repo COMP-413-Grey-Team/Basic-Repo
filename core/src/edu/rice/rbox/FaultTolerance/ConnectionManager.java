@@ -1,26 +1,22 @@
 package edu.rice.rbox.FaultTolerance;
 
+import com.google.protobuf.Timestamp;
 import com.mongodb.client.MongoCollection;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 import java.util.*;
 
-import network.GameNetworkProto;
-import network.GameServiceGrpc;
+import network.*;
 import network.GameNetworkProto.SuperPeerInfo;
+import org.bson.Document;
 
 import network.SuperpeerFaultToleranceGrpc;
 import network.SuperpeerFaultToleranceGrpc.*;
-import org.bson.Document;
-
 
 import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 public class ConnectionManager {
-
-
-
 
     // player clients will not have gRPC servers, so we cannot have stubs to them
 
@@ -30,14 +26,9 @@ public class ConnectionManager {
     private MongoCollection clientCol;
 
 
-    // this is for game room assingment (each super peer is assigned a set of game rooms)
-    private Map<UUID, Integer> gameRooms;
+    // this is for game room assignment (each super peer is assigned a set of game rooms)
+    private Map<SuperpeerFaultToleranceBlockingStub, List<Integer>> stub2Room;
     private Integer currGameRoom;
-    private Integer numGameRooms;
-
-
-
-
 
 
     private GameServiceGrpc.GameServiceImplBase gameServerRegistrarImpl = new GameServiceGrpc.GameServiceImplBase() {
@@ -54,7 +45,7 @@ public class ConnectionManager {
         @Override
         public void getAssignedSuperPeer(GameNetworkProto.PlayerID request,
                                          io.grpc.stub.StreamObserver<network.GameNetworkProto.SuperPeerInfo> responseObserver) {
-            System.out.println("Get Assign incorrectly called on registrar!");
+            System.out.println("Get Assigned superpeer called on registrar!");
 
 
             // send over assigned superpeer info
@@ -94,7 +85,8 @@ public class ConnectionManager {
         superPeers = new HashMap<>();
         this.superPeerCol = spCollection;
         this.clientCol = clientCollection;
-        this.gameRooms = new HashMap<>();
+        this.stub2Room = new HashMap<>();
+        this.superPeer2gameClient = new HashMap<>();
     }
 
     /**
@@ -104,6 +96,8 @@ public class ConnectionManager {
      * @return superpeer stub
      */
     public SuperpeerFaultToleranceBlockingStub addSuperPeer(String hostnameInfo, UUID superPeerId) {
+        System.out.println("trying to create a superpeer stub to " + hostnameInfo);
+        System.out.println("Super Peer " + hostnameInfo + " connecting");
         ManagedChannel channel = ManagedChannelBuilder.forTarget(hostnameInfo)
                                      .usePlaintext(true)
                                      .build();
@@ -114,13 +108,18 @@ public class ConnectionManager {
 
         Document doc = new Document("hostname", hostnameInfo).append("superPeerUUID", superPeerId.toString());
         superPeerCol.insertOne(doc);
-
-
-        // assign superpeers a game room - game rooms start at 0
-        if (this.currGameRoom > this.numGameRooms - 1) {
-            this.currGameRoom = 0;
+        stub2Room.put(sp, new ArrayList<>());
+        if (stub2Room.size() >= 3) {
+            // TODO: Fix numbers
+            assignRoomsToSuperPeers(5);
         }
-        this.gameRooms.put(superPeerId, this.currGameRoom);
+
+
+//        // assign superpeers a game room - game rooms start at 0
+//        if (this.currGameRoom > this.numGameRooms - 1) {
+//            this.currGameRoom = 0;
+//        }
+//        this.gameRooms.put(superPeerId, this.currGameRoom);
 
 
         return sp;
@@ -146,7 +145,7 @@ public class ConnectionManager {
             }
         }
 
-        Document doc = new Document("hostname", superPeers.get(min)).append("playerUUID", client.toString());
+        Document doc = new Document("hostname", superPeers.get(min).getHostname()).append("playerUUID", client.toString());
         clientCol.insertOne(doc);
         superPeer2gameClient.get(min).add(client);
         return superPeers.get(min);
@@ -167,10 +166,63 @@ public class ConnectionManager {
         return gameServerRegistrarImpl;
     }
 
+    public Map<SuperpeerFaultToleranceBlockingStub, List<Integer>> assignRoomsToSuperPeers(int numRooms) {
+        int currAssigned = 0;
+        if  (stub2Room.size() < 3){
+            return null;
+        }
+
+
+        for (Map.Entry<SuperpeerFaultToleranceBlockingStub, List<Integer>> e: stub2Room.entrySet()) {
+            if (numRooms > currAssigned) {
+                stub2Room.get(e.getKey()).add(currAssigned);
+                currAssigned++;
+            }
+
+        }
+        stub2Room.forEach((k,v) -> {
+            RBoxProto.GameRooms.Builder gr = RBoxProto.GameRooms.newBuilder();
+            for(int i = 0; i <v.size(); i++)
+                gr.setAssignedRooms(i, v.get(i));
+            k.assignGameRooms(gr.build());
+        });
+        return stub2Room;
+    }
+
     public static ConnectionManager buildFromMongo(MongoCollection superPeerCol, MongoCollection clientCol) {
         ConnectionManager connMan = new ConnectionManager(superPeerCol, clientCol);
         // TODO: Create connection to all of the superPeers and clients.
         return connMan;
+    }
+
+    // sends connect msgs to superpeers so they are completely interconnected
+    public void makeSuperpeersInterconnected() {
+
+        // Connect using RboxService Stub
+        for (SuperpeerFaultToleranceBlockingStub stub1 : this.superPeers.keySet()) {
+            for (SuperpeerFaultToleranceBlockingStub stub2 : this.superPeers.keySet()) {
+                if (stub1 != stub2) {
+                    SuperPeerInfo spInfo1 = this.superPeers.get(stub1);
+                    long millis = System.currentTimeMillis();
+                    Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
+                                              .setNanos((int) ((millis % 1000) * 1000000)).build();
+
+                    RBoxProto.BasicInfo basicInfo = RBoxProto.BasicInfo.newBuilder()
+                                                        .setSenderUUID(spInfo1.getSuperPeerId())
+                                                        .setTime(timestamp)
+                                                        .build();
+
+                    RBoxProto.ConnectMessage request =
+                        RBoxProto.ConnectMessage.newBuilder()
+                            .setConnectionIP(spInfo1.getHostname())
+                            .setSender(basicInfo)
+                            .build();
+
+                    stub2.connectToSuperpeer(request);
+                }
+
+            }
+        }
     }
 
     public Set<SuperpeerFaultToleranceBlockingStub> getSuperpeers() {

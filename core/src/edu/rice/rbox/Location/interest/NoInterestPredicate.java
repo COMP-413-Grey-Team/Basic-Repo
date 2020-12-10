@@ -12,12 +12,8 @@ public class NoInterestPredicate implements InterestPredicate {
 
     public NoInterestPredicate() {}
 
-    public Bson toMongoQuery(HashMap<String, Serializable> map) {
-        return Filters.exists("field_that_should_never_be_used");
-    }
-
     @Override
     public Bson toMongoQuery(GameObjectUUID relative_object_uuid, ObjectLocationStorageInterface adapter) {
-        return null;
+        return Filters.exists("field_that_should_never_be_used");
     }
 }

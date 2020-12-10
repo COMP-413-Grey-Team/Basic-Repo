@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 import network.RBoxProto;
-import network.RegistrarGrpc;
+import network.SuperpeerFaultToleranceGrpc;
 
 public class SuperPeerServer {
 
@@ -43,7 +43,7 @@ public class SuperPeerServer {
    *                    "ip:port")
    * @return a stub to the registrar
    */
-  public RegistrarGrpc.RegistrarBlockingStub startUp(String registrarIP) throws Exception {
+  public SuperpeerFaultToleranceGrpc.SuperpeerFaultToleranceBlockingStub startUp(String registrarIP) throws Exception {
     // start up the server
     this.server.start();
 
@@ -53,7 +53,7 @@ public class SuperPeerServer {
                                  .build();
 
     // create the grpc client
-    RegistrarGrpc.RegistrarBlockingStub stub2registrar = RegistrarGrpc.newBlockingStub(channel);
+    SuperpeerFaultToleranceGrpc.SuperpeerFaultToleranceBlockingStub stub2registrar = SuperpeerFaultToleranceGrpc.newBlockingStub(channel);
 
     // Find public IP address - UNTESTED
     String systemipaddress = "";
@@ -80,7 +80,7 @@ public class SuperPeerServer {
             .build();
 
 
-    stub2registrar.connect(request);
+    stub2registrar.connectToSuperpeer(request);
 
     return stub2registrar;
   }
