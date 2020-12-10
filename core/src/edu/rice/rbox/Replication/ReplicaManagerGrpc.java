@@ -3,6 +3,7 @@ package edu.rice.rbox.Replication;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Timestamps;
 import edu.rice.rbox.Common.Change.RemoteChange;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Common.ServerUUID;
@@ -16,9 +17,8 @@ import org.apache.commons.lang3.SerializationUtils;
 import network.*;
 
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -37,12 +37,15 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
     private HashMap<GameObjectUUID, List<ServerUUID>> subscribers = new HashMap<>();      // Primary => Replica
     private HashMap<GameObjectUUID, ServerUUID> publishers = new HashMap<>();             // Replica => Primary
-    private HashMap<GameObjectUUID, Integer> timeout = new HashMap<>();                   // Primary => timeout
-    private Integer initial_value = 50;
+    private HashMap<GameObjectUUID, Integer> timeout = new HashMap<>();                   // Replica => timeout
+    private HashMap<GameObjectUUID, Timestamp> timestamp = new HashMap<>();                       // Replica => timestamp
+    private final int initial_value = 50;
+
+    private List<Integer> assignedRooms;    // rooms assigned to this superpeer by the registrar
 
     private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceBlockingStub> blockingStubs = new HashMap<>();
     private HashMap<ServerUUID, RBoxServiceGrpc.RBoxServiceStub> stubs = new HashMap<>();
-    private RegistrarGrpc.RegistrarBlockingStub registrarBlockingStub;
+    private SuperpeerFaultToleranceGrpc.SuperpeerFaultToleranceBlockingStub registrarBlockingStub;
 
     private static StreamObserver<Empty> emptyResponseObserver = new StreamObserver<>() {
         @Override
@@ -109,22 +112,31 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
             logger.log(Level.INFO, "Handling update...");
 
             // Pass change to storage
+            GameObjectUUID gameObjectUUID = getGameObjectUUIDFromMessage(request.getMsg());
+            Timestamp ts = request.getMsg().getSenderInfo().getTime();
+
+            // If it's updating a replica, update the latest timestamp
+            if (timestamp.containsKey(gameObjectUUID) && Timestamps.compare(ts, timestamp.get(gameObjectUUID)) > 0) {
+                timestamp.put(gameObjectUUID, ts);
+            }
+
             RemoteChange change = getRemoteChangeFromUpdateMessage(request);
             changeReceiver.receiveChange(change);
-
+            responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
     };
 
-    private RegistrarGrpc.RegistrarImplBase registrarServiceImpl = new RegistrarGrpc.RegistrarImplBase() {
+    private SuperpeerFaultToleranceGrpc.SuperpeerFaultToleranceImplBase registrarServiceImpl = new SuperpeerFaultToleranceGrpc.SuperpeerFaultToleranceImplBase() {
         @Override
-        public void alert(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
+        public void alertSuperPeers(RBoxProto.NewRegistrarMessage request, StreamObserver<Empty> responseObserver) {
             // Save Registrar blocing stub
             String registrarIP = request.getNewRegistrarIP();
             ManagedChannel channel = ManagedChannelBuilder.forTarget(registrarIP)
                                          .usePlaintext(true)
                                          .build();
-            registrarBlockingStub = RegistrarGrpc.newBlockingStub(channel);
+            registrarBlockingStub = SuperpeerFaultToleranceGrpc.newBlockingStub(channel);
+            responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
 
@@ -135,13 +147,15 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                 changeReceiver.promoteSecondary(gameObjectUUID);
                 // No longer treated as a replica
                 publishers.remove(gameObjectUUID);
+                timestamp.remove(gameObjectUUID);
                 timeout.remove(gameObjectUUID);
             });
+            responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
 
         @Override
-        public void connect(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
+        public void connectToSuperpeer(RBoxProto.ConnectMessage request, StreamObserver<Empty> responseObserver) {
             ServerUUID superpeerUUID = new ServerUUID(UUID.fromString(request.getSender().getSenderUUID()));
             String superpeerIP = request.getConnectionIP();
 
@@ -153,30 +167,47 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
             RBoxServiceGrpc.RBoxServiceStub stub = RBoxServiceGrpc.newStub(channel);
             blockingStubs.put(superpeerUUID, blockingStub);
             stubs.put(superpeerUUID, stub);
-
+            logger.info("Connected to superpeer: " + request.getConnectionIP());
+            responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
 
         @Override
-        public void querySecondary(RBoxProto.querySecondaryMessage request, StreamObserver<RBoxProto.secondaryTimestampsMessage> responseObserver) {
-            // No-op
+        public void querySecondary(RBoxProto.QuerySecondaryMessage request, StreamObserver<RBoxProto.SecondaryTimestampsMessage> responseObserver) {
+            RBoxProto.SecondaryTimestampsMessage.Builder msgBuilder = RBoxProto.SecondaryTimestampsMessage.newBuilder();
+
+            request.getPrimaryUUIDsList().forEach(uuidStr -> {
+                GameObjectUUID replicaObjectUUID = new GameObjectUUID(UUID.fromString(uuidStr));
+                if (timestamp.containsKey(replicaObjectUUID)) {
+                    Timestamp time = timestamp.get(replicaObjectUUID);
+                    msgBuilder.addPrimaryUUIDs(uuidStr).addSecondaryTimestamps(time);
+                }
+            });
+
+            RBoxProto.SecondaryTimestampsMessage msg = msgBuilder.build();
+            responseObserver.onNext(msg);
+            responseObserver.onCompleted();
         }
 
         @Override
         public void assignGameRooms(network.RBoxProto.GameRooms request,
                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
-            // TODO: IMPLEMENT THIS PEOPLES!!!
+            // Save the list of assigned rooms locally so we can initialize the rooms from the superpeer
+            assignedRooms = request.getAssignedRoomsList();
+            responseObserver.onNext(emptyResponse);
+            responseObserver.onCompleted();
         }
     };
 
     /* Constructor */
-    public ReplicaManagerGrpc(int port, ServerUUID serverUUID, ChangeReceiver changeReceiver) {
+    public ReplicaManagerGrpc(int port, ServerUUID serverUUID, ChangeReceiver changeReceiver, GameServiceGrpc.GameServiceImplBase gameService) {
         this.changeReceiver = changeReceiver;
         this.serverUUID = serverUUID;
         this.port = port;
         this.server = ServerBuilder.forPort(port)
                           .addService(rboxServiceImpl)
                           .addService(registrarServiceImpl)
+                          .addService(gameService)
                           .build();
     }
 
@@ -188,27 +219,26 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         logger.info("Attempt to connect to " + registrarIP);
 
         ManagedChannel channel = ManagedChannelBuilder.forTarget(registrarIP).usePlaintext(true).build();
-        this.registrarBlockingStub = RegistrarGrpc.newBlockingStub(channel);
+        this.registrarBlockingStub = SuperpeerFaultToleranceGrpc.newBlockingStub(channel);
 
-        // TODO: Find public IP address - UNTESTED
-        String systemipaddress = "";
-        URL url_name = new URL("http://bot.whatismyipaddress.com");
-        BufferedReader sc =
-            new BufferedReader(new InputStreamReader(url_name.openStream()));
-        systemipaddress = sc.readLine().trim();
+        String ip;
+        try(final DatagramSocket socket = new DatagramSocket()){
+            socket.connect(InetAddress.getByName("8.8.8.8"), 3000);
+            ip = socket.getLocalAddress().getHostAddress() + ":" + port;
+        }
+        System.out.println("Superpeer Running on address: " + ip);
 
 
-        // Send the registrar a Connect message - Need the other files!
+        // Send the registrar a Connect message
         long millis = System.currentTimeMillis();
 
         RBoxProto.ConnectMessage request =
             RBoxProto.ConnectMessage.newBuilder()
-                .setConnectionIP(systemipaddress + ":8080")
+                .setConnectionIP(ip)
                 .setSender(generateBasicInfo(millis))
                 .build();
 
-
-        registrarBlockingStub.connect(request);
+        registrarBlockingStub.connectToSuperpeer(request);
     }
 
     /** Stop serving requests and shutdown resources. */
@@ -285,10 +315,12 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         try {
             response = getBlockingStub(serverUUID).handleSubscribe(request);
             RemoteChange remoteChange = getRemoteChangeFromUpdateMessage(response);
+            GameObjectUUID replicaObjectUUID = remoteChange.getTarget();
 
             // Add into publishers
-            publishers.put(remoteChange.getTarget(), serverUUID);
-            timeout.put(remoteChange.getTarget(), initial_value);
+            publishers.put(replicaObjectUUID, serverUUID);
+            timestamp.put(replicaObjectUUID, response.getMsg().getSenderInfo().getTime());
+            timeout.put(replicaObjectUUID, initial_value);
 
             // Send remote change to storage
             changeReceiver.receiveChange(remoteChange);
@@ -315,6 +347,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
 
             // Remove from publishers
             publishers.remove(replicaObjectUUID);
+            timestamp.remove(replicaObjectUUID);
             timeout.remove(replicaObjectUUID);
 
         } catch (StatusRuntimeException e) {
@@ -395,5 +428,8 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
             }
         });
     }
+
+    /* Getter for initializing game rooms associated with this superpeer. */
+    public List<Integer> getAssignedRooms() { return assignedRooms; }
 
 }

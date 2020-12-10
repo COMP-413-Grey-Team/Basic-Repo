@@ -2,7 +2,7 @@ package edu.rice.rbox.Common.GameField;
 
 import java.awt.*;
 
-public class GameFieldColor implements GameField {
+public class GameFieldColor implements InterestingGameField {
 
   private Color value;
 
