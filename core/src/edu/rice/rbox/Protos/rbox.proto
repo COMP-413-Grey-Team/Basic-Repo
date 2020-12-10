@@ -38,12 +38,12 @@ service RBoxService {
   rpc handleUnsubscribe(UnsubscribeRequest) returns (google.protobuf.Empty);
 }
 
-message HealthCheckRequest {
+message HeartBeatRequest {
   BasicInfo sender = 1;
   string service = 2;
 }
 
-message HealthCheckResponse {
+message HeartBeatResponse {
   enum ServingStatus {
     UNKNOWN = 0;
     SERVING = 1;
@@ -54,26 +54,20 @@ message HealthCheckResponse {
   ServingStatus status = 2;
 }
 
-service Health {
-  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
-
-  rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
-}
-
 message NewRegistrarMessage {
   BasicInfo sender = 1;
   string newRegistrarIP = 2;
 }
 
-message querySecondaryMessage {
+message QuerySecondaryMessage {
   BasicInfo sender = 1;
   repeated string primaryUUIDs = 2;
 }
 
-message secondaryTimestampsMessage {
+message SecondaryTimestampsMessage {
   BasicInfo sender = 1;
   repeated string primaryUUIDs = 2;
-  repeated string secondaryTimestamps = 3;
+  repeated google.protobuf.Timestamp secondaryTimestamps = 3;
 }
 
 message PromoteSecondaryMessage {
@@ -86,15 +80,45 @@ message ConnectMessage {
   string connectionIP = 2;
 }
 
+message CheckConnection {
+  BasicInfo sender = 1;
+  string checkUUID = 2;
+}
+
+message ConnectionResult {
+  BasicInfo sender = 1;
+  bool result = 2;
+}
+
+message CheckIn {
+  BasicInfo sender = 1;
+}
+
 message GameRooms {
   BasicInfo sender = 1;
   repeated int32 assigned_rooms = 2;
 }
 
-service Registrar {
+message LeaderDown {
+  BasicInfo sender = 1;
+}
+
+service InternalRegistrarFaultTolerance {
+  // boiler plate init
   rpc Alert(NewRegistrarMessage) returns (google.protobuf.Empty);
+  rpc ConnectFromCluster(ConnectMessage) returns (google.protobuf.Empty);
+
+  // for elections
+  rpc CheckConnectionToClusterMember(CheckConnection) returns (ConnectionResult);
+  rpc HeartBeatClusterMember(HeartBeatRequest) returns (HeartBeatResponse);
+  rpc DownedLeader(LeaderDown) returns (google.protobuf.Empty);
+}
+
+service SuperpeerFaultTolerance {
+  rpc AlertSuperPeers(NewRegistrarMessage) returns (google.protobuf.Empty);
   rpc Promote(PromoteSecondaryMessage) returns (google.protobuf.Empty);
-  rpc Connect(ConnectMessage) returns (google.protobuf.Empty);
-  rpc QuerySecondary(querySecondaryMessage) returns (secondaryTimestampsMessage);
+  rpc ConnectToSuperpeer(ConnectMessage) returns (google.protobuf.Empty);
+  rpc QuerySecondary(QuerySecondaryMessage) returns (SecondaryTimestampsMessage);
   rpc AssignGameRooms(GameRooms) returns (google.protobuf.Empty);
+  rpc HeartBeatSuperpeer(HeartBeatRequest) returns (HeartBeatResponse);
 }

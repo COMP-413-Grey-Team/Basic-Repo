@@ -5,6 +5,8 @@ import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.ObjStorage.ObjectLocationStorageInterface;
 import org.bson.conversions.Bson;
 
+import static edu.rice.rbox.Location.interest.PredicateBiOperator.AND;
+
 public class CompositePredicate implements InterestPredicate {
     private final PredicateBiOperator op;
     private final InterestPredicate p1;
@@ -18,15 +20,16 @@ public class CompositePredicate implements InterestPredicate {
 
     @Override
     public Bson toMongoQuery(GameObjectUUID relative_object_uuid, ObjectLocationStorageInterface storage) {
-        return switch (op) {
-            case AND -> Filters.and(
+        if (op == AND) {
+            return Filters.and(
+                p1.toMongoQuery(relative_object_uuid, storage),
+                p2.toMongoQuery(relative_object_uuid, storage)
+            );
+        } else {
+            return Filters.or(
                     p1.toMongoQuery(relative_object_uuid, storage),
                     p2.toMongoQuery(relative_object_uuid, storage)
             );
-            case OR -> Filters.or(
-                    p1.toMongoQuery(relative_object_uuid, storage),
-                    p2.toMongoQuery(relative_object_uuid, storage)
-            );
-        };
+        }
     }
 }
