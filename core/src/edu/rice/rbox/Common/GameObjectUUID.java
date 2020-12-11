@@ -1,15 +1,15 @@
 package edu.rice.rbox.Common;
 
 import edu.rice.rbox.Common.GameField.GameField;
+import edu.rice.rbox.Common.GameField.InterestingGameField;
 
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-public class GameObjectUUID implements Serializable, GameField {
+public class GameObjectUUID implements Serializable, InterestingGameField<Void> {
 
     private final UUID uuid;
-
 
     public GameObjectUUID(UUID uuid) {
         super();
@@ -53,4 +53,8 @@ public class GameObjectUUID implements Serializable, GameField {
 
     public static GameObjectUUID NULL = new GameObjectUUID(new UUID(0, 0));
 
+    @Override
+    public Void getValue() {
+        return null;
+    }
 }
