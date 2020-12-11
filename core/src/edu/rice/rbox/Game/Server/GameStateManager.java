@@ -127,8 +127,8 @@ public class GameStateManager {
     HashMap<String, GameField> coinValues = new HashMap<>() {{
       put(ObjectStorageKeys.TYPE, new GameFieldString(ObjectStorageKeys.Coin.TYPE_NAME));
       put(ObjectStorageKeys.Coin.ROOM_ID, roomUUID);
-      put(ObjectStorageKeys.Coin.X_POS, new GameFieldInteger(x));
-      put(ObjectStorageKeys.Coin.Y_POS, new GameFieldInteger(y));
+      put(ObjectStorageKeys.Coin.X_POS, new GameFieldDouble(x));
+      put(ObjectStorageKeys.Coin.Y_POS, new GameFieldDouble(y));
       put(ObjectStorageKeys.Coin.HAS_BEEN_COLLECTED, new GameFieldBoolean(false));
     }};
 
@@ -179,8 +179,8 @@ public class GameStateManager {
 
   public PlayerState playerStateForPlayer(GameObjectUUID player) {
     return new PlayerState(
-        ((GameFieldInteger) objectStore.read(player, ObjectStorageKeys.Player.X_POS, 0)).getValue(),
-        ((GameFieldInteger) objectStore.read(player, ObjectStorageKeys.Player.Y_POS, 0)).getValue(),
+        ((GameFieldDouble) objectStore.read(player, ObjectStorageKeys.Player.X_POS, 0)).getValue(),
+        ((GameFieldDouble) objectStore.read(player, ObjectStorageKeys.Player.Y_POS, 0)).getValue(),
         ((GameFieldString) objectStore.read(player, ObjectStorageKeys.Player.NAME, 0)).getValue(),
         ((GameFieldColor) objectStore.read(player, ObjectStorageKeys.Player.COLOR, 0)).getValue(),
         ((GameFieldInteger) objectStore.read(player, ObjectStorageKeys.Player.COIN_COUNT, 0)).getValue()
@@ -189,8 +189,8 @@ public class GameStateManager {
 
   public CoinState coinStateForCoin(GameObjectUUID coin) {
     return new CoinState(
-        ((GameFieldInteger) objectStore.read(coin, ObjectStorageKeys.Player.X_POS, 0)).getValue(),
-        ((GameFieldInteger) objectStore.read(coin, ObjectStorageKeys.Player.Y_POS, 0)).getValue()
+        ((GameFieldDouble) objectStore.read(coin, ObjectStorageKeys.Player.X_POS, 0)).getValue(),
+        ((GameFieldDouble) objectStore.read(coin, ObjectStorageKeys.Player.Y_POS, 0)).getValue()
     );
   }
 
