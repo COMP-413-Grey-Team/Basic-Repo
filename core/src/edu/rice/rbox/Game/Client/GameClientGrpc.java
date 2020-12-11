@@ -41,6 +41,9 @@ public class GameClientGrpc {
     registrarStub = GameServiceGrpc.newBlockingStub(channel);
   }
 
+  /**
+   * This is sent to the game server.
+   */
   public GameNetworkProto.UpdateFromServer update(GameObjectUUID objectID, PlayerState playerState,
                      HashSet<GameObjectUUID> deletedCoins, Integer movingRooms) {
     UpdateFromClientMessage updateMessage = new UpdateFromClientMessage(objectID, playerState,
@@ -52,6 +55,9 @@ public class GameClientGrpc {
     return response;
   }
 
+  /**
+   * This is sent to the game server.
+   */
   public GameNetworkProto.UpdateFromServer init(String name, String color) {
 
     GameNetworkProto.InitialPlayerState.Builder initMessage =
@@ -63,7 +69,9 @@ public class GameClientGrpc {
     return response;
   }
 
-  // TODO: Define the super peer stub here
+  /**
+   * This is sent to the registrar.
+   */
   public GameNetworkProto.SuperPeerInfo getSuperPeer(String playerID) {
     GameNetworkProto.SuperPeerInfo response =
         registrarStub.getAssignedSuperPeer(GameNetworkProto.PlayerID.newBuilder().setPlayerID(playerID).build());
@@ -74,7 +82,7 @@ public class GameClientGrpc {
     // This is the IP = 10.125.200.165:3000
     System.out.println("This is the super peer host name: " + response.getHostname());
 
-    // Connect here to the superpeer.
+    // Connect to the super peer here.
     ManagedChannel channel = ManagedChannelBuilder.forTarget(response.getHostname())
                                  .usePlaintext(true)
                                  .build();
@@ -83,18 +91,26 @@ public class GameClientGrpc {
     return response;
   }
 
-  // TODO: This goes to the game server
+  /**
+   * This goes to the game server.
+   */
   public void remove(GameObjectUUID playerID) {
     GameNetworkProto.PlayerID.Builder idMessage = GameNetworkProto.PlayerID.newBuilder();
     registrarStub.removeMe(idMessage.setPlayerID(playerID.toString()).build());
   }
 
+  /**
+   * This is a helper.
+   */
   private  PlayerState reconstructPlayerState(GameNetworkProto.PlayerMessage msg) {
     return new PlayerState(msg.getX(), msg.getY(),
             msg.getName(), new Color(Integer.parseInt(msg.getColor())),
             Integer.parseInt(msg.getScore()));
   }
 
+  /**
+   * This is a helper.
+   */
   public GameState serverMsgToGameState(UpdateFromServerMessage msg) {
     GameNetworkProto.UpdateFromServer update = msg.getUpdateFromServer();
     return new GameState(new GameObjectUUID(UUID.fromString(update.getPlayerUUID())),
@@ -107,6 +123,9 @@ public class GameClientGrpc {
             new Color(Integer.parseInt(update.getWorldColor())));
   }
 
+  /**
+   * This is a seemingly unused helper.
+   */
   public UpdateFromClientMessage gameStateDeltaToClientMsg(GameStateDelta gsd) {
     return new UpdateFromClientMessage(gsd.playerUUID, gsd.updatedPlayerState,
             gsd.deletedCoins,
