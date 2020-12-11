@@ -112,10 +112,6 @@ public class Registrar {
         }
     };
 
-
-
-
-
     public Registrar() {
         MongoManager mongoMan = new MongoManager();
         mongoMan.connect();
@@ -164,6 +160,8 @@ public class Registrar {
                             .addService(this.connManager.getGameServerRegistrarImpl())
                             // this is for registrar/superpeer interactions
                             .addService(this.superPeerServiceImpl)
+                            // this is for registrar/registrar interactions
+                            .addService(this.clusterManager.getInternalServiceImpl())
                             // TODO: this is for the health service @ Nikhaz
                             .build();
 

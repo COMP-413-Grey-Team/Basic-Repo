@@ -135,6 +135,7 @@ public class ClusterManager {
       }
       mostRecentHeartbeat = getTimestamp();
       responseObserver.onNext(RBoxProto.HeartBeatResponse.newBuilder().setSender(getInfo()).setStatus(RBoxProto.HeartBeatResponse.ServingStatus.SERVING).build());
+      responseObserver.onCompleted();
     }
 
     @Override
