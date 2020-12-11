@@ -197,6 +197,14 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
             responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
+
+        @Override
+        public void heartBeatSuperpeer(network.RBoxProto.HeartBeatRequest request,
+                                       io.grpc.stub.StreamObserver<network.RBoxProto.HeartBeatResponse> responseObserver) {
+            // noop response, just checks if the connection is still viable
+            responseObserver.onNext(RBoxProto.HeartBeatResponse.getDefaultInstance());
+            responseObserver.onCompleted();
+        }
     };
 
     /* Constructor */

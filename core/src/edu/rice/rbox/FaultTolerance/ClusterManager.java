@@ -84,6 +84,7 @@ public class ClusterManager {
       //TODO
       leaderUUID = UUID.fromString(request.getSender().getSenderUUID());
       responseObserver.onNext(Empty.getDefaultInstance());
+      responseObserver.onCompleted();
     }
 
     @Override
@@ -135,6 +136,7 @@ public class ClusterManager {
       }
       mostRecentHeartbeat = getTimestamp();
       responseObserver.onNext(RBoxProto.HeartBeatResponse.newBuilder().setSender(getInfo()).setStatus(RBoxProto.HeartBeatResponse.ServingStatus.SERVING).build());
+      responseObserver.onCompleted();
     }
 
     @Override
