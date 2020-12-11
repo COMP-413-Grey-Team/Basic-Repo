@@ -167,42 +167,6 @@ public class LocatorMainImpl implements LocatorMain {
     }
 
     /*
-        Adding fields to the global object.
-     */
-
-    @Override
-    public void addGlobalObjectField(String fieldname, Object fieldvalue) {
-        UpdateOptions options = new UpdateOptions();
-        options.upsert(true);
-
-        Bson bsonGlobalType = Filters.eq("type", new BsonString(ObjectStorageKeys.Global.TYPE_NAME));
-
-        BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(fieldname, fieldvalue));
-        mongoCollection.updateOne(bsonGlobalType, updateObject, options);
-    }
-
-    /*
-        Retrieving fields from the global object
-     */
-    @Override
-    public Map<String, Object> getGlobalObjectFields() {
-        Bson bsonGlobalType = Filters.eq("type", new BsonString("GLOBAL"));
-
-        FindIterable<Document> result = mongoCollection.find(bsonGlobalType);
-
-        Document global_obj_doc = result.first();
-
-        Map<String, Object> global_obj = new HashMap<>();
-
-        global_obj_doc.forEach(
-                global_obj::put
-        );
-
-        return global_obj;
-    }
-
-
-    /*
      Removes all documents from the connected collection.
      USED FOR TESTING...
      */

@@ -146,16 +146,6 @@ public class Superpeer {
             }
 
             @Override
-            public void addGlobalObjectField(String fieldname, Object fieldvalue) {
-                locator.addGlobalObjectField(fieldname, fieldvalue);
-            }
-
-            @Override
-            public Map<String, Object> getGlobalObjectFields() {
-                return locator.getGlobalObjectFields();
-            }
-
-                @Override
             public void queryInterest() {
                 locator.queryInterest();
             }

@@ -23,7 +23,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-import static edu.rice.rbox.Common.Constants.NUMBER_OF_ROOMS;
 import static edu.rice.rbox.Game.Client.World.WORLD_HEIGHT;
 import static edu.rice.rbox.Game.Client.World.WORLD_WIDTH;
 
