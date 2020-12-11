@@ -13,10 +13,7 @@ import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 import network.InternalRegistrarFaultToleranceGrpc;
@@ -42,7 +39,7 @@ public class Registrar {
         return (double)clusterManager.clusterMemberStubs.size();
     }
 
-    private static boolean leader = false;
+    private static boolean leader = true;
 
     private static UUID uuid = UUID.randomUUID();
 
@@ -255,6 +252,7 @@ public class Registrar {
                             stub.heartBeatSuperpeer(req);
                         } catch (Exception ex) {
                             success = false;
+                            System.out.println("Superpeer disconnected");
                         }
                         if (success) {
                             mostRecentSuperpeerHeartBeats.putIfAbsent(stub, info.getTime());
@@ -262,10 +260,11 @@ public class Registrar {
                         } else {
                             if(info.getTime().getNanos() - mostRecentSuperpeerHeartBeats.get(stub).getNanos() > 500) {
                                 //TODO use mongo to get downed objects
-                                List<String> secondaryUUIDs = null;
-                                Map<String, Timestamp> secondaryBestTimestamps = null;
-                                Map<String, SuperpeerFaultToleranceBlockingStub> secondaryBestSuperpeers = null;
+                                List<String> secondaryUUIDs = new ArrayList<>();
+                                Map<String, Timestamp> secondaryBestTimestamps = new HashMap<>();
+                                Map<String, SuperpeerFaultToleranceBlockingStub> secondaryBestSuperpeers = new HashMap<>();
                                 connManager.superPeers.remove(stub);
+                                connManager.superPeer2gameClient.remove(stub);
                                 for (SuperpeerFaultToleranceBlockingStub superpeer : connManager.superPeers.keySet()) {
                                     RBoxProto.SecondaryTimestampsMessage timestamps;
                                     timestamps = superpeer.querySecondary(RBoxProto.QuerySecondaryMessage.newBuilder().addAllPrimaryUUIDs(secondaryUUIDs).build());
