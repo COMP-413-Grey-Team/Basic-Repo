@@ -219,7 +219,7 @@ public class Registrar {
                         boolean success = true;
                         try {
                             stub.heartBeatClusterMember(req);
-                        } catch (Exception ex) {
+                            } catch (Exception ex) {
                             success = false;
                         }
                         if (success) {

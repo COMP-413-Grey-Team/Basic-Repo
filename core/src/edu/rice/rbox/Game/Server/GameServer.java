@@ -74,7 +74,7 @@ public class GameServer {
 
     @Override
     public void removeMe(GameNetworkProto.PlayerID request, StreamObserver<Empty> responseObserver) {
-      System.out.println("Player ID: " + request.getPlayerID());
+      System.out.println("Player ID: " + request.getPlayerID() + " wants to be removed");
 
       gameStateManager.handlePlayerQuitting(new GameObjectUUID(UUID.fromString(request.getPlayerID())));
 
