@@ -1,6 +1,5 @@
 package edu.rice.rbox.Game.Client;
 
-import com.google.protobuf.Empty;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.CoinState;
 import edu.rice.rbox.Game.Common.SyncState.GameState;
@@ -12,17 +11,20 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 import java.awt.*;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import network.GameNetworkProto;
 import network.GameServiceGrpc;
 
+
+// TODO: Handle player reconnecting when the server goes down?
 public class GameClientGrpc {
 
   private ManagedChannel channel;
-  private GameServiceGrpc.GameServiceBlockingStub serverStub;
+  private GameServiceGrpc.GameServiceBlockingStub registrarStub;
+  private GameServiceGrpc.GameServiceBlockingStub gamerServerStub;
 
   public GameClientGrpc() {}
 
@@ -35,52 +37,84 @@ public class GameClientGrpc {
                                        .usePlaintext(true)
                                        .build();
 
-    serverStub = GameServiceGrpc.newBlockingStub(channel);
+    registrarStub = GameServiceGrpc.newBlockingStub(channel);
   }
 
-  public GameNetworkProto.UpdateFromServer update(GameObjectUUID objectID, PlayerState playerState,
-                     HashSet<GameObjectUUID> deletedCoins, Integer movingRooms) {
-    UpdateFromClientMessage updateMessage = new UpdateFromClientMessage(objectID, playerState,
-        deletedCoins, movingRooms);
+  /**
+   * This is sent to the game server.
+   */
+  public GameState update(GameStateDelta gsd) {
+    UpdateFromClientMessage updateMessage = this.gameStateDeltaToClientMsg(gsd);
 
     GameNetworkProto.UpdateFromServer response =
-        serverStub.publishUpdate(updateMessage.getUpdateFromClientMessage());
+        gamerServerStub.publishUpdate(updateMessage.getUpdateFromClientMessage());
 
-    return response;
+    // TODO: Handle updates from servers here!
+    return this.serverMsgToGameState(response);
   }
 
+  /**
+   * This is sent to the game server.
+   */
   public GameNetworkProto.UpdateFromServer init(String name, String color) {
 
     GameNetworkProto.InitialPlayerState.Builder initMessage =
         GameNetworkProto.InitialPlayerState.newBuilder();
 
     GameNetworkProto.UpdateFromServer response =
-        serverStub.initPlayer(initMessage.setName(name).setColor(color).build());
+        gamerServerStub.initPlayer(initMessage.setName(name).setColor(color).build());
+
+    // TODO: Handle updates from servers here!
 
     return response;
   }
 
-  // TODO: This message should be sent to the registrar, not the game server.
+  /**
+   * This is sent to the registrar.
+   */
   public GameNetworkProto.SuperPeerInfo getSuperPeer(String playerID) {
     GameNetworkProto.SuperPeerInfo response =
-        serverStub.getAssignedSuperPeer(GameNetworkProto.PlayerID.newBuilder().setPlayerID(playerID).build());
+        registrarStub.getAssignedSuperPeer(GameNetworkProto.PlayerID.newBuilder().setPlayerID(playerID).build());
+
+    System.out.println("This was called!");
+    // This is the UUID = 2dfa71ec-4df8-48f8-b7fe-202e2994fd50
+    System.out.println("This is the super peer's id: " + response.getSuperPeerId());
+    // This is the IP = 10.125.200.165:3000
+    System.out.println("This is the super peer host name: " + response.getHostname());
+
+    // Connect to the super peer here.
+    ManagedChannel channel = ManagedChannelBuilder.forTarget(response.getHostname())
+                                 .usePlaintext(true)
+                                 .build();
+    this.gamerServerStub = GameServiceGrpc.newBlockingStub(channel);
 
     return response;
   }
 
+  /**
+   * This goes to the game server.
+   */
   public void remove(GameObjectUUID playerID) {
     GameNetworkProto.PlayerID.Builder idMessage = GameNetworkProto.PlayerID.newBuilder();
-    serverStub.removeMe(idMessage.setPlayerID(playerID.toString()).build());
+    this.gamerServerStub.removeMe(idMessage.setPlayerID(playerID.toString()).build());
+
+    System.out.println("This message should have been set!");
   }
 
+  /**
+   * This is a helper.
+   */
   private  PlayerState reconstructPlayerState(GameNetworkProto.PlayerMessage msg) {
     return new PlayerState(msg.getX(), msg.getY(),
             msg.getName(), new Color(Integer.parseInt(msg.getColor())),
             Integer.parseInt(msg.getScore()));
   }
 
-  public GameState serverMsgToGameState(UpdateFromServerMessage msg) {
-    GameNetworkProto.UpdateFromServer update = msg.getUpdateFromServer();
+  /**
+   * This is a helper.
+   */
+  public GameState serverMsgToGameState(GameNetworkProto.UpdateFromServer update) {
+
     return new GameState(new GameObjectUUID(UUID.fromString(update.getPlayerUUID())),
             update.getPlayerStatesMap().entrySet().stream().collect(Collectors.toMap(
                     e -> new GameObjectUUID(UUID.fromString(e.getKey())),
@@ -91,15 +125,13 @@ public class GameClientGrpc {
             new Color(Integer.parseInt(update.getWorldColor())));
   }
 
+  /**
+   * This is a seemingly unused helper.
+   */
   public UpdateFromClientMessage gameStateDeltaToClientMsg(GameStateDelta gsd) {
     return new UpdateFromClientMessage(gsd.playerUUID, gsd.updatedPlayerState,
             gsd.deletedCoins,
             gsd.movingRooms.getNumber());
-  }
-
-  public static void main(String args[]) {
-    GameClientGrpc client = new GameClientGrpc();
-    client.connect(args[0]);
   }
 
 }
