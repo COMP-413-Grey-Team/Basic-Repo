@@ -34,7 +34,7 @@ public class ClusterManager {
 
   private Runnable alertSuperpeersOfNewLeader;
 
-  private boolean leader = false;
+  protected boolean leader = false;
 
   private Timestamp mostRecentHeartbeat = Timestamp.getDefaultInstance();
 
@@ -163,7 +163,7 @@ public class ClusterManager {
 
 
   // constructor
-  public ClusterManager(UUID uuidOfServerRunningThis,
+  public ClusterManager(UUID uuidOfServerRunningThis, String ipOfServerRunningThis,
                         Runnable alertNewLeader) {
 
     this.serverRunningThisUUID = uuidOfServerRunningThis;
@@ -172,6 +172,7 @@ public class ClusterManager {
     this.clusterMemberStubs = new HashMap<>();
     this.clusterMemberBasicInfos = new HashMap<>();
     this.clusterMemberIP = new HashMap<>();
+    this.hostName = ipOfServerRunningThis;
   }
 
 
@@ -196,6 +197,24 @@ public class ClusterManager {
       }
     }
 
+  }
+
+
+  // creates a stub to the leader, saves it in a field, then sends it a connect message
+  public void initNonLeader(String leaderIP) {
+    leader = false;
+    ManagedChannel channel = ManagedChannelBuilder.forTarget(leaderIP)
+                                 .usePlaintext(true)
+                                 .build();
+
+    leaderStub = InternalRegistrarFaultToleranceGrpc.newBlockingStub(channel);
+
+    long millis = System.currentTimeMillis();
+    Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
+                              .setNanos((int) ((millis % 1000) * 1000000)).build();
+    RBoxProto.BasicInfo basicInfo = RBoxProto.BasicInfo.newBuilder().setSenderUUID(getUUID()).setTime(timestamp).build();
+    RBoxProto.ConnectMessage request = RBoxProto.ConnectMessage.newBuilder().setSender(basicInfo).setConnectionIP(this.hostName).build();
+    leaderStub.connectFromCluster(request);
   }
 
 }

@@ -33,7 +33,7 @@ public class Registrar {
     private static Map<InternalRegistrarFaultToleranceGrpc.InternalRegistrarFaultToleranceBlockingStub, Timestamp> mostRecentClusterHeartBeats = new HashMap<>();
     private static Map<SuperpeerFaultToleranceBlockingStub, Timestamp> mostRecentSuperpeerHeartBeats = new HashMap<>();
 
-    private static ClusterManager clusterManager;
+    protected static ClusterManager clusterManager;
 
     private static double getNumRegistrarNodes () {
         return (double)clusterManager.clusterMemberStubs.size();
@@ -133,7 +133,22 @@ public class Registrar {
         this.connManager = new ConnectionManager(db.getCollection(MongoManager.SUPERPEER_COLLECTION),
             db.getCollection(MongoManager.CLIENT_COLLECTION));
 
-        this.clusterManager = new ClusterManager(uuid, new Runnable() {
+
+    }
+
+    public void init(String leaderIP) throws  Exception {
+        String ip = "";
+        try(final DatagramSocket socket = new DatagramSocket()){
+            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            ip = socket.getLocalAddress().getHostAddress();
+            ipAddress = ip;
+        }
+
+        this.ipAddress = ip + ":8080";
+        System.out.println("Server Running on address: " + ip);
+
+        // instantiate the clusterManager
+        this.clusterManager = new ClusterManager(uuid, this.ipAddress, new Runnable() {
             // this runnable notifies superpeers that this registrar is the lead
             @Override
             public void run() {
@@ -144,18 +159,11 @@ public class Registrar {
                 }
             }
         });
-    }
 
-    public void init() throws  Exception {
-        String ip = "";
-        try(final DatagramSocket socket = new DatagramSocket()){
-            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-            ip = socket.getLocalAddress().getHostAddress();
-            ipAddress = ip;
+        // means this registrar is a scrub, and only a cluster member
+        if (leaderIP != null) {
+            clusterManager.initNonLeader(leaderIP);
         }
-
-        this.ipAddress = ip + ":8080";
-        System.out.println("Server Running on address: " + ip);
 
         // Initialize Global object
         Document globalObj = new Document("_id", ObjectStorageKeys.Global.GLOBAL_OBJ.toString())
@@ -195,7 +203,7 @@ public class Registrar {
         Runnable target = new Runnable() {
             @Override
             public void run() {
-                while (!leader) {
+                while (!clusterManager.leader) {
                     if (getTimestamp().getSeconds() > clusterManager.getMostRecentHeartbeat().getSeconds() ||
                             (getTimestamp().getSeconds() == clusterManager.getMostRecentHeartbeat().getSeconds() &&
                                     getTimestamp().getNanos() - clusterManager.getMostRecentHeartbeat().getNanos() > 500)) {
@@ -208,7 +216,7 @@ public class Registrar {
                         }
                     }
                 }
-                while (leader) {
+                while (clusterManager.leader) {
                     for (InternalRegistrarFaultToleranceGrpc.InternalRegistrarFaultToleranceBlockingStub stub : clusterManager.clusterMemberStubs.keySet()) {
                         UUID stubUUID = clusterManager.clusterMemberStubs.get(stub);
                         RBoxProto.BasicInfo info = getInfo();
@@ -304,7 +312,17 @@ public class Registrar {
 
     public static void main( String[] args ) throws Exception {
         Registrar reg = new Registrar();
-        reg.init();
+
+
+        // no command line args means that this instance is the leader, otherwise issa follower
+        if (args.length == 0) {
+            reg.init(null);
+            reg.clusterManager.leader = true;
+        } else {
+            String leadIP = args[0];
+            reg.init(leadIP);
+        }
+
 
     }
 }
