@@ -67,7 +67,7 @@ public class Game extends JFrame {
     setResizable(false);
     pack();
 
-    setTitle("snake");
+    setTitle("fun game");
     setLocationRelativeTo(null);
   }
 
@@ -81,7 +81,7 @@ public class Game extends JFrame {
     setResizable(false);
     pack();
 
-    setTitle("Snake");
+    setTitle("our fun game!");
     setLocationRelativeTo(null);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }

@@ -29,14 +29,13 @@ public class Superpeer {
     private LocatorMainImpl locator;
     private GameStateManager gameStateManager;
 
-    // TODO: need to double check this with miguel and evan
     private GameServer gameServer;
 
     /* Constructor of the Superpeer, setting up the adaptors */
     public Superpeer() {
         this.serverUUID = ServerUUID.randomUUID();
 
-        this.gameStateManager = new GameStateManager(serverUUID, new Server2Store() {
+        this.gameStateManager = new GameStateManager(new Server2Store() {
             @Override
             public GameField read(GameObjectUUID gameObjectID, String field, int bufferIndex) {
                 return store.read(gameObjectID, field, bufferIndex);
@@ -102,7 +101,7 @@ public class Superpeer {
             public void accept(List<Integer> integers) {
 
                 System.out.println("Number of rooms assigned to this superpeer: " + integers.size());
-                Superpeer.this.gameStateManager.initializeRooms(new HashSet<>(integers));
+                Superpeer.this.gameStateManager.initializeRoom();
             }
         });
 
@@ -147,16 +146,6 @@ public class Superpeer {
             }
 
             @Override
-            public void addGlobalObjectField(String fieldname, Object fieldvalue) {
-                locator.addGlobalObjectField(fieldname, fieldvalue);
-            }
-
-            @Override
-            public Map<String, Object> getGlobalObjectFields() {
-                return locator.getGlobalObjectFields();
-            }
-
-                @Override
             public void queryInterest() {
                 locator.queryInterest();
             }

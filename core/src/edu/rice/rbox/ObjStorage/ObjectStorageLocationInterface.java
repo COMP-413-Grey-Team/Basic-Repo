@@ -19,9 +19,5 @@ public interface ObjectStorageLocationInterface {
 
   void delete(GameObjectUUID id);
 
-  void addGlobalObjectField(String fieldname, Object fieldvalue);
-
-  Map<String, Object> getGlobalObjectFields();
-
   void queryInterest();
 }
