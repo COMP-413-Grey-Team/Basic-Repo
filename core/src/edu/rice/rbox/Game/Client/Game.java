@@ -44,7 +44,11 @@ public class Game extends JFrame {
 
       // Get assigned superpeer
       clientConnector.getSuperPeer(_clientID.toString());
-      clientConnector.init(_world.player.getName(), _world.player.getColor().toString());
+
+      // FIXME: Will this cause issues?
+      GameState response = clientConnector.init(_world.player.getName(), _world.player.getColor().toString());
+      _world.handleServerUpdatesAsynchronously(response.playerStates, response.coinStates);
+
     }
 
   });

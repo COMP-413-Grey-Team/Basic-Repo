@@ -49,14 +49,13 @@ public class GameClientGrpc {
     GameNetworkProto.UpdateFromServer response =
         gamerServerStub.publishUpdate(updateMessage.getUpdateFromClientMessage());
 
-    // TODO: Handle updates from servers here!
     return this.serverMsgToGameState(response);
   }
 
   /**
    * This is sent to the game server.
    */
-  public GameNetworkProto.UpdateFromServer init(String name, String color) {
+  public GameState init(String name, String color) {
 
     GameNetworkProto.InitialPlayerState.Builder initMessage =
         GameNetworkProto.InitialPlayerState.newBuilder();
@@ -64,9 +63,7 @@ public class GameClientGrpc {
     GameNetworkProto.UpdateFromServer response =
         gamerServerStub.initPlayer(initMessage.setName(name).setColor(color).build());
 
-    // TODO: Handle updates from servers here!
-
-    return response;
+    return this.serverMsgToGameState(response);
   }
 
   /**
