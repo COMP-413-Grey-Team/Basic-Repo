@@ -20,7 +20,7 @@ public class ConnectionManager {
 
     // player clients will not have gRPC servers, so we cannot have stubs to them
 
-    private Map<SuperpeerFaultToleranceBlockingStub, List<UUID>> superPeer2gameClient;
+    protected Map<SuperpeerFaultToleranceBlockingStub, List<UUID>> superPeer2gameClient;
     protected Map<SuperpeerFaultToleranceBlockingStub, SuperPeerInfo> superPeers;
     private MongoCollection superPeerCol;
     private MongoCollection clientCol;
