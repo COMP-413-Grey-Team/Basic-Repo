@@ -128,7 +128,6 @@ public class GameStateManager {
       put(ObjectStorageKeys.Coin.ROOM_ID, roomUUID);
       put(ObjectStorageKeys.Coin.X_POS, new GameFieldDouble(x));
       put(ObjectStorageKeys.Coin.Y_POS, new GameFieldDouble(y));
-      put(ObjectStorageKeys.Coin.HAS_BEEN_COLLECTED, new GameFieldBoolean(false));
     }};
 
     lock.writeLock().lock();
