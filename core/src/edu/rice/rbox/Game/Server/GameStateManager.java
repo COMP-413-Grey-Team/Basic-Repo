@@ -33,7 +33,7 @@ import static network.GameNetworkProto.UpdateFromClient.MovingRooms.RIGHT;
 public class GameStateManager {
 
   private final ServerUUID serverUUID;
-  private ObjectStore objectStore;
+  private Server2Store objectStore;
 
   private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -75,7 +75,7 @@ public class GameStateManager {
     });
   });
 
-  public GameStateManager(ServerUUID serverUUID, ObjectStore objectStore) {
+  public GameStateManager(ServerUUID serverUUID, Server2Store objectStore) {
     this.serverUUID = serverUUID;
     this.objectStore = objectStore;
   }

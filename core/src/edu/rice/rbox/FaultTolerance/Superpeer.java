@@ -1,10 +1,13 @@
 package edu.rice.rbox.FaultTolerance;
 
+import edu.rice.rbox.Common.Change.LocalChange;
 import edu.rice.rbox.Common.Change.RemoteChange;
+import edu.rice.rbox.Common.GameField.GameField;
 import edu.rice.rbox.Common.GameField.InterestingGameField;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Server.GameServer;
 import edu.rice.rbox.Game.Server.GameStateManager;
+import edu.rice.rbox.Game.Server.Server2Store;
 import edu.rice.rbox.Location.interest.InterestPredicate;
 import edu.rice.rbox.Location.locator.LocatorMainImpl;
 import edu.rice.rbox.ObjStorage.*;
@@ -33,7 +36,41 @@ public class Superpeer {
     public Superpeer() {
         this.serverUUID = ServerUUID.randomUUID();
 
-        this.gameStateManager = new GameStateManager(serverUUID, this.store);
+        this.gameStateManager = new GameStateManager(serverUUID, new Server2Store() {
+            @Override
+            public GameField read(GameObjectUUID gameObjectID, String field, int bufferIndex) {
+                return store.read(gameObjectID, field, bufferIndex);
+            }
+
+            @Override
+            public boolean write(LocalChange change, GameObjectUUID author) {
+                return store.write(change, author);
+            }
+
+            @Override
+            public GameObjectUUID create(HashMap<String, GameField> fields,
+                                         HashSet<String> interesting_fields,
+                                         InterestPredicate predicate,
+                                         GameObjectUUID author,
+                                         int bufferIndex) {
+                return store.create(fields, interesting_fields, predicate, author, bufferIndex);
+            }
+
+            @Override
+            public Set<LocalChange> synchronize() {
+                return store.synchronize();
+            }
+
+            @Override
+            public void advanceBuffer() {
+                store.advanceBuffer();
+            }
+
+            @Override
+            public boolean delete(GameObjectUUID uuid, GameObjectUUID author) {
+                return store.delete(uuid, author);
+            }
+        });
 
         // TODO: another change I made
         this.gameServer = new GameServer(this.gameStateManager);
