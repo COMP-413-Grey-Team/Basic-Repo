@@ -40,8 +40,8 @@ public class World extends JPanel {
   });
 
   // Local State
-  private final GameObjectUUID playerUUID = GameObjectUUID.randomUUID();
   public LocalPlayerSprite player;
+  public GameObjectUUID playerUUID;
   private Map<GameObjectUUID, RemotePlayerSprite> otherPlayers = new HashMap<>();
   private Map<GameObjectUUID, CoinSprite> coins = new HashMap<>();
 //  private final DoorSprite leftDoor = new DoorSprite(DoorSprite.DoorSide.LEFT, WORLD_WIDTH, WORLD_HEIGHT);
@@ -86,11 +86,17 @@ public class World extends JPanel {
   private void updateInternalState() {
     player.updateState(DELTA_T, WORLD_WIDTH, WORLD_HEIGHT);
 
-    player.checkCoinCollisions(coins).forEach(coins::remove);
+//    player.checkCoinCollisions(coins).forEach(coins::remove);
+    player.checkCoinCollisions(coins).forEach(coin -> {
+      coins.remove(coin);
+      deletedCoins.add(coin);
+    });
 
     otherPlayers.forEach((uuid, sprite) -> {
       sprite.updateState(DELTA_T, WORLD_WIDTH, WORLD_HEIGHT);
-      sprite.checkCoinCollisions(coins).forEach(coins::remove);
+      sprite.checkCoinCollisions(coins).forEach(coin -> {
+        coins.remove(coin);
+      });
     });
   }
 
@@ -160,6 +166,7 @@ public class World extends JPanel {
 
   private void sendUpdatesToServerAsynchronously() {
     GameState response = this.clientGrpc.update(new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT));
+
     this.handleServerUpdatesAsynchronously(response.playerStates, response.coinStates);
     deletedCoins = new HashSet<>();
 

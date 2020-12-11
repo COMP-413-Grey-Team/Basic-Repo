@@ -8,6 +8,7 @@ import network.GameNetworkProto.PlayerMessage;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 public class UpdateFromClientMessage {
 
@@ -18,7 +19,7 @@ public class UpdateFromClientMessage {
     update.setGameObjectUUID(objectID.toString());
     update.setMovingRoomsValue(movingRooms);
     this.constructPlayerMessage(playerState);
-    this.constructDeletedCoins(deletedCoins);
+    update.addAllDeletedCoins(deletedCoins.stream().map(GameObjectUUID::toString).collect(Collectors.toSet()));
   }
 
   private void constructPlayerMessage(PlayerState playerState) {
@@ -29,15 +30,6 @@ public class UpdateFromClientMessage {
                               .setScore(((Integer) playerState.score).toString())
                               .setX(playerState.x)
                               .setY(playerState.y).build());
-  }
-
-  private void constructDeletedCoins(HashSet<GameObjectUUID> deletedCoins) {
-    int i = 0;
-    Iterator<GameObjectUUID> coins = deletedCoins.iterator();
-    while(coins.hasNext()) {
-      update.setDeletedCoins(i, coins.next().toString());
-      i++;
-    }
   }
 
   public UpdateFromClient getUpdateFromClientMessage() {

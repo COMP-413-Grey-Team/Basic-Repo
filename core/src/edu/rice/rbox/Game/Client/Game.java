@@ -47,6 +47,7 @@ public class Game extends JFrame {
 
       // FIXME: Will this cause issues?
       GameState response = clientConnector.init(_world.player.getName(), _world.player.getColor().toString());
+      _world.playerUUID = response.clientUUID;
       _world.handleServerUpdatesAsynchronously(response.playerStates, response.coinStates);
 
     }
