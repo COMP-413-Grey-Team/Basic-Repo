@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import static network.GameNetworkProto.UpdateFromClient.MovingRooms.NOT;
@@ -28,6 +29,8 @@ public class World extends JPanel {
   public static final int WORLD_WIDTH = 1000;
   public static final int WORLD_HEIGHT = 660;
   private final int DELTA_T = 17;
+
+  ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
   private final Timer timer = new Timer(DELTA_T, (event) -> {
     mergeRemoteChanges();
@@ -84,6 +87,7 @@ public class World extends JPanel {
   }
 
   private void updateInternalState() {
+    lock.writeLock().lock();
     player.updateState(DELTA_T, WORLD_WIDTH, WORLD_HEIGHT);
 
 //    player.checkCoinCollisions(coins).forEach(coins::remove);
@@ -98,6 +102,7 @@ public class World extends JPanel {
         coins.remove(coin);
       });
     });
+    lock.writeLock().unlock();
   }
 
   @Override
@@ -129,6 +134,7 @@ public class World extends JPanel {
   }
 
   private void mergeRemoteChanges() {
+    lock.writeLock().lock();
     final PlayerState playerState = updatedPlayers.get(playerUUID);
 
     if (playerState != null) {
@@ -150,6 +156,7 @@ public class World extends JPanel {
         Map.Entry::getKey,
        entry -> new CoinSprite(entry.getValue().x, entry.getValue().y)
     ));
+    lock.writeLock().unlock();
   }
 
 //  private void trySwitchingRooms() {
@@ -165,17 +172,26 @@ public class World extends JPanel {
 //  }
 
   private void sendUpdatesToServerAsynchronously() {
-    GameState response = this.clientGrpc.update(new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT));
+    lock.readLock().lock();
+    final GameStateDelta delta = new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT);
+    lock.readLock().unlock();
+
+    GameState response = this.clientGrpc.update(delta);
 
     this.handleServerUpdatesAsynchronously(response.playerStates, response.coinStates);
+
+    lock.writeLock().lock();
     deletedCoins = new HashSet<>();
+    lock.writeLock().unlock();
 
     // TODO: include the direction we're switching to
   }
 
   public void handleServerUpdatesAsynchronously(Map<GameObjectUUID, PlayerState> playerStates, Map<GameObjectUUID, CoinState> coinStates) {
+    lock.writeLock().lock();
     playerStates.forEach(updatedPlayers::put);
     coinStates.forEach(newCoins::put);
+    lock.writeLock().unlock();
   }
 
   private class GameKeyAdapter extends KeyAdapter {
