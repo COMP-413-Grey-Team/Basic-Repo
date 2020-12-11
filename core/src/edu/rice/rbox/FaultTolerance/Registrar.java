@@ -28,32 +28,27 @@ public class Registrar {
     private ConnectionManager connManager;
     private String ipAddress = "";
     private MongoDatabase db;
-    private UUID id = UUID.randomUUID();
+    private UUID uuid = UUID.randomUUID();
 
-    private static Map<InternalRegistrarFaultToleranceGrpc.InternalRegistrarFaultToleranceBlockingStub, Timestamp> mostRecentClusterHeartBeats = new HashMap<>();
-    private static Map<SuperpeerFaultToleranceBlockingStub, Timestamp> mostRecentSuperpeerHeartBeats = new HashMap<>();
+    private Map<InternalRegistrarFaultToleranceGrpc.InternalRegistrarFaultToleranceBlockingStub, Timestamp> mostRecentClusterHeartBeats = new HashMap<>();
+    private Map<SuperpeerFaultToleranceBlockingStub, Timestamp> mostRecentSuperpeerHeartBeats = new HashMap<>();
 
-    protected static ClusterManager clusterManager;
+    protected ClusterManager clusterManager;
 
-    private static double getNumRegistrarNodes () {
-        return (double)clusterManager.clusterMemberStubs.size();
+    private double getNumRegistrarNodes () {
+        return (double) clusterManager.clusterMemberStubs.size();
     }
 
-    private static boolean leader = true;
 
-    private static UUID uuid = UUID.randomUUID();
-
-    private static UUID leaderUUID;
-
-    public static UUID getUUID() {
-        return uuid;
+    public UUID getUUID() {
+        return this.uuid;
     }
 
-    private static RBoxProto.BasicInfo getInfo() {
+    private RBoxProto.BasicInfo getInfo() {
         return RBoxProto.BasicInfo.newBuilder().setSenderUUID(getUUID().toString()).setTime(getTimestamp()).build();
     }
 
-    protected static Timestamp getTimestamp() {
+    protected Timestamp getTimestamp() {
         long millis = System.currentTimeMillis();
         Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
                 .setNanos((int) ((millis % 1000) * 1000000)).build();
@@ -209,7 +204,7 @@ public class Registrar {
                                     getTimestamp().getNanos() - clusterManager.getMostRecentHeartbeat().getNanos() > 500)) {
                         if (clusterManager.clusterMemberStubs.size() > 1) {
                             UUID backup = (UUID) clusterManager.clusterMemberUUIDs.keySet().toArray()[0];
-                            if (backup == leaderUUID) {
+                            if (backup == clusterManager.leaderUUID) {
                                 backup = (UUID) clusterManager.clusterMemberUUIDs.keySet().toArray()[1];
                             }
                             clusterManager.clusterMemberUUIDs.get(backup).downedLeader(RBoxProto.LeaderDown.newBuilder().setSender(getInfo()).build());

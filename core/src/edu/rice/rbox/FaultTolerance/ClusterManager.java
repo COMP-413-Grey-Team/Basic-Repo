@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import java.util.function.Consumer;
 import network.InternalRegistrarFaultToleranceGrpc;
 import network.InternalRegistrarFaultToleranceGrpc.*;
 import network.RBoxProto;
@@ -33,6 +34,8 @@ public class ClusterManager {
   private UUID serverRunningThisUUID;
 
   private Runnable alertSuperpeersOfNewLeader;
+
+  private Consumer<UUID> getLeaderUUID;
 
   protected boolean leader = false;
 
