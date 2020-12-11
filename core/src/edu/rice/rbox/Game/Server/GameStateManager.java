@@ -34,8 +34,18 @@ public class GameStateManager {
 
   private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-  private Timer coinTimer = new Timer(500, e -> {
-    final HashSet<GameObjectUUID> roomsToGen = new HashSet<>();
+  int _timer = 0;
+
+  private Timer gameLoopTimer = new Timer(50, e -> {
+    objectStore.advanceBuffer();
+    objectStore.synchronize().forEach(localChange -> {
+      objectStore.write(localChange.copyWithBufferIndex(0), localChange.getTarget());
+    });
+
+    _timer += 50;
+    if (_timer >= 500) {
+      _timer = 0;
+    }
 
     lock.readLock().lock();
     final GameFieldSet<GameObjectUUID> coins = (GameFieldSet<GameObjectUUID>) objectStore.read(roomUUID, ObjectStorageKeys.Room.COINS_IN_ROOM, 0);
@@ -45,15 +55,6 @@ public class GameStateManager {
     if (coins.size() < 25) {
       createRandomCoin(roomUUID);
     }
-
-
-  });
-
-  private Timer gameLoopTimer = new Timer(50, e -> {
-    objectStore.advanceBuffer();
-    objectStore.synchronize().forEach(localChange -> {
-      objectStore.write(localChange.copyWithBufferIndex(0), localChange.getTarget());
-    });
   });
 
   public GameStateManager(Server2Store objectStore) {
@@ -224,7 +225,6 @@ public class GameStateManager {
       put(ObjectStorageKeys.Room.BACKGROUND_COLOR, new GameFieldColor(Color.CYAN));
     }}, ObjectStorageKeys.Room.IMPORTANT_FIELDS, new NoInterestPredicate(), null, 0);
 
-    coinTimer.start();
     gameLoopTimer.start();
   }
 
