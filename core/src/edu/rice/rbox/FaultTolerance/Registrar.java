@@ -311,9 +311,11 @@ public class Registrar {
 
         // no command line args means that this instance is the leader, otherwise issa follower
         if (args.length == 0) {
+            System.out.println("Started Registrar leader");
             reg.init(null);
             reg.clusterManager.leader = true;
         } else {
+            System.out.println("Started registrar cluster member");
             String leadIP = args[0];
             reg.init(leadIP);
         }
