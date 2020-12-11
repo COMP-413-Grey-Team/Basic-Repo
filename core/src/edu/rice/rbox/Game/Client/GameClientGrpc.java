@@ -19,10 +19,13 @@ import java.util.stream.Collectors;
 import network.GameNetworkProto;
 import network.GameServiceGrpc;
 
+
+// TODO: Handle player reconnecting when the server goes down?
 public class GameClientGrpc {
 
   private ManagedChannel channel;
-  private GameServiceGrpc.GameServiceBlockingStub serverStub;
+  private GameServiceGrpc.GameServiceBlockingStub registrarStub;
+  private GameServiceGrpc.GameServiceBlockingStub gamerServerStub;
 
   public GameClientGrpc() {}
 
@@ -35,7 +38,7 @@ public class GameClientGrpc {
                                        .usePlaintext(true)
                                        .build();
 
-    serverStub = GameServiceGrpc.newBlockingStub(channel);
+    registrarStub = GameServiceGrpc.newBlockingStub(channel);
   }
 
   public GameNetworkProto.UpdateFromServer update(GameObjectUUID objectID, PlayerState playerState,
@@ -44,7 +47,7 @@ public class GameClientGrpc {
         deletedCoins, movingRooms);
 
     GameNetworkProto.UpdateFromServer response =
-        serverStub.publishUpdate(updateMessage.getUpdateFromClientMessage());
+        gamerServerStub.publishUpdate(updateMessage.getUpdateFromClientMessage());
 
     return response;
   }
@@ -55,14 +58,15 @@ public class GameClientGrpc {
         GameNetworkProto.InitialPlayerState.newBuilder();
 
     GameNetworkProto.UpdateFromServer response =
-        serverStub.initPlayer(initMessage.setName(name).setColor(color).build());
+        gamerServerStub.initPlayer(initMessage.setName(name).setColor(color).build());
 
     return response;
   }
 
+  // TODO: Define the super peer stub here
   public GameNetworkProto.SuperPeerInfo getSuperPeer(String playerID) {
     GameNetworkProto.SuperPeerInfo response =
-        serverStub.getAssignedSuperPeer(GameNetworkProto.PlayerID.newBuilder().setPlayerID(playerID).build());
+        registrarStub.getAssignedSuperPeer(GameNetworkProto.PlayerID.newBuilder().setPlayerID(playerID).build());
 
     System.out.println("This was called!");
     // This is the UUID = 2dfa71ec-4df8-48f8-b7fe-202e2994fd50
@@ -70,12 +74,19 @@ public class GameClientGrpc {
     // This is the IP = 10.125.200.165:3000
     System.out.println("This is the super peer host name: " + response.getHostname());
 
+    // Connect here to the superpeer.
+    ManagedChannel channel = ManagedChannelBuilder.forTarget(response.getHostname())
+                                 .usePlaintext(true)
+                                 .build();
+    this.gamerServerStub = GameServiceGrpc.newBlockingStub(channel);
+
     return response;
   }
 
+  // TODO: This goes to the game server
   public void remove(GameObjectUUID playerID) {
     GameNetworkProto.PlayerID.Builder idMessage = GameNetworkProto.PlayerID.newBuilder();
-    serverStub.removeMe(idMessage.setPlayerID(playerID.toString()).build());
+    registrarStub.removeMe(idMessage.setPlayerID(playerID.toString()).build());
   }
 
   private  PlayerState reconstructPlayerState(GameNetworkProto.PlayerMessage msg) {
@@ -101,10 +112,5 @@ public class GameClientGrpc {
             gsd.deletedCoins,
             gsd.movingRooms.getNumber());
   }
-
-//  public static void main(String args[]) {
-//    GameClientGrpc client = new GameClientGrpc();
-//    client.connect(args[0]);
-//  }
 
 }
