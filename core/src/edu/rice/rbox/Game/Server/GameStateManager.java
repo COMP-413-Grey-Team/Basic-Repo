@@ -109,7 +109,7 @@ public class GameStateManager {
 
     // Updating player score
     final GameFieldInteger coinCount = (GameFieldInteger) objectStore.read(playerUUID, ObjectStorageKeys.Player.COIN_COUNT, 0);
-    objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.COIN_COUNT, new GameFieldInteger(coinCount.getValue() + 1), 0), playerUUID);
+    objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.COIN_COUNT, new GameFieldInteger(coinCount.getValue() + coinsCollected), 0), playerUUID);
 
     // Update position
     objectStore.write(new LocalFieldChange(playerUUID, ObjectStorageKeys.Player.X_POS, new GameFieldDouble(update.updatedPlayerState.x), 0), playerUUID);
