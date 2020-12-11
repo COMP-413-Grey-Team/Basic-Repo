@@ -439,19 +439,22 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
     private void sendToReplicaHolders(GameObjectUUID primaryObjectUUID, RemoteChange remoteChange) {
         // Send Update Message to all replica holders
         long millis = System.currentTimeMillis();
-        subscribers.get(primaryObjectUUID).forEach(serverUUID -> {
-            RBoxProto.ReplicationMessage msg = generateReplicationMessage(primaryObjectUUID, millis);
-            RBoxProto.UpdateMessage updateMessage = RBoxProto.UpdateMessage.newBuilder()
-                                                   .setRemoteChange(getByteStringFromRemoteChange(remoteChange))
-                                                   .setMsg(msg)
-                                                   .build();
-            try {
-                getStub(serverUUID).handleUpdate(updateMessage, emptyResponseObserver);
+        if (subscribers.containsKey(primaryObjectUUID)) {
+            subscribers.get(primaryObjectUUID).forEach(serverUUID -> {
+                RBoxProto.ReplicationMessage msg = generateReplicationMessage(primaryObjectUUID, millis);
+                RBoxProto.UpdateMessage updateMessage = RBoxProto.UpdateMessage.newBuilder()
+                                                            .setRemoteChange(getByteStringFromRemoteChange(remoteChange))
+                                                            .setMsg(msg)
+                                                            .build();
+                try {
+                    getStub(serverUUID).handleUpdate(updateMessage, emptyResponseObserver);
 
-            } catch (StatusRuntimeException e) {
-                logger.log(Level.WARNING, "failure when sending update to replica holders");
-            }
-        });
+                } catch (StatusRuntimeException e) {
+                    logger.log(Level.WARNING, "failure when sending update to replica holders");
+                }
+            });
+        }
+
     }
 
     /* Getter for initializing game rooms associated with this superpeer. */
