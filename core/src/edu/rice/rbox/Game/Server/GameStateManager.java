@@ -32,18 +32,21 @@ public class GameStateManager {
 
   private Server2Store objectStore;
 
-//  private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+  private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
   private Timer coinTimer = new Timer(500, e -> {
     final HashSet<GameObjectUUID> roomsToGen = new HashSet<>();
 
-//    lock.readLock().lock();
+    lock.readLock().lock();
     final GameFieldSet<GameObjectUUID> coins = (GameFieldSet<GameObjectUUID>) objectStore.read(roomUUID, ObjectStorageKeys.Room.COINS_IN_ROOM, 0);
+
+    lock.readLock().unlock();
+
     if (coins.size() < 25) {
       createRandomCoin(roomUUID);
     }
 
-//    lock.readLock().unlock();
+
   });
 
   private Timer gameLoopTimer = new Timer(50, e -> {
@@ -85,12 +88,13 @@ public class GameStateManager {
   public GameState handleUpdateFromPlayer(GameStateDelta update) {
     final GameObjectUUID playerUUID = update.playerUUID;
     final int bufferIndex = 0;
-    final GameObjectUUID roomUUID = roomForPlayer(playerUUID);
+//    final GameObjectUUID roomUUID = roomForPlayer(playerUUID);
 
     // Remove coins they have collected
     int coinsCollected = 0;
     if (!update.deletedCoins.isEmpty()) {
-//      lock.writeLock().lock();
+      lock.writeLock().lock();
+      System.out.println(update.deletedCoins.size());
       final GameFieldSet<GameObjectUUID> coinsInRoom = coinsInRoom(roomUUID);
 
       for (GameObjectUUID coin : update.deletedCoins) {
@@ -104,7 +108,7 @@ public class GameStateManager {
         }
       }
       objectStore.write(new LocalFieldChange(roomUUID, ObjectStorageKeys.Room.COINS_IN_ROOM, coinsInRoom, 0), roomUUID);
-//      lock.writeLock().unlock();
+      lock.writeLock().unlock();
     }
 
     // Updating player score
@@ -131,7 +135,7 @@ public class GameStateManager {
       put(ObjectStorageKeys.Coin.HAS_BEEN_COLLECTED, new GameFieldBoolean(false));
     }};
 
-//    lock.writeLock().lock();
+    lock.writeLock().lock();
     final GameObjectUUID
         coinUUID =
         objectStore.create(coinValues, ObjectStorageKeys.Coin.IMPORTANT_FIELDS, new NoInterestPredicate(), roomUUID, 0);
@@ -140,7 +144,7 @@ public class GameStateManager {
     coinsInRoom.add(coinUUID);
     objectStore.write(new LocalFieldChange(roomUUID, ObjectStorageKeys.Room.COINS_IN_ROOM, coinsInRoom, 0), roomUUID);
 
-//    lock.writeLock().unlock();
+    lock.writeLock().unlock();
   }
 
   public void handlePlayerQuitting(GameObjectUUID player) {
@@ -199,13 +203,13 @@ public class GameStateManager {
         this::playerStateForPlayer
     ));
 
-//    lock.readLock().lock();
+    lock.readLock().lock();
     final GameFieldSet<GameObjectUUID> coins = coinsInRoom(room);
     Map<GameObjectUUID, CoinState> coinsMap = coins.stream().collect(Collectors.toMap(
        coinUUID -> coinUUID,
        this::coinStateForCoin
     ));
-//    lock.readLock().unlock();
+    lock.readLock().unlock();
 
     GameFieldColor backgroundColor =
         (GameFieldColor) objectStore.read(room, ObjectStorageKeys.Room.BACKGROUND_COLOR, 0);
