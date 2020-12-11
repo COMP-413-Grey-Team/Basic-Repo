@@ -11,6 +11,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 import java.awt.*;
+import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -42,15 +43,14 @@ public class GameClientGrpc {
   /**
    * This is sent to the game server.
    */
-  public GameNetworkProto.UpdateFromServer update(GameStateDelta gsd) {
+  public GameState update(GameStateDelta gsd) {
     UpdateFromClientMessage updateMessage = this.gameStateDeltaToClientMsg(gsd);
 
     GameNetworkProto.UpdateFromServer response =
         gamerServerStub.publishUpdate(updateMessage.getUpdateFromClientMessage());
 
     // TODO: Handle updates from servers here!
-
-    return response;
+    return this.serverMsgToGameState(response);
   }
 
   /**
@@ -88,8 +88,6 @@ public class GameClientGrpc {
                                  .build();
     this.gamerServerStub = GameServiceGrpc.newBlockingStub(channel);
 
-    this.remove(new GameObjectUUID(UUID.randomUUID()));
-
     return response;
   }
 
@@ -115,8 +113,8 @@ public class GameClientGrpc {
   /**
    * This is a helper.
    */
-  public GameState serverMsgToGameState(UpdateFromServerMessage msg) {
-    GameNetworkProto.UpdateFromServer update = msg.getUpdateFromServer();
+  public GameState serverMsgToGameState(GameNetworkProto.UpdateFromServer update) {
+
     return new GameState(new GameObjectUUID(UUID.fromString(update.getPlayerUUID())),
             update.getPlayerStatesMap().entrySet().stream().collect(Collectors.toMap(
                     e -> new GameObjectUUID(UUID.fromString(e.getKey())),

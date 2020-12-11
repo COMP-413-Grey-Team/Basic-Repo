@@ -31,8 +31,8 @@ public class GameMenu extends JPanel {
     _playBtn.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        _menu2Game.playGame();
         _menu2Game.connectToRegistrar(_ipTxt.getText());
+        _menu2Game.playGame();
       }
     });
 

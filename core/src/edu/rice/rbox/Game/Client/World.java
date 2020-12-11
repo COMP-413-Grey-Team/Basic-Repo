@@ -6,6 +6,7 @@ import edu.rice.rbox.Game.Client.Sprites.DoorSprite;
 import edu.rice.rbox.Game.Client.Sprites.Players.LocalPlayerSprite;
 import edu.rice.rbox.Game.Client.Sprites.Players.RemotePlayerSprite;
 import edu.rice.rbox.Game.Common.SyncState.CoinState;
+import edu.rice.rbox.Game.Common.SyncState.GameState;
 import edu.rice.rbox.Game.Common.SyncState.GameStateDelta;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
 import edu.rice.rbox.Game.Common.Utils.KeyState;
@@ -32,12 +33,15 @@ public class World extends JPanel {
     mergeRemoteChanges();
     updateInternalState();
     repaint();
-    sendUpdatesToServerAsynchronously();
+    Thread t = new Thread(() -> {
+      sendUpdatesToServerAsynchronously();
+    });
+    t.start();
   });
 
   // Local State
   private final GameObjectUUID playerUUID = GameObjectUUID.randomUUID();
-  private LocalPlayerSprite player;
+  public LocalPlayerSprite player;
   private Map<GameObjectUUID, RemotePlayerSprite> otherPlayers = new HashMap<>();
   private Map<GameObjectUUID, CoinSprite> coins = new HashMap<>();
   private final DoorSprite leftDoor = new DoorSprite(DoorSprite.DoorSide.LEFT, WORLD_WIDTH, WORLD_HEIGHT);
@@ -106,6 +110,14 @@ public class World extends JPanel {
     otherPlayers.values().forEach(p -> p.paint(g));
     player.paint(g);
 
+    // TODO: Maybe I can make the client send a leave
+    //  message when it touches a door?
+    if (leftDoor.containsPoint(player.getX(), player.getY())
+            || rightDoor.containsPoint(player.getX(), player.getY())){
+      System.out.println("Should remove the player from object storage");
+      this.clientGrpc.remove(playerUUID);
+    }
+
     g.setColor(Color.black);
     g.drawString("Score: " + player.getScore(), 10, 20);
   }
@@ -147,15 +159,14 @@ public class World extends JPanel {
   }
 
   private void sendUpdatesToServerAsynchronously() {
-    // TODO: send this to the server
-//    this.clientGrpc.update(new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT));
-
+    GameState response = this.clientGrpc.update(new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT));
+    this.handleServerUpdatesAsynchronously(response.playerStates, response.coinStates);
     deletedCoins = new HashSet<>();
 
     // TODO: include the direction we're switching to
   }
 
-  private void handleServerUpdatesAsynchronously(HashMap<GameObjectUUID, PlayerState> playerStates, HashMap<GameObjectUUID, CoinState> coinStates) {
+  public void handleServerUpdatesAsynchronously(Map<GameObjectUUID, PlayerState> playerStates, Map<GameObjectUUID, CoinState> coinStates) {
     playerStates.forEach(updatedPlayers::put);
     coinStates.forEach(newCoins::put);
   }
