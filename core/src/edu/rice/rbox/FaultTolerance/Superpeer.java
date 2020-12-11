@@ -101,7 +101,7 @@ public class Superpeer {
             public void accept(List<Integer> integers) {
 
                 System.out.println("Number of rooms assigned to this superpeer: " + integers.size());
-                Superpeer.this.gameStateManager.initializeRoom();
+//                Superpeer.this.gameStateManager.initializeRoom();
             }
         });
 
@@ -161,7 +161,9 @@ public class Superpeer {
 
     private void start(String registrarIP) throws Exception {
         replicaManager.start(registrarIP);
+        gameStateManager.initializeRoom();
         replicaManager.blockUntilShutdown();
+
 
     }
 
@@ -176,7 +178,6 @@ public class Superpeer {
         Superpeer superpeer = new Superpeer();
         String registrarIP = args[0];
         superpeer.start(registrarIP);
-
 
     }
 }

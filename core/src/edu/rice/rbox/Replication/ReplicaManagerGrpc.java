@@ -195,7 +195,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
             // Save the list of assigned rooms locally so we can initialize the rooms from the superpeer
             assignedRooms = request.getAssignedRoomsList();
-            sendRooms.accept(assignedRooms);
+//            sendRooms.accept(assignedRooms);
             responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
@@ -231,6 +231,17 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         logger.info("This server UUID is " + serverUUID);
         logger.info("Attempt to connect to " + registrarIP);
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // Use stderr here since the logger may have been reset by its JVM shutdown hook.
+            System.err.println("*** shutting down gRPC server since JVM is shutting down");
+            try {
+                ReplicaManagerGrpc.this.stop();
+            } catch (InterruptedException e) {
+                e.printStackTrace(System.err);
+            }
+            System.err.println("*** server shut down");
+        }));
+
         ManagedChannel channel = ManagedChannelBuilder.forTarget(registrarIP).usePlaintext(true).build();
         this.registrarBlockingStub = SuperpeerFaultToleranceGrpc.newBlockingStub(channel);
 
@@ -252,6 +263,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                 .build();
 
         registrarBlockingStub.connectToSuperpeer(request);
+//        sendRooms.accept(assignedRooms);
     }
 
     /** Stop serving requests and shutdown resources. */
