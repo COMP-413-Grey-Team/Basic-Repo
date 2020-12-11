@@ -101,7 +101,7 @@ public class GameStateManager {
       for (GameObjectUUID coin : update.deletedCoins) {
           coinsCollected++;
           objectStore.delete(coin, coin);
-          coinsInRoom.remove(coin);
+          coinsInRoom.removeIf(c -> c.getUUID().equals(coin.getUUID()));
       }
       objectStore.write(new LocalFieldChange(roomUUID, ObjectStorageKeys.Room.COINS_IN_ROOM, coinsInRoom, 0), roomUUID);
       lock.writeLock().unlock();
