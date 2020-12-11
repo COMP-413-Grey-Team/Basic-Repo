@@ -5,6 +5,7 @@ import edu.rice.rbox.Common.GameField.InterestingGameField;
 import edu.rice.rbox.Location.interest.InterestPredicate;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class DummyLocationManager implements ObjectStorageLocationInterface {
     @Override
@@ -20,6 +21,16 @@ public class DummyLocationManager implements ObjectStorageLocationInterface {
     @Override
     public void delete(GameObjectUUID id) {
 
+    }
+
+    @Override
+    public void addGlobalObjectField(String fieldname, Object fieldvalue) {
+
+    }
+
+    @Override
+    public Map<String, Object> getGlobalObjectFields() {
+        return null;
     }
 
     @Override

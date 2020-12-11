@@ -148,7 +148,7 @@ public class World extends JPanel {
 
   private void sendUpdatesToServerAsynchronously() {
     // TODO: send this to the server
-    this.clientGrpc.update(new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT));
+//    this.clientGrpc.update(new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT));
 
     deletedCoins = new HashSet<>();
 

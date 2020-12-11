@@ -1,6 +1,5 @@
 package edu.rice.rbox.Game.Client;
 
-import com.google.protobuf.Empty;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.CoinState;
 import edu.rice.rbox.Game.Common.SyncState.GameState;
@@ -12,7 +11,6 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 import java.awt.*;
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -50,6 +48,8 @@ public class GameClientGrpc {
     GameNetworkProto.UpdateFromServer response =
         gamerServerStub.publishUpdate(updateMessage.getUpdateFromClientMessage());
 
+    // TODO: Handle updates from servers here!
+
     return response;
   }
 
@@ -63,6 +63,8 @@ public class GameClientGrpc {
 
     GameNetworkProto.UpdateFromServer response =
         gamerServerStub.initPlayer(initMessage.setName(name).setColor(color).build());
+
+    // TODO: Handle updates from servers here!
 
     return response;
   }
@@ -86,6 +88,8 @@ public class GameClientGrpc {
                                  .build();
     this.gamerServerStub = GameServiceGrpc.newBlockingStub(channel);
 
+    this.remove(new GameObjectUUID(UUID.randomUUID()));
+
     return response;
   }
 
@@ -94,7 +98,9 @@ public class GameClientGrpc {
    */
   public void remove(GameObjectUUID playerID) {
     GameNetworkProto.PlayerID.Builder idMessage = GameNetworkProto.PlayerID.newBuilder();
-    registrarStub.removeMe(idMessage.setPlayerID(playerID.toString()).build());
+    this.gamerServerStub.removeMe(idMessage.setPlayerID(playerID.toString()).build());
+
+    System.out.println("This message should have been set!");
   }
 
   /**
