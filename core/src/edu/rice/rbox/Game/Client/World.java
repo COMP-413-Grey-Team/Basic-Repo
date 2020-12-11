@@ -174,6 +174,9 @@ public class World extends JPanel {
   private void sendUpdatesToServerAsynchronously() {
     lock.readLock().lock();
     final GameStateDelta delta = new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT);
+    if (!delta.deletedCoins.isEmpty()) {
+      System.out.println("Deleted coins: " + delta.deletedCoins.size());
+    }
     lock.readLock().unlock();
 
     GameState response = this.clientGrpc.update(delta);

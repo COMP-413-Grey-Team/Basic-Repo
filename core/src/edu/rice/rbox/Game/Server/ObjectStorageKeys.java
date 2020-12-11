@@ -40,7 +40,6 @@ public class ObjectStorageKeys {
     public static final String ROOM_ID = "ROOM_ID";
     public static final String X_POS = "X_POS";
     public static final String Y_POS = "Y_POS";
-    public static final String HAS_BEEN_COLLECTED = "HAS_BEEN_COLLECTED";
     public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>() {{
       add(TYPE);
       add(ROOM_ID);

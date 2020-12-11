@@ -40,7 +40,7 @@ public class GameObjectUUID implements Serializable, InterestingGameField<Void> 
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid);
+        return uuid.hashCode();
     }
 
     @Override
