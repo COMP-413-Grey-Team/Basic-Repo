@@ -171,7 +171,8 @@ public class Registrar {
                             .addService(this.connManager.getGameServerRegistrarImpl())
                             // this is for registrar/superpeer interactions
                             .addService(this.superPeerServiceImpl)
-                            // TODO: this is for the health service @ Nikhaz
+                            // this is for the registrar cluster interactions
+                            .addService(this.clusterManager.getInternalServiceImpl())
                             .build();
         Thread registrarServerThread = new Thread(() -> {
             try {
