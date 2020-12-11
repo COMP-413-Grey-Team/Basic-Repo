@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class GameFieldSet<T extends GameField> implements Set<T>, GameField {
 
-  private HashSet<T> set;
+  public HashSet<T> set;
 
   public GameFieldSet(Set<T> set) {
     this.set = new HashSet<>((Set<T>)set.stream().map(GameField::copy).collect(Collectors.toSet()));
