@@ -109,9 +109,10 @@ public class ConnectionManager {
         Document doc = new Document("hostname", hostnameInfo).append("superPeerUUID", superPeerId.toString());
         superPeerCol.insertOne(doc);
         stub2Room.put(sp, new ArrayList<>());
-        if (stub2Room.size() >= 3) {
+        if (stub2Room.size() >= 1) {
             // TODO: Fix numbers
-            assignRoomsToSuperPeers(5);
+            assignRoomsToSuperPeers(1);
+            makeSuperpeersInterconnected();
         }
 
 

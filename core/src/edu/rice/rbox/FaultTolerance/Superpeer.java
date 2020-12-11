@@ -16,7 +16,7 @@ import edu.rice.rbox.Common.ServerUUID;
 
 
 import java.util.*;
-
+import java.util.function.Consumer;
 
 
 public class Superpeer {
@@ -78,26 +78,33 @@ public class Superpeer {
 
         this.replicaManager = new ReplicaManagerGrpc(port, serverUUID,
             new ChangeReceiver() {
-            @Override
-            public void receiveChange(RemoteChange change) {
-                store.receiveChange(change);
-            }
+                @Override
+                public void receiveChange(RemoteChange change) {
+                    store.receiveChange(change);
+                }
 
-            @Override
-            public void deleteReplica(GameObjectUUID id, Date timestamp) {
-                store.deleteReplica(id, timestamp);
-            }
+                @Override
+                public void deleteReplica(GameObjectUUID id, Date timestamp) {
+                    store.deleteReplica(id, timestamp);
+                }
 
-            @Override
-            public RemoteChange getReplica(GameObjectUUID id) {
-                return store.getReplica(id);
-            }
+                @Override
+                public RemoteChange getReplica(GameObjectUUID id) {
+                    return store.getReplica(id);
+                }
 
+                @Override
+                public void promoteSecondary(GameObjectUUID id) {
+                    store.promoteSecondary(id);
+                }
+            }, this.gameServer.getGameServiceImplBase(), new Consumer<List<Integer>>() {
             @Override
-            public void promoteSecondary(GameObjectUUID id) {
-                store.promoteSecondary(id);
+            public void accept(List<Integer> integers) {
+
+                System.out.println("Number of rooms assigned to this superpeer: " + integers.size());
+                Superpeer.this.gameStateManager.initializeRooms(new HashSet<>(integers));
             }
-        }, this.gameServer.getGameServiceImplBase());
+        });
 
         this.store = new ObjectStore(
             new ObjectStorageReplicationInterface() {
@@ -180,8 +187,7 @@ public class Superpeer {
         Superpeer superpeer = new Superpeer();
         String registrarIP = args[0];
         superpeer.start(registrarIP);
-        Set<Integer> myRooms = new HashSet<>(superpeer.replicaManager.getAssignedRooms());
-        System.out.println("Number of rooms assigned to this superpeer: " + myRooms.size());
-        superpeer.gameStateManager.initializeRooms(myRooms);
+
+
     }
 }

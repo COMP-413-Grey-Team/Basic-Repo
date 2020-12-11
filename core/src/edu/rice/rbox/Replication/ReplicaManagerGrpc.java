@@ -21,6 +21,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -194,6 +195,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
             // Save the list of assigned rooms locally so we can initialize the rooms from the superpeer
             assignedRooms = request.getAssignedRoomsList();
+            sendRooms.accept(assignedRooms);
             responseObserver.onNext(emptyResponse);
             responseObserver.onCompleted();
         }
@@ -207,8 +209,10 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
         }
     };
 
+    private Consumer<List<Integer>> sendRooms;
+
     /* Constructor */
-    public ReplicaManagerGrpc(int port, ServerUUID serverUUID, ChangeReceiver changeReceiver, GameServiceGrpc.GameServiceImplBase gameService) {
+    public ReplicaManagerGrpc(int port, ServerUUID serverUUID, ChangeReceiver changeReceiver, GameServiceGrpc.GameServiceImplBase gameService, Consumer<List<Integer>> sendRooms) {
         this.changeReceiver = changeReceiver;
         this.serverUUID = serverUUID;
         this.port = port;
@@ -217,6 +221,7 @@ public class ReplicaManagerGrpc implements ObjectLocationReplicationInterface {
                           .addService(registrarServiceImpl)
                           .addService(gameService)
                           .build();
+        this.sendRooms = sendRooms;
     }
 
     /* Start the server */
