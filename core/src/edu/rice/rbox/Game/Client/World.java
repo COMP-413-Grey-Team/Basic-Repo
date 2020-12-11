@@ -55,12 +55,14 @@ public class World extends JPanel {
   private Color backgroundColor = Color.lightGray;
 
   private final KeyState keyState = new KeyState();
+  private GameClientGrpc clientGrpc;
 
-  public World(PlayerState playerState) { // TODO: add arguments so server can set initial state
+  public World(PlayerState playerState, GameClientGrpc clientGrpc) { // TODO: add arguments so server can set initial state
     this.player = new LocalPlayerSprite(playerState.color, playerState.x, playerState.y, playerState.score, playerState.name, keyState);
     for (int i = 0; i < 20; i++) {
       coins.put(GameObjectUUID.randomUUID(), randomCoin());
     }
+    this.clientGrpc = clientGrpc;
   }
 
   private CoinSprite randomCoin() {
@@ -146,7 +148,7 @@ public class World extends JPanel {
 
   private void sendUpdatesToServerAsynchronously() {
     // TODO: send this to the server
-    new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT);
+    this.clientGrpc.update(new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT));
 
     deletedCoins = new HashSet<>();
 

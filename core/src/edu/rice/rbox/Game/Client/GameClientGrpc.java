@@ -44,10 +44,8 @@ public class GameClientGrpc {
   /**
    * This is sent to the game server.
    */
-  public GameNetworkProto.UpdateFromServer update(GameObjectUUID objectID, PlayerState playerState,
-                     HashSet<GameObjectUUID> deletedCoins, Integer movingRooms) {
-    UpdateFromClientMessage updateMessage = new UpdateFromClientMessage(objectID, playerState,
-        deletedCoins, movingRooms);
+  public GameNetworkProto.UpdateFromServer update(GameStateDelta gsd) {
+    UpdateFromClientMessage updateMessage = this.gameStateDeltaToClientMsg(gsd);
 
     GameNetworkProto.UpdateFromServer response =
         gamerServerStub.publishUpdate(updateMessage.getUpdateFromClientMessage());

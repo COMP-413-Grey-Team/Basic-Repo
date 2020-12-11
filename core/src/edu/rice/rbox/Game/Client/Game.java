@@ -32,7 +32,8 @@ public class Game extends JFrame {
     }
 
   });
-  private final World _world = new World(new PlayerState(30, 30, "Evan", Color.BLUE, 0));
+  private final World _world = new World(new PlayerState(30, 30, "Evan", Color.BLUE, 0),
+      clientConnector);
   private final UUID _clientID = UUID.randomUUID();
 
   public Game() {
