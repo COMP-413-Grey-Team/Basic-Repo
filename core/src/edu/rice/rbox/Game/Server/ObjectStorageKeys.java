@@ -28,7 +28,6 @@ public class ObjectStorageKeys {
     public static final String Y_POS = "Y_POS";
     public static final String COIN_COUNT = "COIN_COUNT";
     public static final String NAME = "NAME";
-    public static final String COLOR = "COLOR";
     public static final HashSet<String> IMPORTANT_FIELDS = new HashSet<>() {{
       add(TYPE);
       add(ROOM_ID);

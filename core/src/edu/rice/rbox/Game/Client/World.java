@@ -62,7 +62,7 @@ public class World extends JPanel {
   private GameClientGrpc clientGrpc;
 
   public World(PlayerState playerState, GameClientGrpc clientGrpc) { // TODO: add arguments so server can set initial state
-    this.player = new LocalPlayerSprite(playerState.color, playerState.x, playerState.y, playerState.score, playerState.name, keyState);
+    this.player = new LocalPlayerSprite(playerState.x, playerState.y, playerState.score, playerState.name, keyState);
     for (int i = 0; i < 20; i++) {
       coins.put(GameObjectUUID.randomUUID(), randomCoin());
     }
@@ -127,7 +127,7 @@ public class World extends JPanel {
 
     if (playerState != null) {
       player =
-          new LocalPlayerSprite(playerState.color,
+          new LocalPlayerSprite(
               playerState.x,
               playerState.y,
               playerState.score,
@@ -137,7 +137,7 @@ public class World extends JPanel {
 
     otherPlayers = updatedPlayers.entrySet().stream().filter(entry -> !entry.getKey().equals(playerUUID)).collect(Collectors.toMap(
         Map.Entry::getKey,
-       entry -> new RemotePlayerSprite(entry.getValue().color, entry.getValue().x, entry.getValue().y, 0, 0, entry.getValue().score, entry.getValue().name)
+       entry -> new RemotePlayerSprite(entry.getValue().x, entry.getValue().y, 0, 0, entry.getValue().score, entry.getValue().name)
     ));
 
     coins = newCoins.entrySet().stream().collect(Collectors.toMap(

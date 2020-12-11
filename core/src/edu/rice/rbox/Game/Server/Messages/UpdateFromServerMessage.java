@@ -3,6 +3,8 @@ package edu.rice.rbox.Game.Server.Messages;
 import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.CoinState;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
+
+import java.awt.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +31,7 @@ public class UpdateFromServerMessage {
     playerStates.entrySet().forEach(entry -> formatted.put(entry.getKey(),
         PlayerMessage.newBuilder()
            .setName(entry.getValue().name)
-           .setColor(entry.getValue().color.toString())
+           .setColor(Color.BLACK.toString())
            .setScore(((Integer) entry.getValue().score).toString())
            .setX(entry.getValue().x)
            .setY(entry.getValue().y).build()));

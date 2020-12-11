@@ -68,7 +68,6 @@ public class GameStateManager {
       put(ObjectStorageKeys.Player.X_POS, new GameFieldDouble(getRandomNumberUsingNextInt(30, WORLD_WIDTH - 30)));
       put(ObjectStorageKeys.Player.Y_POS, new GameFieldDouble(getRandomNumberUsingNextInt(30, WORLD_HEIGHT - 30)));
       put(ObjectStorageKeys.Player.NAME, new GameFieldString(newPlayerInfo.name));
-      put(ObjectStorageKeys.Player.COLOR, new GameFieldColor(newPlayerInfo.color));
       put(ObjectStorageKeys.Player.COIN_COUNT, new GameFieldInteger(0));
       put(ObjectStorageKeys.Player.ROOM_ID, roomUUID);
     }};
@@ -182,7 +181,6 @@ public class GameStateManager {
         ((GameFieldDouble) objectStore.read(player, ObjectStorageKeys.Player.X_POS, 0)).getValue(),
         ((GameFieldDouble) objectStore.read(player, ObjectStorageKeys.Player.Y_POS, 0)).getValue(),
         ((GameFieldString) objectStore.read(player, ObjectStorageKeys.Player.NAME, 0)).getValue(),
-        ((GameFieldColor) objectStore.read(player, ObjectStorageKeys.Player.COLOR, 0)).getValue(),
         ((GameFieldInteger) objectStore.read(player, ObjectStorageKeys.Player.COIN_COUNT, 0)).getValue()
     );
   }

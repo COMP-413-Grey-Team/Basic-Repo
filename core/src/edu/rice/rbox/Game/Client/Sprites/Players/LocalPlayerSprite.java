@@ -8,8 +8,8 @@ import java.awt.*;
 public class LocalPlayerSprite extends PlayerSprite {
   private final KeyState keyState;
 
-  public LocalPlayerSprite(Color color, double x, double y, int score, String name, KeyState keyState) {
-    super(color, x, y, keyState.horizontalMultiplier() * SPEED, keyState.verticalMultiplier() * SPEED, score, name);
+  public LocalPlayerSprite(double x, double y, int score, String name, KeyState keyState) {
+    super(Color.BLACK, x, y, keyState.horizontalMultiplier() * SPEED, keyState.verticalMultiplier() * SPEED, score, name);
     this.keyState = keyState;
   }
 
@@ -24,6 +24,6 @@ public class LocalPlayerSprite extends PlayerSprite {
   }
 
   public PlayerState getPlayerState() {
-    return new PlayerState(getX(), getY(), getName(), getColor(), getScore());
+    return new PlayerState(getX(), getY(), getName(), getScore());
   }
 }

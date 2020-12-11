@@ -65,7 +65,6 @@ public class GameServer {
           gameStateManager.handlePlayerJoining(new PlayerState(0,
               0,
               request.getName(),
-              Color.getColor(request.getColor()),
               0));
 
       responseObserver.onNext(gameStateToServerMsg(gameState).getUpdateFromServer());
@@ -105,7 +104,7 @@ public class GameServer {
 
   private PlayerState reconstructPlayerState(GameNetworkProto.UpdateFromClient request) {
     return new PlayerState(request.getPlayerState().getX(), request.getPlayerState().getY(),
-        request.getPlayerState().getName(), new Color(Integer.parseInt(request.getPlayerState().getColor())),
+        request.getPlayerState().getName(),
         Integer.parseInt(request.getPlayerState().getScore()));
   }
 

@@ -103,7 +103,7 @@ public class GameClientGrpc {
    */
   private  PlayerState reconstructPlayerState(GameNetworkProto.PlayerMessage msg) {
     return new PlayerState(msg.getX(), msg.getY(),
-            msg.getName(), new Color(Integer.parseInt(msg.getColor())),
+            msg.getName(),
             Integer.parseInt(msg.getScore()));
   }
 

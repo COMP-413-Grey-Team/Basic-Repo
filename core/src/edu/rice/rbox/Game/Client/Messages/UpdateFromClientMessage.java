@@ -4,6 +4,8 @@ import edu.rice.rbox.Common.GameObjectUUID;
 import edu.rice.rbox.Game.Common.SyncState.PlayerState;
 import network.GameNetworkProto.UpdateFromClient;
 import network.GameNetworkProto.PlayerMessage;
+
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -22,7 +24,7 @@ public class UpdateFromClientMessage {
   private void constructPlayerMessage(PlayerState playerState) {
     PlayerMessage.Builder player = PlayerMessage.newBuilder();
 
-    update.setPlayerState(player.setColor(playerState.color.toString())
+    update.setPlayerState(player.setColor(Color.BLACK.toString())
                               .setName(playerState.name)
                               .setScore(((Integer) playerState.score).toString())
                               .setX(playerState.x)

@@ -3,8 +3,8 @@ package edu.rice.rbox.Game.Client.Sprites.Players;
 import java.awt.*;
 
 public class RemotePlayerSprite extends PlayerSprite {
-  public RemotePlayerSprite(Color color, double x, double y, double velX, double velY, int score, String name) {
-    super(color, x, y, velX, velY, score, name);
+  public RemotePlayerSprite(double x, double y, double velX, double velY, int score, String name) {
+    super(Color.PINK, x, y, velX, velY, score, name);
   }
 
   @Override
