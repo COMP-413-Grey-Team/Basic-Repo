@@ -24,16 +24,6 @@ public class DummyLocationManager implements ObjectStorageLocationInterface {
     }
 
     @Override
-    public void addGlobalObjectField(String fieldname, Object fieldvalue) {
-
-    }
-
-    @Override
-    public Map<String, Object> getGlobalObjectFields() {
-        return null;
-    }
-
-    @Override
     public void queryInterest() {
 
     }

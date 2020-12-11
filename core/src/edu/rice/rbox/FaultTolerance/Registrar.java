@@ -160,11 +160,6 @@ public class Registrar {
             clusterManager.initNonLeader(leaderIP);
         }
 
-        // Initialize Global object
-        Document globalObj = new Document("_id", ObjectStorageKeys.Global.GLOBAL_OBJ.toString())
-                                 .append(ObjectStorageKeys.TYPE, ObjectStorageKeys.Global.TYPE_NAME);
-        db.getCollection(MongoManager.COLLECTION_NAME).insertOne(globalObj);
-
         // Create a new server to listen on port 8080 - within its own thread
         Server server = ServerBuilder.forPort(8080)
                             // this is for registrar/player client interactions

@@ -44,10 +44,10 @@ public class World extends JPanel {
   public LocalPlayerSprite player;
   private Map<GameObjectUUID, RemotePlayerSprite> otherPlayers = new HashMap<>();
   private Map<GameObjectUUID, CoinSprite> coins = new HashMap<>();
-  private final DoorSprite leftDoor = new DoorSprite(DoorSprite.DoorSide.LEFT, WORLD_WIDTH, WORLD_HEIGHT);
-  private final DoorSprite rightDoor = new DoorSprite(DoorSprite.DoorSide.RIGHT, WORLD_WIDTH, WORLD_HEIGHT);
+//  private final DoorSprite leftDoor = new DoorSprite(DoorSprite.DoorSide.LEFT, WORLD_WIDTH, WORLD_HEIGHT);
+//  private final DoorSprite rightDoor = new DoorSprite(DoorSprite.DoorSide.RIGHT, WORLD_WIDTH, WORLD_HEIGHT);
 
-  private DoorSprite.DoorSide shouldMoveRooms = null;
+//  private DoorSprite.DoorSide shouldMoveRooms = null;
 
   // Local changes that need to be synced to the server
   private HashSet<GameObjectUUID> deletedCoins = new HashSet<>();
@@ -104,19 +104,19 @@ public class World extends JPanel {
     g.setColor(backgroundColor);
     g.fillRect(0, 0, getWidth(), getHeight());
 
-    leftDoor.paint(g);
-    rightDoor.paint(g);
+//    leftDoor.paint(g);
+//    rightDoor.paint(g);
     coins.values().forEach(c -> c.paint(g));
     otherPlayers.values().forEach(p -> p.paint(g));
     player.paint(g);
 
-    // TODO: Maybe I can make the client send a leave
-    //  message when it touches a door?
-    if (leftDoor.containsPoint(player.getX(), player.getY())
-            || rightDoor.containsPoint(player.getX(), player.getY())){
-      System.out.println("Should remove the player from object storage");
-      this.clientGrpc.remove(playerUUID);
-    }
+//    // TODO: Maybe I can make the client send a leave
+//    //  message when it touches a door?
+//    if (leftDoor.containsPoint(player.getX(), player.getY())
+//            || rightDoor.containsPoint(player.getX(), player.getY())){
+//      System.out.println("Should remove the player from object storage");
+//      this.clientGrpc.remove(playerUUID);
+//    }
 
     g.setColor(Color.black);
     g.drawString("Score: " + player.getScore(), 10, 20);
@@ -146,17 +146,17 @@ public class World extends JPanel {
     ));
   }
 
-  private void trySwitchingRooms() {
-    // Check collision with door
-    DoorSprite[] doors = { leftDoor, rightDoor };
-    for (DoorSprite door : doors) {
-      if (door.containsPoint(player.getX(), player.getY())) {
-        shouldMoveRooms = door.doorSide;
-        System.out.println("DOOR " + door.doorSide);
-        break;
-      }
-    }
-  }
+//  private void trySwitchingRooms() {
+//    // Check collision with door
+//    DoorSprite[] doors = { leftDoor, rightDoor };
+//    for (DoorSprite door : doors) {
+//      if (door.containsPoint(player.getX(), player.getY())) {
+//        shouldMoveRooms = door.doorSide;
+//        System.out.println("DOOR " + door.doorSide);
+//        break;
+//      }
+//    }
+//  }
 
   private void sendUpdatesToServerAsynchronously() {
     GameState response = this.clientGrpc.update(new GameStateDelta(playerUUID, player.getPlayerState(), deletedCoins, NOT));
@@ -189,9 +189,9 @@ public class World extends JPanel {
         case KeyEvent.VK_S:
           keyState.tapped(KeyState.Key.S);
           break;
-        case KeyEvent.VK_SPACE:
-          trySwitchingRooms();
-          break;
+//        case KeyEvent.VK_SPACE:
+//          trySwitchingRooms();
+//          break;
         default:
           break;
       }
