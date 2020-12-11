@@ -133,8 +133,13 @@ public class LocatorMainImpl implements LocatorMain {
 
         Bson bsonUUID = Filters.eq("_id", new BsonString(gameObjectUUID.getUUID().toString()));
         for (String key: gameFieldMap.keySet()) {
-            BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(key, gameFieldMap.get(key).getValue()));
-            mongoCollection.updateOne(bsonUUID, updateObject, options);
+            try {
+                BasicDBObject updateObject = new BasicDBObject("$set", new BasicDBObject(key, gameFieldMap.get(key).getValue()));
+                mongoCollection.updateOne(bsonUUID, updateObject, options);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
         mongoCollection.updateOne(bsonUUID,
