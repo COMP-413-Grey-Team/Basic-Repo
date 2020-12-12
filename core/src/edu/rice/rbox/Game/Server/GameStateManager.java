@@ -43,18 +43,18 @@ public class GameStateManager {
     });
 
     _timer += 50;
-    if (_timer >= 500) {
+    if (_timer >= 1000) {
       _timer = 0;
+      lock.readLock().lock();
+      final GameFieldSet<GameObjectUUID> coins = (GameFieldSet<GameObjectUUID>) objectStore.read(roomUUID, ObjectStorageKeys.Room.COINS_IN_ROOM, 0);
+
+      lock.readLock().unlock();
+
+      if (coins.size() < 25) {
+        createRandomCoin(roomUUID);
+      }
     }
 
-    lock.readLock().lock();
-    final GameFieldSet<GameObjectUUID> coins = (GameFieldSet<GameObjectUUID>) objectStore.read(roomUUID, ObjectStorageKeys.Room.COINS_IN_ROOM, 0);
-
-    lock.readLock().unlock();
-
-    if (coins.size() < 25) {
-      createRandomCoin(roomUUID);
-    }
   });
 
   public GameStateManager(Server2Store objectStore) {
@@ -103,6 +103,7 @@ public class GameStateManager {
           objectStore.delete(coin, coin);
           coinsInRoom.removeIf(c -> c.getUUID().equals(coin.getUUID()));
       }
+      coinsInRoom.removeAll(update.deletedCoins);
       objectStore.write(new LocalFieldChange(roomUUID, ObjectStorageKeys.Room.COINS_IN_ROOM, new GameFieldSet<GameObjectUUID>(coinsInRoom), 0), roomUUID);
       lock.writeLock().unlock();
     }
