@@ -147,18 +147,31 @@ public class World extends JPanel {
               keyState);
     }
 
-    otherPlayers = updatedPlayers.entrySet().stream().filter(entry -> !entry.getKey().equals(playerUUID)).collect(Collectors.toMap(
-        Map.Entry::getKey,
-       entry -> new RemotePlayerSprite(entry.getValue().x, entry.getValue().y, 0, 0, entry.getValue().score, entry.getValue().name)
-    ));
+    if (!updatedPlayers.isEmpty()) {
+      otherPlayers =
+          updatedPlayers.entrySet()
+              .stream()
+              .filter(entry -> !entry.getKey().equals(playerUUID))
+              .collect(Collectors.toMap(
+                  Map.Entry::getKey,
+                  entry -> new RemotePlayerSprite(entry.getValue().x,
+                      entry.getValue().y,
+                      0,
+                      0,
+                      entry.getValue().score,
+                      entry.getValue().name)
+              ));
+      updatedPlayers.clear();
+    }
 
-    coins = newCoins.entrySet().stream().collect(Collectors.toMap(
-        Map.Entry::getKey,
-       entry -> new CoinSprite(entry.getValue().x, entry.getValue().y)
-    ));
+    if (!newCoins.isEmpty()) {
+      coins = newCoins.entrySet().stream().collect(Collectors.toMap(
+          Map.Entry::getKey,
+          entry -> new CoinSprite(entry.getValue().x, entry.getValue().y)
+      ));
 
-    updatedPlayers.clear();
-    newCoins.clear();
+      newCoins.clear();
+    }
 
     lock.writeLock().unlock();
   }
