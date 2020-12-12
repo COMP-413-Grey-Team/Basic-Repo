@@ -156,20 +156,12 @@ public class World extends JPanel {
         Map.Entry::getKey,
        entry -> new CoinSprite(entry.getValue().x, entry.getValue().y)
     ));
+
+    updatedPlayers.clear();
+    newCoins.clear();
+
     lock.writeLock().unlock();
   }
-
-//  private void trySwitchingRooms() {
-//    // Check collision with door
-//    DoorSprite[] doors = { leftDoor, rightDoor };
-//    for (DoorSprite door : doors) {
-//      if (door.containsPoint(player.getX(), player.getY())) {
-//        shouldMoveRooms = door.doorSide;
-//        System.out.println("DOOR " + door.doorSide);
-//        break;
-//      }
-//    }
-//  }
 
   private void sendUpdatesToServerAsynchronously() {
     lock.readLock().lock();
@@ -194,8 +186,6 @@ public class World extends JPanel {
     lock.writeLock().lock();
     playerStates.forEach(updatedPlayers::put);
     coinStates.forEach(newCoins::put);
-    playerStates.clear();
-    coinStates.clear();
     lock.writeLock().unlock();
   }
 
