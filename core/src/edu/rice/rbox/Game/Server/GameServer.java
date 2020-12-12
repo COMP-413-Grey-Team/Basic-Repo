@@ -35,10 +35,10 @@ public class GameServer {
     @Override
     public void publishUpdate(GameNetworkProto.UpdateFromClient request,
                               StreamObserver<GameNetworkProto.UpdateFromServer> responseObserver) {
-      System.out.println("Game Object ID: " + request.getGameObjectUUID());
-      System.out.println("Deleted Coins: " + request.getDeletedCoinsList().toString());
-      System.out.println("Player State: " + GameServer.this.reconstructPlayerState(request).toString());
-      System.out.println("Moved Rooms?: " + (((Integer) request.getMovingRoomsValue())).toString());
+//      System.out.println("Game Object ID: " + request.getGameObjectUUID());
+//      System.out.println("Deleted Coins: " + request.getDeletedCoinsList().toString());
+//      System.out.println("Player State: " + GameServer.this.reconstructPlayerState(request).toString());
+//      System.out.println("Moved Rooms?: " + (((Integer) request.getMovingRoomsValue())).toString());
 
       final GameState gameState = gameStateManager.handleUpdateFromPlayer(clientUpdateToGameStateDelta(request));
 

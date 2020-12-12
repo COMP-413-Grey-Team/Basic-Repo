@@ -37,7 +37,7 @@ public class GameStateManager {
   int _timer = 0;
 
   private Timer gameLoopTimer = new Timer(50, e -> {
-    objectStore.advanceBuffer();
+//    objectStore.advanceBuffer();
     objectStore.synchronize().forEach(localChange -> {
       objectStore.write(localChange.copyWithBufferIndex(0), localChange.getTarget());
     });
@@ -95,7 +95,7 @@ public class GameStateManager {
     int coinsCollected = 0;
     if (!update.deletedCoins.isEmpty()) {
       lock.writeLock().lock();
-      System.out.println(update.deletedCoins.size());
+//      System.out.println(update.deletedCoins.size());
       final HashSet<GameObjectUUID> coinsInRoom = new HashSet<>(coinsInRoom(roomUUID).set);
 
       for (GameObjectUUID coin : update.deletedCoins) {
