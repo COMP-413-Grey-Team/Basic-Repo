@@ -194,6 +194,8 @@ public class World extends JPanel {
     lock.writeLock().lock();
     playerStates.forEach(updatedPlayers::put);
     coinStates.forEach(newCoins::put);
+    playerStates.clear();
+    coinStates.clear();
     lock.writeLock().unlock();
   }
 
