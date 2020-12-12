@@ -99,9 +99,10 @@ public class GameStateManager {
       final HashSet<GameObjectUUID> coinsInRoom = new HashSet<>(coinsInRoom(roomUUID).set);
 
       for (GameObjectUUID coin : update.deletedCoins) {
+        if (coinsInRoom.contains(coin)) {
           coinsCollected++;
           objectStore.delete(coin, coin);
-          coinsInRoom.removeIf(c -> c.getUUID().equals(coin.getUUID()));
+        }
       }
       coinsInRoom.removeAll(update.deletedCoins);
       objectStore.write(new LocalFieldChange(roomUUID, ObjectStorageKeys.Room.COINS_IN_ROOM, new GameFieldSet<GameObjectUUID>(coinsInRoom), 0), roomUUID);

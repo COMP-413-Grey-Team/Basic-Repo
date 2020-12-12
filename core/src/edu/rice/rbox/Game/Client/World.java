@@ -140,8 +140,8 @@ public class World extends JPanel {
     if (playerState != null) {
       player =
           new LocalPlayerSprite(
-              playerState.x,
-              playerState.y,
+              player.getX(),
+              player.getY(),
               playerState.score,
               playerState.name,
               keyState);
